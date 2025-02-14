@@ -7,7 +7,7 @@ const app: Express = express();
 const port = process.env.PORT || 3000;
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("User Service Intial endpoint");
+  res.send("Book Service root endpoint");
 });
 
 app.listen(port, () => {
