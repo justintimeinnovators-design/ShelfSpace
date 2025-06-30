@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String       @id @default(uuid())
+  email       String       @unique
+  name        String?
+  avatarUrl   String?
+  isActive    Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  preferences Preferences?
+}
+
+model Preferences {
+  id                  Int       @id @default(autoincrement())
+  userId              String    @unique
+  user                User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  theme               Theme     @default(SYSTEM)
+  language            String    @default("en")
+  timezone            String?
+
+  notificationsEmail  Boolean   @default(true)
+  notificationsSMS    Boolean   @default(false)
+  newsletterOptIn     Boolean   @default(false)
+  dailyDigest         Boolean   @default(true)
+
+  defaultSortOrder    SortOrder @default(MOST_RECENT)
+  defaultViewMode     ViewMode  @default(CARD)
+  compactMode         Boolean   @default(false)
+
+  accessibilityFont   Boolean   @default(false)
+  reducedMotion       Boolean   @default(false)
+  autoPlayMedia       Boolean   @default(false)
+
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+}
+
+enum Theme {
+  LIGHT
+  DARK
+  SYSTEM
+}
+
+enum SortOrder {
+  MOST_RECENT
+  MOST_POPULAR
+  ALPHABETICAL
+}
+
+enum ViewMode {
+  CARD
+  LIST
+}
