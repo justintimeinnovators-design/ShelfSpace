@@ -6,17 +6,24 @@ services:
     networks:
       - shelfspace-net
 
-  auth-service:
-    build: ./services/auth-service
-    ports:
-      - "3001:3001"
-    networks:
-      - shelfspace-net
-
   user-service:
     build: ./services/user-service
     ports:
       - "3002:3002"
+    networks:
+      - shelfspace-net
+
+  user-library-service:
+    build: ./services/user-library-service
+    ports:
+      - "3003:3003"
+    networks:
+      - shelfspace-net
+
+  book-service:
+    build: ./services/book-service
+    ports:
+      - "3004:3004"
     networks:
       - shelfspace-net
 
