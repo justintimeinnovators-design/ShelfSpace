@@ -23,12 +23,12 @@ export default function ProfileSettings({ userSettings, handleSettingsUpdate }: 
       <div className="space-y-6">
         {/* Avatar Upload */}
         <div className="flex items-center space-x-6">
-          <div className="w-24 h-24 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
-            {userSettings.profile.name.charAt(0)}
+          <div className="w-24 h-24 bg-gradient-to-r from-indigo-dye-500 to-safety-orange-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+            {userSettings.profile.name.charAt(0).toUpperCase()}
           </div>
           <div>
-            <button className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
-              Upload Photo
+            <button className="px-4 py-2 bg-indigo-dye-600 text-white rounded-lg hover:bg-indigo-dye-700 transition-colors">
+              Change Photo
             </button>
             <p className="text-sm text-gray-500 mt-1">JPG, PNG up to 5MB</p>
           </div>
@@ -42,7 +42,7 @@ export default function ProfileSettings({ userSettings, handleSettingsUpdate }: 
               type="text"
               value={userSettings.profile.name}
               onChange={(e) => handleSettingsUpdate("profile", "name", e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-dye-500 focus:border-transparent"
             />
           </div>
           <div>
@@ -51,7 +51,7 @@ export default function ProfileSettings({ userSettings, handleSettingsUpdate }: 
               type="email"
               value={userSettings.profile.email}
               onChange={(e) => handleSettingsUpdate("profile", "email", e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-dye-500 focus:border-transparent"
             />
           </div>
         </div>
@@ -106,7 +106,7 @@ export default function ProfileSettings({ userSettings, handleSettingsUpdate }: 
                   }}
                   className={`px-3 py-1 rounded-full text-sm transition-colors ${
                     selected
-                      ? "bg-purple-100 text-purple-700 border border-purple-200"
+                      ? "bg-indigo-dye-100 text-indigo-dye-700 border border-indigo-dye-200"
                       : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
                 >
@@ -118,7 +118,7 @@ export default function ProfileSettings({ userSettings, handleSettingsUpdate }: 
         </div>
 
         <div className="flex justify-end">
-          <button className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+          <button className="px-6 py-2 bg-indigo-dye-600 text-white rounded-lg hover:bg-indigo-dye-700 transition-colors">
             Save Changes
           </button>
         </div>

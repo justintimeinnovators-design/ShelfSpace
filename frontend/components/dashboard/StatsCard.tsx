@@ -1,24 +1,86 @@
-import { LucideIcon } from 'lucide-react';
+'use client';
 
-interface Props {
+import React from 'react';
+import { LucideIcon, TrendingUp, TrendingDown } from 'lucide-react';
+
+interface StatsCardProps {
   title: string;
-  value: string;
-  subtitle: string;
+  value: string | number;
+  change?: {
+    value: number;
+    type: 'increase' | 'decrease';
+    period: string;
+  };
   icon: LucideIcon;
-  color?: string;
+  iconColor?: string;
+  iconBgColor?: string;
+  trend?: 'up' | 'down' | 'neutral';
+  className?: string;
 }
 
-export default function StatsCard({ title, value, subtitle, icon: Icon, color = "purple" }: Props) {
+const StatsCard: React.FC<StatsCardProps> = ({
+  title,
+  value,
+  change,
+  icon: Icon,
+  iconColor = 'text-indigo-dye-600',
+  iconBgColor = 'bg-indigo-dye-50',
+  trend = 'neutral',
+  className = '',
+}) => {
+  const formatValue = (val: string | number) => {
+    if (typeof val === 'number') {
+      return val.toLocaleString();
+    }
+    return val;
+  };
+
+  const getTrendIcon = () => {
+    switch (trend) {
+      case 'up':
+        return <TrendingUp className="h-4 w-4 text-verdigris-600" />;
+      case 'down':
+        return <TrendingDown className="h-4 w-4 text-turkey-red-600" />;
+      default:
+        return null;
+    }
+  };
+
+  const getChangeColor = () => {
+    if (!change) return '';
+    return change.type === 'increase' ? 'text-verdigris-600' : 'text-turkey-red-600';
+  };
+
   return (
-    <div className={`bg-gradient-to-r from-${color}-500 to-${color}-600 text-white p-6 rounded-xl shadow-lg`}>
+    <div className={`card p-6 ${className}`}>
       <div className="flex items-center justify-between">
-        <div>
-          <p className="text-white/80 text-sm">{title}</p>
-          <p className="text-3xl font-bold">{value}</p>
-          <p className="text-white/80 text-sm">{subtitle}</p>
+        <div className="flex-1">
+          <p className="text-body-sm text-gray-600 mb-1">{title}</p>
+          <div className="flex items-baseline space-x-2">
+            <p className="text-2xl font-bold text-gray-900">
+              {formatValue(value)}
+            </p>
+            {getTrendIcon()}
+          </div>
+          
+          {change && (
+            <div className="flex items-center space-x-1 mt-2">
+              <span className={`text-sm font-medium ${getChangeColor()}`}>
+                {change.type === 'increase' ? '+' : '-'}{Math.abs(change.value)}%
+              </span>
+              <span className="text-body-sm text-gray-500">
+                vs {change.period}
+              </span>
+            </div>
+          )}
         </div>
-        <Icon className="w-8 h-8 text-white/80" />
+        
+        <div className={`p-3 rounded-lg ${iconBgColor}`}>
+          <Icon className={`h-6 w-6 ${iconColor}`} />
+        </div>
       </div>
     </div>
   );
-}
+};
+
+export default StatsCard;

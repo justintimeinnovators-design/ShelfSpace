@@ -125,7 +125,7 @@ export default function SettingsLayout() {
             onClick={() => setSettingsTab(tab)}
             className={`block w-full text-left px-4 py-2 rounded-lg transition-colors ${
               settingsTab === tab
-                ? "bg-purple-100 text-purple-700 font-semibold"
+                ? "bg-indigo-dye-100 text-indigo-dye-700 font-semibold"
                 : "text-gray-700 hover:bg-gray-100"
             }`}
           >
