@@ -12,11 +12,17 @@ model User {
   email       String       @unique
   name        String?
   avatarUrl   String?
+  bio         String?
+  website     String?
+  isPublic    Boolean      @default(true)
   isActive    Boolean      @default(true)
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 
   preferences Preferences?
+  stats       UserStats?
+  goals       UserGoal[]
+  badges      UserBadge[]
 }
 
 model Preferences {
@@ -43,6 +49,39 @@ model Preferences {
 
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
+}
+
+model UserStats {
+  id            Int      @id @default(autoincrement())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  booksRead     Int      @default(0)
+  pagesRead     Int      @default(0)
+  currentStreak Int      @default(0)
+  longestStreak Int      @default(0)
+  updatedAt     DateTime @updatedAt
+  createdAt     DateTime @default(now())
+}
+
+model UserGoal {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  year      Int
+  goalBooks Int
+  progress  Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, year])
+}
+
+model UserBadge {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge     String
+  awardedAt DateTime @default(now())
 }
 
 enum Theme {

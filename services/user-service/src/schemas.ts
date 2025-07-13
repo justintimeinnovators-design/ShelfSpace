@@ -3,6 +3,9 @@ import { z } from "zod";
 export const updateUserSchema = z.object({
   name: z.string().min(1, "Name cannot be empty").max(100).optional(),
   avatarUrl: z.string().url("Must be a valid URL").optional(),
+  bio: z.string().max(500).optional(),
+  website: z.string().url("Must be a valid URL").optional(),
+  isPublic: z.boolean().optional(),
 });
 
 export const updatePreferencesSchema = z.object({

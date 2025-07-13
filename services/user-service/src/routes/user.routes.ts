@@ -1,12 +1,14 @@
 import express from "express";
 import prisma from "../prisma.ts";
+import { updateUserSchema, updatePreferencesSchema } from "../schemas.ts";
 
 const router = express.Router();
 
 router.get("/me", async (req, res) => {
-  const userId = req.user?.id;
+  const userId = req.header("x-user-id");
   if (!userId) {
-    return res.status(401).json({ error: "Unauthorized" });
+    res.status(401).json({ error: "Unauthorized: Missing x-user-id header" });
+    return;
   }
 
   try {
@@ -16,7 +18,8 @@ router.get("/me", async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      res.status(404).json({ error: "User not found" });
+      return;
     }
     res.json(user);
   } catch (error) {
@@ -27,17 +30,27 @@ router.get("/me", async (req, res) => {
 
 // PUT /api/me - Update user profile
 router.put("/me", async (req, res) => {
-  const userId = req.user?.id;
+  const userId = req.header("x-user-id");
   if (!userId) {
-    return res.status(401).json({ error: "Unauthorized" });
+    res.status(401).json({ error: "Unauthorized: Missing x-user-id header" });
+    return;
   }
 
-  const { name, avatarUrl } = req.body;
+  // Zod validation
+  const parseResult = updateUserSchema.safeParse(req.body);
+  if (!parseResult.success) {
+    res
+      .status(400)
+      .json({ error: "Invalid input", details: parseResult.error.errors });
+    return;
+  }
+  // Use all validated fields
+  const updateData = parseResult.data;
 
   try {
     const updatedUser = await prisma.user.update({
       where: { id: userId },
-      data: { name, avatarUrl },
+      data: updateData,
     });
     res.json(updatedUser);
   } catch (error) {
@@ -48,9 +61,10 @@ router.put("/me", async (req, res) => {
 
 // GET /api/me/preferences - Retrieve user preferences
 router.get("/me/preferences", async (req, res) => {
-  const userId = req.user?.id;
+  const userId = req.header("x-user-id");
   if (!userId) {
-    return res.status(401).json({ error: "Unauthorized" });
+    res.status(401).json({ error: "Unauthorized: Missing x-user-id header" });
+    return;
   }
 
   try {
@@ -60,7 +74,8 @@ router.get("/me/preferences", async (req, res) => {
 
     if (!preferences) {
       // If preferences don't exist, we can return default values or a 404
-      return res.status(404).json({ error: "Preferences not found." });
+      res.status(404).json({ error: "Preferences not found." });
+      return;
     }
     res.json(preferences);
   } catch (error) {
@@ -71,24 +86,65 @@ router.get("/me/preferences", async (req, res) => {
 
 // PUT /api/me/preferences - Update or create user preferences
 router.put("/me/preferences", async (req, res) => {
-  const userId = req.user?.id;
+  const userId = req.header("x-user-id");
   if (!userId) {
-    return res.status(401).json({ error: "Unauthorized" });
+    res.status(401).json({ error: "Unauthorized: Missing x-user-id header" });
+    return;
+  }
+
+  // Zod validation
+  const parseResult = updatePreferencesSchema.safeParse(req.body);
+  if (!parseResult.success) {
+    res
+      .status(400)
+      .json({ error: "Invalid input", details: parseResult.error.errors });
+    return;
   }
 
   try {
     // We use `upsert` to create preferences if they don't exist, or update them if they do.
     const updatedPreferences = await prisma.preferences.upsert({
       where: { userId },
-      update: req.body,
+      update: parseResult.data,
       create: {
         userId,
-        ...req.body,
+        ...parseResult.data,
       },
     });
     res.json(updatedPreferences);
   } catch (error) {
     console.error("Error updating preferences:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// GET /api/me/stats - Retrieve user stats
+router.get("/me/stats", async (req, res) => {
+  const userId = req.header("x-user-id");
+  if (!userId) {
+    res.status(401).json({ error: "Unauthorized: Missing x-user-id header" });
+    return;
+  }
+
+  try {
+    const stats = await prisma.userStats.findUnique({ where: { userId } });
+    if (!stats) {
+      res.json({
+        booksRead: 0,
+        pagesRead: 0,
+        currentStreak: 0,
+        longestStreak: 0,
+      });
+      return;
+    }
+    res.json({
+      booksRead: stats.booksRead,
+      pagesRead: stats.pagesRead,
+      currentStreak: stats.currentStreak,
+      longestStreak: stats.longestStreak,
+    });
+  } catch (error) {
+    console.error("Error fetching user stats:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
