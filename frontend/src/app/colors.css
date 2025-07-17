@@ -1,0 +1,128 @@
+/* ShelfSpace Color Palette */
+
+/* CSS Custom Properties (Variables) */
+:root {
+  /* Main Brand Colors */
+  --indigo-dye: #004777;
+  --turkey-red: #a30000;
+  --safety-orange: #ff7700;
+  --peach-yellow: #efd28d;
+  --verdigris: #00afb5;
+
+  /* Indigo Dye Scale */
+  --indigo-dye-50: #e6f0f7;
+  --indigo-dye-100: #cce1ef;
+  --indigo-dye-200: #99c3df;
+  --indigo-dye-300: #66a5cf;
+  --indigo-dye-400: #3387bf;
+  --indigo-dye-500: #004777;
+  --indigo-dye-600: #003a5f;
+  --indigo-dye-700: #002d47;
+  --indigo-dye-800: #00202f;
+  --indigo-dye-900: #001318;
+
+  /* Turkey Red Scale */
+  --turkey-red-50: #ffe6e6;
+  --turkey-red-100: #ffcccc;
+  --turkey-red-200: #ff9999;
+  --turkey-red-300: #ff6666;
+  --turkey-red-400: #ff3333;
+  --turkey-red-500: #a30000;
+  --turkey-red-600: #820000;
+  --turkey-red-700: #610000;
+  --turkey-red-800: #410000;
+  --turkey-red-900: #200000;
+
+  /* Safety Orange Scale */
+  --safety-orange-50: #fff2e6;
+  --safety-orange-100: #ffe5cc;
+  --safety-orange-200: #ffcb99;
+  --safety-orange-300: #ffb166;
+  --safety-orange-400: #ff9733;
+  --safety-orange-500: #ff7700;
+  --safety-orange-600: #cc5f00;
+  --safety-orange-700: #994700;
+  --safety-orange-800: #662f00;
+  --safety-orange-900: #331800;
+
+  /* Peach Yellow Scale */
+  --peach-yellow-50: #fdf9f0;
+  --peach-yellow-100: #fbf3e1;
+  --peach-yellow-200: #f7e7c3;
+  --peach-yellow-300: #f3dba5;
+  --peach-yellow-400: #efd28d;
+  --peach-yellow-500: #e6c77a;
+  --peach-yellow-600: #d4b56a;
+  --peach-yellow-700: #c2a35a;
+  --peach-yellow-800: #b0914a;
+  --peach-yellow-900: #9e7f3a;
+
+  /* Verdigris Scale */
+  --verdigris-50: #e6f9fa;
+  --verdigris-100: #ccf3f5;
+  --verdigris-200: #99e7eb;
+  --verdigris-300: #66dbe1;
+  --verdigris-400: #33cfd7;
+  --verdigris-500: #00afb5;
+  --verdigris-600: #008c91;
+  --verdigris-700: #00696d;
+  --verdigris-800: #004649;
+  --verdigris-900: #002324;
+
+  /* Semantic Colors */
+  --success: var(--verdigris-500);
+  --warning: var(--safety-orange-500);
+  --error: var(--turkey-red-500);
+  --info: var(--indigo-dye-500);
+
+  /* HSL Values for advanced usage */
+  --indigo-dye-hsl: 204, 100%, 23%;
+  --turkey-red-hsl: 0, 100%, 32%;
+  --safety-orange-hsl: 28, 100%, 50%;
+  --peach-yellow-hsl: 42, 75%, 75%;
+  --verdigris-hsl: 182, 100%, 35%;
+}
+
+/* Utility Classes for Direct Color Usage */
+.bg-indigo-dye { background-color: var(--indigo-dye); }
+.bg-turkey-red { background-color: var(--turkey-red); }
+.bg-safety-orange { background-color: var(--safety-orange); }
+.bg-peach-yellow { background-color: var(--peach-yellow); }
+.bg-verdigris { background-color: var(--verdigris); }
+
+.text-indigo-dye { color: var(--indigo-dye); }
+.text-turkey-red { color: var(--turkey-red); }
+.text-safety-orange { color: var(--safety-orange); }
+.text-peach-yellow { color: var(--peach-yellow); }
+.text-verdigris { color: var(--verdigris); }
+
+.border-indigo-dye { border-color: var(--indigo-dye); }
+.border-turkey-red { border-color: var(--turkey-red); }
+.border-safety-orange { border-color: var(--safety-orange); }
+.border-peach-yellow { border-color: var(--peach-yellow); }
+.border-verdigris { border-color: var(--verdigris); }
+
+/* Gradient Utilities */
+.gradient-brand {
+  background: linear-gradient(135deg, 
+    var(--indigo-dye) 0%, 
+    var(--turkey-red) 25%, 
+    var(--safety-orange) 50%, 
+    var(--peach-yellow) 75%, 
+    var(--verdigris) 100%
+  );
+}
+
+.gradient-primary {
+  background: linear-gradient(135deg, 
+    var(--indigo-dye-400) 0%, 
+    var(--indigo-dye-600) 100%
+  );
+}
+
+.gradient-accent {
+  background: linear-gradient(135deg, 
+    var(--safety-orange-400) 0%, 
+    var(--safety-orange-600) 100%
+  );
+} 

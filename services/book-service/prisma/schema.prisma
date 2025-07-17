@@ -1,0 +1,44 @@
+// schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Book {
+  id              String    @id @default(uuid())
+  title           String
+  authorId        String    // Foreign key to Author (assuming you have an Author model in user-service or admin-service)
+  authorName      String?   // Denormalized for convenience, or fetched from user-service
+  genre           String
+  description     String?
+  publicationDate DateTime? @map("publication_date") @db.Date
+  isbn            String    @unique
+  pageCount       Int?      @map("page_count")
+  publisher       String?
+  language        String?
+  coverImageUrl   String?   @map("cover_image_url")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  // Relations (assuming you'll have a relation to Review in review-service, though review data lives there)
+  // You might have a `reviews` relation here if you denormalize aggregate stats like averageRating, reviewCount
+  // For now, these can be calculated or fetched from review-service when needed.
+  averageRating   Float?
+  reviewCount     Int?
+
+  @@map("books")
+}
+
+// You might also have an Author model if you're managing authors directly in this service
+// model Author {
+//   id        String  @id @default(uuid())
+//   name      String  @unique
+//   bio       String?
+//   books     Book[]
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+// }
