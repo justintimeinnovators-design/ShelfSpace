@@ -1,13 +1,17 @@
 import express from "express";
 import prisma from "../prisma.ts";
 import { updateUserSchema, updatePreferencesSchema } from "../schemas.ts";
+import { Request, Response } from "express";
+import { isAuthenticated } from "../middlewares/auth.ts";
 
 const router = express.Router();
 
-router.get("/me", async (req, res) => {
-  const userId = req.header("x-user-id");
+router.use(isAuthenticated);
+
+router.get("/me", async (req: Request, res: Response) => {
+  const userId = req.userId;
   if (!userId) {
-    res.status(401).json({ error: "Unauthorized: Missing x-user-id header" });
+    res.status(401).json({ error: "Unauthorized: Missing user-id" });
     return;
   }
 
@@ -29,8 +33,8 @@ router.get("/me", async (req, res) => {
 });
 
 // PUT /api/me - Update user profile
-router.put("/me", async (req, res) => {
-  const userId = req.header("x-user-id");
+router.put("/me", async (req: Request, res: Response) => {
+  const userId = req.userId;
   if (!userId) {
     res.status(401).json({ error: "Unauthorized: Missing x-user-id header" });
     return;
@@ -60,8 +64,8 @@ router.put("/me", async (req, res) => {
 });
 
 // GET /api/me/preferences - Retrieve user preferences
-router.get("/me/preferences", async (req, res) => {
-  const userId = req.header("x-user-id");
+router.get("/me/preferences", async (req: Request, res: Response) => {
+  const userId = req.userId;
   if (!userId) {
     res.status(401).json({ error: "Unauthorized: Missing x-user-id header" });
     return;
@@ -85,8 +89,8 @@ router.get("/me/preferences", async (req, res) => {
 });
 
 // PUT /api/me/preferences - Update or create user preferences
-router.put("/me/preferences", async (req, res) => {
-  const userId = req.header("x-user-id");
+router.put("/me/preferences", async (req: Request, res: Response) => {
+  const userId = req.userId;
   if (!userId) {
     res.status(401).json({ error: "Unauthorized: Missing x-user-id header" });
     return;
@@ -119,8 +123,8 @@ router.put("/me/preferences", async (req, res) => {
 });
 
 // GET /api/me/stats - Retrieve user stats
-router.get("/me/stats", async (req, res) => {
-  const userId = req.header("x-user-id");
+router.get("/me/stats", async (req: Request, res: Response) => {
+  const userId = req.userId;
   if (!userId) {
     res.status(401).json({ error: "Unauthorized: Missing x-user-id header" });
     return;

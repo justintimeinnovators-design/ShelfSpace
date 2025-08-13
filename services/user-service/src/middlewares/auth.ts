@@ -1,1 +1,78 @@
+import { error } from "console";
+import { Request, Response, NextFunction } from "express";
+import { JWTPayload, SignJWT, jwtVerify } from "jose";
 
+const secretKey = new TextEncoder().encode(process.env.JWT_SECRET);
+const algorithm = "HSA256";
+
+interface CustomJWTPayload extends JWTPayload {
+  id: string;
+}
+
+export async function signToken(payload: { id: string }) {
+  const token = new SignJWT(payload)
+    .setProtectedHeader({ alg: algorithm })
+    .setIssuedAt()
+    .setExpirationTime("6h")
+    .sign(secretKey);
+
+  return token;
+}
+
+export async function verifyToken(token: string) {
+  try {
+    const { payload } = await jwtVerify<CustomJWTPayload>(token, secretKey, {
+      algorithms: [algorithm],
+    });
+    return payload;
+  } catch (error) {
+    return null;
+  }
+}
+
+export async function isAuthenticated(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({
+      error: "Unauthorized",
+      message: "A valid Bearer token is required for authentication",
+    });
+  }
+  const token = authHeader.split(" ")[1];
+
+  if (!process.env.JWT_SECRET) {
+    console.error(
+      "FATAL ERROR: JWT_SECRET could not ber accssed from the enviorment variables"
+    );
+
+    return res.status(500).json({
+      error: "Internal Server Error",
+      message: "Server is not confiigured correctly for authentication",
+    });
+  }
+  try {
+    const payload = await verifyToken(token);
+    if (!payload) {
+      return res.status(401).json({
+        error: "Forbidden",
+        message: "Your Authentication token is invalid or has expired",
+      });
+    }
+    req.userId = payload.id;
+    next();
+  } catch (error) {
+    let errorMessage = "Your authentication token is invalid or has expired";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+    console.error("JWT Verification Error: ", errorMessage);
+    return res.status(401).json({
+      error: "Forbidden",
+      message: "Your Authentication token is invalid or has expired",
+    });
+  }
+}
