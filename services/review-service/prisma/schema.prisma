@@ -1,0 +1,19 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Review {
+  id          String   @id @default(cuid())
+  rating      Int
+  reviewText  String   @db.Text
+  tldr        String?  @db.Text
+  userId      String
+  bookId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
