@@ -3,12 +3,14 @@ import prisma from "../prisma.ts";
 import { updateUserSchema, updatePreferencesSchema } from "../schemas.ts";
 import type { Request, Response } from "express";
 import { isAuthenticated } from "../middlewares/auth.ts";
+import { User, UserStats, Preferences } from "../types/user.d.ts";
+import { z } from "zod";
 
 const router = express.Router();
 
 router.use(isAuthenticated);
 
-router.get("/me", async (req: Request, res: Response) => {
+router.get("/me", async (req: Request, res: Response<User>) => {
   const userId = req.userId;
   if (!userId) {
     res.status(401).json({ error: "Unauthorized: Missing user-id" });
@@ -18,7 +20,7 @@ router.get("/me", async (req: Request, res: Response) => {
   try {
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      include: { preferences: true },
+      include: { preferences: true, stats: true },
     });
 
     if (!user) {
@@ -33,7 +35,7 @@ router.get("/me", async (req: Request, res: Response) => {
 });
 
 // PUT /api/me - Update user profile
-router.put("/me", async (req: Request, res: Response) => {
+router.put("/me", async (req: Request<{}, User, z.infer<typeof updateUserSchema>>, res: Response<User>) => {
   const userId = req.userId;
   if (!userId) {
     res.status(401).json({ error: "Unauthorized: Missing x-user-id header" });
@@ -64,7 +66,7 @@ router.put("/me", async (req: Request, res: Response) => {
 });
 
 // GET /api/me/preferences - Retrieve user preferences
-router.get("/me/preferences", async (req: Request, res: Response) => {
+router.get("/me/preferences", async (req: Request, res: Response<Preferences>) => {
   const userId = req.userId;
   if (!userId) {
     res.status(401).json({ error: "Unauthorized: Missing x-user-id header" });
@@ -89,7 +91,7 @@ router.get("/me/preferences", async (req: Request, res: Response) => {
 });
 
 // PUT /api/me/preferences - Update or create user preferences
-router.put("/me/preferences", async (req: Request, res: Response) => {
+router.put("/me/preferences", async (req: Request<{}, Preferences, z.infer<typeof updatePreferencesSchema>>, res: Response<Preferences>) => {
   const userId = req.userId;
   if (!userId) {
     res.status(401).json({ error: "Unauthorized: Missing x-user-id header" });
@@ -123,7 +125,7 @@ router.put("/me/preferences", async (req: Request, res: Response) => {
 });
 
 // GET /api/me/stats - Retrieve user stats
-router.get("/me/stats", async (req: Request, res: Response) => {
+router.get("/me/stats", async (req: Request, res: Response<UserStats>) => {
   const userId = req.userId;
   if (!userId) {
     res.status(401).json({ error: "Unauthorized: Missing x-user-id header" });
@@ -141,12 +143,7 @@ router.get("/me/stats", async (req: Request, res: Response) => {
       });
       return;
     }
-    res.json({
-      booksRead: stats.booksRead,
-      pagesRead: stats.pagesRead,
-      currentStreak: stats.currentStreak,
-      longestStreak: stats.longestStreak,
-    });
+    res.json(stats);
   } catch (error) {
     console.error("Error fetching user stats:", error);
     res.status(500).json({ error: "Internal server error" });

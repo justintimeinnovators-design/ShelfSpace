@@ -10,8 +10,12 @@ services:
     depends_on:
       - frontend
       - user-service
-      # - user-library-service
-      # - book-service
+      - review-service
+      - group-service
+      - chat-service
+      - admin-service
+      - user-library-service
+      - book-service
   frontend:
     build: ./frontend
     networks:
@@ -22,15 +26,35 @@ services:
     networks:
       - shelfspace-net
 
-  # user-library-service:
-  #   build: ./services/user-library-service
-  #   networks:
-  #     - shelfspace-net
+  review-service:
+    build: ./services/review-service
+    networks:
+      - shelfspace-net
 
-  # book-service:
-  #   build: ./services/book-service
-  #   networks:
-  #     - shelfspace-net
+  group-service:
+    build: ./services/group-service
+    networks:
+      - shelfspace-net
+
+  chat-service:
+    build: ./services/chat-service
+    networks:
+      - shelfspace-net
+
+  admin-service:
+    build: ./services/admin-service
+    networks:
+      - shelfspace-net
+
+  user-library-service:
+    build: ./services/user-library-service
+    networks:
+      - shelfspace-net
+
+  book-service:
+    build: ./services/book-service
+    networks:
+      - shelfspace-net
 
 networks:
   shelfspace-net:

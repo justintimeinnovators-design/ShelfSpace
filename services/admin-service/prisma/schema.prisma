@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum ModerationAction {
+  REVIEW_DELETED
+  USER_BANNED
+  BOOK_REJECTED
+  OTHER
+}
+
+enum ValidationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model User {
+  id    String @id @default(cuid())
+  role  Role   @default(USER)
+}
+
+model ModerationLog {
+  id        String           @id @default(cuid())
+  action    ModerationAction
+  targetId  String           // ID of the entity being moderated (e.g., reviewId, userId, bookId)
+  moderatorId String         // ID of the admin user performing the action
+  reason    String?
+  timestamp DateTime         @default(now())
+}
+
+model BookValidation {
+  id        String           @id @default(cuid())
+  bookId    String           @unique
+  status    ValidationStatus @default(PENDING)
+  validatorId String?        // ID of the admin user who validated the book
+  notes     String?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}
