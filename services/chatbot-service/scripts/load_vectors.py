@@ -39,7 +39,8 @@ class BookChunk:
     chunk_type: str        
     priority: int          
     intent_relevance: List[str]  
-    book_id: str           
+    book_id: str 
+    work_id: str          
     metadata: Dict[str, Any]     
     embedding: np.ndarray = None 
 
@@ -132,7 +133,7 @@ class PineconeVectorStore:
                 "book_id": chunk.book_id,
                 "work_id": chunk.work_id,
                 "chunk_id": chunk.chunk_id,
-                "intent_relevance": ",".join(chunk.intent_relevance),
+                "intent_relevance": chunk.intent_relevance,
                 "length": chunk.metadata.get("length"),
                 "publication_year": chunk.metadata.get("publication_year"),
                 "has_rating": chunk.metadata.get("contains_rating"),
@@ -200,6 +201,7 @@ def load_chunks_from_json(file_path: Path) -> List[BookChunk]:
                     priority=chunk_data['priority'],
                     intent_relevance=chunk_data['intent_relevance'],
                     book_id=chunk_data['book_id'],
+                    work_id= chunk_data['work_id'],
                     metadata=chunk_data['metadata']
                 )
                 chunks.append(chunk)
@@ -268,6 +270,7 @@ def process_chunks_streaming(json_file_path: Path,
                     priority=chunk_data['priority'],
                     intent_relevance=chunk_data['intent_relevance'],
                     book_id=chunk_data['book_id'],
+                    work_id=chunk_data['work_id'],
                     metadata=chunk_data['metadata']
                 )
                 chunks.append(chunk)

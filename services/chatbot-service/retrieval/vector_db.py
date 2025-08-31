@@ -1,6 +1,12 @@
 import os
 import logging
 from typing import List, Dict, Optional
+import sys
+from pathlib import Path
+
+project_root = Path(__file__).parent.parent
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
 
 try:
     from pinecone import Pinecone, ServerlessSpec
@@ -43,6 +49,8 @@ class PineconeConnector:
             return []
         
         logger.info(f"Searching index for {top_k} results...")
+        fetch_k = top_k * 5
+        logger.info(f"Searching for {fetch_k} candidates to find {top_k} unique works...")
         try:
             results = self.index.query(
                 vector=query_vector,
@@ -50,8 +58,30 @@ class PineconeConnector:
                 filter=filter_dict,
                 include_metadata = True
             )
-            logger.info(f"Found {len(results['matches'])} matches.")
-            return results['matches']
+
+            best_candidates = {}
+
+            for match in results['matches']:
+                metadata = match.get('metadata', {})
+                work_id = metadata.get('work_id')
+                
+                if not work_id:
+                    continue 
+
+                current_ratings = metadata.get('total_ratings', 0)
+
+                
+                if work_id not in best_candidates or current_ratings > best_candidates[work_id].get('metadata', {}).get('total_ratings', 0):
+                    best_candidates[work_id] = match
+
+            final_results = list(best_candidates.values())
+
+            final_results.sort(key=lambda m: m['score'], reverse=True)
+
+            
+            logger.info(f"Found {len(final_results)} unique works. Returning the top {top_k}.")
+            return final_results[:top_k]
+        
         except Exception as e:
             logger.error(f"An error occurred during Pinecone query: {e}")
             return []
@@ -85,15 +115,12 @@ if __name__ == '__main__':
     if search_results:
         print("Successfully retrieved results from Pinecone:")
         for match in search_results:
-            # Access the metadata dictionary from the match
             metadata = match.get('metadata', {})
-            # Get the text from the metadata, with a fallback
             text_content = metadata.get('text', 'No text content found.')
             
             print(f"\n--- Match ---")
             print(f"  - ID: {match['id']}")
             print(f"  - Score: {match['score']:.4f}")
-            # Print a snippet of the text content
             print(f"  - Text: {text_content}...")
     else:
         print("Search completed. No results found.")
