@@ -1,5 +1,9 @@
-import LibraryContent from '../../../components/library/LibraryContent';
+import LibraryContent from '../../components/library/LibraryContent';
 
 export default function LibraryPage() {
-  return <LibraryContent />;
+  return (
+    <div className="bg-whiteBg min-h-screen text-black">
+      <LibraryContent />
+    </div>
+  );
 }
