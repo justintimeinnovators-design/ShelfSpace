@@ -1,0 +1,30 @@
+:root {
+  /* Semantic color variables */
+  --color-primary: var(--indigo-dye-700);
+  --color-primary-light: var(--indigo-dye-50);
+  --color-primary-dark: var(--indigo-dye-900);
+  --color-secondary: var(--verdigris-600);
+  --color-secondary-light: var(--verdigris-50);
+  --color-accent: var(--safety-orange-500);
+  --color-accent-light: var(--safety-orange-100);
+  --color-bg: #fafafa;
+  --color-surface: #fff;
+  --color-border: #e5e7eb;
+  --color-text: #111827;
+  --color-text-muted: #f3f5f8;
+  --color-success: var(--verdigris-500);
+  --color-warning: var(--safety-orange-500);
+  --color-error: var(--turkey-red-500);
+
+  /* New color system for ShelfSpace */
+  --charcoal: #213A45;
+  --citron: #D0C87F;
+  --dashboard-bg: #ffffff;
+  --dashboard-text: #000000;
+  --dashboard-card: #f9f9f9;
+  --dashboard-card-border: #d9d9d9;
+
+  /* Mappings for new design */
+  --accent-color: var(--charcoal);
+  --primary-color: var(--citron);
+} 

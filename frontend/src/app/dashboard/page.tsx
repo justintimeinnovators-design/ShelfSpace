@@ -1,4 +1,4 @@
-import ShelfSpaceDashboard from '../../../components/dashboard/ShelfSpaceDashboard';
+import ShelfSpaceDashboard from '../../components/dashboard/ShelfSpaceDashboard';
 
 export default function DashboardPage() {
   return <ShelfSpaceDashboard />;
