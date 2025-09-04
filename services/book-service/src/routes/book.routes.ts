@@ -1,10 +1,7 @@
 import express from "express";
 import prisma from "../prisma.ts";
-import {
-  CreateBookInput,
-  createBookSchema,
-  getAllBooksQueryParamsSchema,
-} from "../schemas.ts";
+import type { CreateBookInput } from "../schemas.ts";
+import { createBookSchema, getAllBooksQueryParamsSchema } from "../schemas.ts";
 import z from "zod";
 import axios from "axios";
 
@@ -223,6 +220,7 @@ router.post("/", async (req, res) => {
         .json({ message: "Validation Error", errors: error.errors });
     }
     // Handle Prisma specific errors, e.g., unique constraint violation
+
     if (error.code === "P2002") {
       // Prisma unique constraint violation code
       return res

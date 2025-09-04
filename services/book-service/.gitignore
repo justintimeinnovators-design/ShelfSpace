@@ -1,5 +1,6 @@
 node_modules
+# /src/data/complete_goodreads_books_authors2.json
 # Keep environment variables out of version control
 .env
-
+src/data/complete_goodreads_books_authors2.json
 /generated/prisma

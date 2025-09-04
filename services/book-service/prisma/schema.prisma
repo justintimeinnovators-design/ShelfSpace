@@ -15,7 +15,7 @@ model Book {
   authorName      String?   // Denormalized for convenience, or fetched from user-service
   genre           String
   description     String?
-  publicationDate DateTime? @map("publication_date") @db.Date
+  publicationDate DateTime? @map("publication_date") @db.Date //has to be year
   isbn            String    @unique
   pageCount       Int?      @map("page_count")
   publisher       String?

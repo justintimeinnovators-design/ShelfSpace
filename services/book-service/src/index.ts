@@ -15,7 +15,7 @@ app.get("/", (_req, res) => {
   res.send("Hello from Book Service!");
 });
 
-app.use("/api", authenticateToken, bookRoutes);
+app.use("/api", bookRoutes);
 
 app.listen(PORT, () => {
   console.log(`Book service running at http://localhost:${PORT}`);
