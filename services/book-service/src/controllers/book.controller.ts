@@ -1,118 +1,169 @@
-import Book from "../models/book";
+import type { Request, Response } from "express";
+import Book from "../models/book.ts";
 
-// @desc    Create a new book
-// @route   POST /api/books
-const createBook = async (req: Request, res: Response) => {
+//
+export const createBook = async (req: Request, res: Response) => {
   try {
-    const bookData = req.body;
-    // Basic validation
-    if (!bookData.title || !bookData.authors) {
-      return res
-        .status(400)
-        .json({ message: "Missing required fields: title, authors, isbn13" });
-    }
-    const newBook = new Book(bookData);
-    await newBook.save();
-    res.status(201).json({ message: "Book added successfully", book: newBook });
+    const book = await Book.create(req.body);
+    res.status(201).json(book);
   } catch (error) {
-    // Handle potential duplicate key errors (e.g., for isbn13)
-    if (error.code === 11000) {
-      return res.status(409).json({
-        message: "Error: A book with this ISBN or Book ID already exists.",
-        details: error.keyValue,
+    res.status(500).json({ message: "Error creating book", error });
+  }
+};
+
+export const getAllBooks = async (req: Request, res: Response) => {
+  try {
+    // --- 1. DESTRUCTURE QUERY PARAMETERS ---
+    const { author, sortBy, page = 1 } = req.query;
+
+    console.log(author);
+
+    const pageSize = 30; // As requested, 30 books per page
+
+    // --- 2. BUILD THE AGGREGATION PIPELINE ---
+    const pipeline: any[] = [];
+
+    // --- STAGE 1: $match (Filter) ---
+    // Conditionally add the $match stage if an author is provided
+    if (author) {
+      pipeline.push({
+        $match: {
+          // We use $regex for partial, case-insensitive matching
+          // This will find an author even if the name is just part of the string
+          "authors.name": { $regex: author, $options: "i" },
+        },
       });
     }
-    res
-      .status(500)
-      .json({ message: "Error creating book", error: error.message });
-  }
-};
 
-// @desc    Get all books with pagination
-// @route   GET /api/books
-const getAllBooks = async (req: Request, res: Response) => {
-  try {
-    const page = parseInt(req.query.page) || 1;
-    const pageSize = parseInt(req.query.pageSize) || 10;
-    const skip = (page - 1) * pageSize;
-
-    const books = await Book.find().skip(skip).limit(pageSize);
-    const totalBooks = await Book.countDocuments();
-
-    res.status(200).json({
-      message: "Books retrieved successfully",
-      data: books,
-      pagination: {
-        currentPage: page,
-        pageSize: pageSize,
-        totalPages: Math.ceil(totalBooks / pageSize),
-        totalBooks: totalBooks,
+    // --- STAGE 2: $sort (Sort) ---
+    // Determine sort order based on the 'sortBy' query param
+    const sortDirection = sortBy === "desc" ? -1 : 1; // -1 for descending, 1 for ascending
+    pipeline.push({
+      $sort: {
+        title: sortDirection,
       },
     });
+
+    // --- STAGE 3: $facet (Pagination & Metadata) ---
+    // $facet allows us to process the data in two parallel ways:
+    // 1. Get metadata (like the total count of matched books)
+    // 2. Get the paginated data itself
+    pipeline.push({
+      $facet: {
+        // Sub-pipeline 1: for metadata
+        metadata: [{ $count: "totalBooks" }],
+        // Sub-pipeline 2: for the actual page of data
+        data: [
+          { $skip: (parseInt(page) - 1) * pageSize },
+          { $limit: pageSize },
+          {
+            $project: {
+              series: 0,
+              similar_books: 0,
+              publisher: 0,
+              url: 0,
+              work_id: 0,
+              title_without_series: 0,
+            },
+          },
+        ],
+      },
+    });
+
+    // --- 3. EXECUTE THE PIPELINE ---
+    const result = await Book.aggregate(pipeline);
+
+    // --- 4. FORMAT THE RESPONSE ---
+    // The result is an array with one element containing metadata and data
+    const books = result[0].data;
+    const totalBooks = result[0].metadata[0]
+      ? result[0].metadata[0].totalBooks
+      : 0;
+
+    res.json({
+      success: true,
+      totalBooks: totalBooks,
+      currentPage: parseInt(page),
+      totalPages: Math.ceil(totalBooks / pageSize),
+      books: books,
+    });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error fetching books", error: error.message });
+    console.error("Error fetching books:", error);
+    res.status(500).json({ success: false, error: "Server Error" });
   }
 };
 
-// @desc    Get a single book by its ID
-// @route   GET /api/books/:id
-const getBookById = async (req, res) => {
+export const getBookById = async (req: Request, res: Response) => {
   try {
-    const book = await Book.findById(req.params.id);
+    const book = await Book.findById(req.params.bookId);
     if (!book) {
       return res.status(404).json({ message: "Book not found" });
     }
     res.status(200).json(book);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error fetching book", error: error.message });
+    res.status(500).json({ message: "Error getting book", error });
   }
 };
 
-// @desc    Update a book
-// @route   PUT /api/books/:id
-const updateBook = async (req, res) => {
+export const updateBook = async (req: Request, res: Response) => {
   try {
-    const updatedBook = await Book.findByIdAndUpdate(req.params.id, req.body, {
+    const book = await Book.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
-      runValidators: true,
     });
-    if (!updatedBook) {
+    if (!book) {
       return res.status(404).json({ message: "Book not found" });
     }
-    res
-      .status(200)
-      .json({ message: "Book updated successfully", book: updatedBook });
+    res.status(200).json(book);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error updating book", error: error.message });
+    res.status(500).json({ message: "Error updating book", error });
   }
 };
 
-// @desc    Delete a book
-// @route   DELETE /api/books/:id
-const deleteBook = async (req, res) => {
+export const deleteBook = async (req: Request, res: Response) => {
   try {
-    const deletedBook = await Book.findByIdAndDelete(req.params.id);
-    if (!deletedBook) {
+    const book = await Book.findByIdAndDelete(req.params.id);
+    if (!book) {
       return res.status(404).json({ message: "Book not found" });
     }
-    res.status(200).json({ message: "Book deleted successfully" });
+    res.status(204).send();
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error deleting book", error: error.message });
+    res.status(500).json({ message: "Error deleting book", error });
   }
 };
 
-module.exports = {
-  createBook,
-  getAllBooks,
-  getBookById,
-  updateBook,
-  deleteBook,
+export const searchBooks = async (req: Request, res: Response) => {
+  try {
+    const query = req.query.q;
+    const books = await Book.find({ $text: { $search: query as string } });
+    res.status(200).json(books);
+  } catch (error) {
+    res.status(500).json({ message: "Error searching books", error });
+  }
+};
+
+export const getGenres = async (req: Request, res: Response) => {
+  try {
+    const genres = await Book.distinct("genres");
+    res.status(200).json(genres);
+  } catch (error) {
+    res.status(500).json({ message: "Error getting genres", error });
+  }
+};
+
+export const getAuthors = async (req: Request, res: Response) => {
+  try {
+    const authors = await Book.distinct("authors.name");
+    res.status(200).json(authors);
+  } catch (error) {
+    res.status(500).json({ message: "Error getting authors", error });
+  }
+};
+
+export const getLanguages = async (req: Request, res: Response) => {
+  try {
+    const languages = await Book.distinct("language_code");
+    res.status(200).json(languages);
+  } catch (error) {
+    res.status(500).json({ message: "Error getting languages", error });
+  }
 };

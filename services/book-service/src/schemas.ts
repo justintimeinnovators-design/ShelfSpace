@@ -1,71 +1,78 @@
 import { z } from "zod";
 
-// Schema for creating a new book
-export const createBookSchema = z.object({
-  title: z.string().trim().min(1, "Title is required."),
-  authorId: z.string().uuid("Invalid author ID format (must be a UUID)."),
-  genre: z.string().trim().min(1, "Genre is required."),
-  description: z.string().trim().optional().default(""),
-  publicationDate: z
-    .string()
-    .regex(
-      /^\d{4}-\d{2}-\d{2}$/,
-      "Publication date must be in YYYY-MM-DD format."
+export const bookSchema = z.object({
+  series: z.array(z.string()).optional(),
+  language_code: z.string().optional(),
+  average_rating: z.number().optional(),
+  similar_books: z.array(z.string()).optional(),
+  description: z.string().optional(),
+  authors: z
+    .array(
+      z.object({
+        author_id: z.string(),
+        name: z.string(),
+        role: z.string(),
+      })
     )
     .optional(),
-  isbn: z
-    .string()
-    .trim()
-    .regex(
-      /^(?:ISBN(?:-13)?:?)(?=[0-9]{13}$)\d{3}-?\d{1}-?\d{3}-?\d{5}-?\d{1}$|^(?:ISBN(?:-10)?:?)(?=[0-9]{10}$)\d{1}-?\d{3}-?\d{5}-?[\dX]$/i,
-      "Invalid ISBN format."
-    )
-    .min(1, "ISBN is required."),
-  pageCount: z
-    .number()
-    .int()
-    .min(1, "Page count must be at least 1.")
-    .optional(),
-  publisher: z.string().trim().optional().default(""),
-  language: z.string().trim().optional().default(""),
-  coverImageUrl: z
-    .string()
-    .url("Invalid cover image URL format.")
-    .optional()
-    .default(""),
+  publisher: z.string().optional(),
+  num_pages: z.number().optional(),
+  isbn13: z.string().optional(),
+  publication_year: z.string().optional(),
+  url: z.string().optional(),
+  image_url: z.string().optional(),
+  book_id: z.string(),
+  work_id: z.string().optional(),
+  title: z.string(),
+  title_without_series: z.string().optional(),
+  genres: z.array(z.string()).optional(),
 });
 
-// Define a type for the query parameters for getting all books
-export const getAllBooksQueryParamsSchema = z
-  .object({
-    page: z
-      .string()
-      .optional()
-      .default("1")
-      .transform(Number)
-      .pipe(z.number().int().min(1)),
-    limit: z
-      .string()
-      .optional()
-      .default("10")
-      .transform(Number)
-      .pipe(z.number().int().min(1)),
-    genre: z.string().optional(),
-    authorId: z.string().uuid().optional(),
-    search: z.string().optional(),
-    sortBy: z
-      .enum(["title", "publicationDate", "averageRating", "reviewCount"])
-      .optional(),
-    order: z.enum(["asc", "desc"]).optional().default("asc"),
-  })
-  .partial();
+export const createBookSchema = z.object({
+  body: bookSchema,
+});
 
-// Define a type for the book data received from the request body
-export type CreateBookInput = z.infer<typeof createBookSchema>;
+export const updateBookSchema = z.object({
+  params: z.object({
+    id: z.string(),
+  }),
+  body: bookSchema.partial(),
+});
 
-export interface UserPayload {
-  id: string;
-  name?: string | null;
-  email?: string | null;
-  picture?: string | null;
-}
+export const getBookByIdSchema = z.object({
+  params: z.object({
+    id: z.string(),
+  }),
+});
+
+export const deleteBookSchema = z.object({
+  params: z.object({
+    id: z.string(),
+  }),
+});
+
+export const searchBookSchema = z.object({
+  query: z.object({
+    q: z.string(),
+  }),
+});
+
+export const getBooksByRatingSchema = z.object({
+  params: z.object({
+    rating: z.string().refine((val) => !isNaN(parseFloat(val)), {
+      message: "Rating must be a number",
+    }),
+  }),
+});
+
+export const getBooksByGenreSchema = z.object({
+  params: z.object({
+    genre: z.string(),
+  }),
+});
+
+export const getBooksByAuthorSchema = z.object({
+  params: z.object({
+    author: z.string(),
+  }),
+});
