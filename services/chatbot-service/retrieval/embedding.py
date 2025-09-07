@@ -3,6 +3,13 @@ from typing import List
 import numpy as np
 from sentence_transformers import SentenceTransformer
 import torch
+import argparse
+import sys
+from pathlib import Path
+
+project_root = Path(__file__).resolve().parent.parent
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -40,12 +47,12 @@ if __name__ == "__main__":
 
     generator = EmbeddingGenerator()
 
-    sample_query = "What are the main themes of The Brothers Karamazov by fyodor dostoyevsky?"
+    sample_query = input("Give query to embed:")
     logger.info(f"Sample query: \"{sample_query}\"")
 
     embedding_vector = generator.embed_query(sample_query)
 
     print("\n--- TEST RESULTS ---")
     print(f"Embedding Dimension: {len(embedding_vector)}")
-    print(f"First 5 values of the embedding: {embedding_vector[:5]}")
+    print(f"{str(embedding_vector)[1:-1]}")
     print("Self-test complete. The Embedding Forge is operational.")

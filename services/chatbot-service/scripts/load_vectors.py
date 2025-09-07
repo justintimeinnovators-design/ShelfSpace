@@ -108,6 +108,7 @@ class PineconeVectorStore:
         self.index = self.pc.Index(index_name)
         logger.info(f"Connected to Pinecone index: {index_name}")
 
+
     def _sanitize_metadata(self, metadata: Dict[str, Any]) -> Dict[str, Any]:
         sanitized = {}
         for key, value in metadata.items():
@@ -131,22 +132,9 @@ class PineconeVectorStore:
             if chunk.embedding is None:
                 raise ValueError(f"Chunk {chunk.chunk_id} is missing embedding")
             
-            original_metadata = {
-                "text": chunk.text[:8000],
-                "chunk_type": chunk.chunk_type,
-                "priority": chunk.priority,
-                "book_id": chunk.book_id,
-                "chunk_id": chunk.chunk_id,
-                "intent_relevance": chunk.intent_relevance,
-                "work_id": chunk.work_id,
-                "length": chunk.metadata.get("length"),
-                "publication_year": chunk.metadata.get("publication_year"),
-                "has_rating": chunk.metadata.get("contains_rating"),
-                "complexity_level": chunk.metadata.get("complexity_level"),
-                "popularity_tier": chunk.metadata.get("popularity_tier")
-            }
+            pinecone_metadata = self._prepare_metadata_for_pinecone(chunk)
             
-            sanitized_metadata = self._sanitize_metadata(original_metadata)
+            sanitized_metadata = self._sanitize_metadata(pinecone_metadata)
 
             vector = {
                 "id": chunk.chunk_id,
@@ -181,6 +169,43 @@ class PineconeVectorStore:
         logger.info(f"Successfully uploaded {len(chunks)} chunks to Pinecone")
         stats = self.index.describe_index_stats()
         logger.info(f"Index now contains {stats.total_vector_count} total vectors")
+
+    def _prepare_metadata_for_pinecone(self, chunk: BookChunk) -> Dict[str, Any]:
+        nested_meta = chunk.metadata or {}
+        
+        # --- Base metadata for ALL chunks ---
+        metadata = {
+            "text": chunk.text[:10000],
+            "chunk_type": chunk.chunk_type,
+            "priority": chunk.priority,
+            "book_id": chunk.book_id,
+            "work_id": chunk.work_id or chunk.book_id,
+            "intent_relevance": chunk.intent_relevance,
+            "total_ratings": nested_meta.get("total_ratings", 0),
+            "publication_year": nested_meta.get("publication_year", 0),
+            "page_count": nested_meta.get("page_count", 0),
+            "average_rating": nested_meta.get("avg_rating", 0.0),
+            "complexity_level": nested_meta.get("complexity_level", "Unknown"),
+            "popularity_tier": nested_meta.get("popularity_tier", "Niche"),
+            "genres": nested_meta.get("genres", []),
+            "themes": nested_meta.get("themes", [])
+        }
+        
+        
+        # Add similar_books only to its dedicated chunk
+        if chunk.chunk_type == 'similar':
+            similar_books = nested_meta.get("similar_books", [])
+            if similar_books:
+                metadata["similar_books"] = similar_books
+        
+        # Add translator and illustrator only if they exist on the chunk
+        if nested_meta.get("translators"):
+            metadata["translators"] = nested_meta.get("translators")
+            
+        if nested_meta.get("illustrators"):
+            metadata["illustrators"] = nested_meta.get("illustrators")
+            
+        return metadata
 
 
 def find_json_files(data_dir: Path) -> List[Path]:

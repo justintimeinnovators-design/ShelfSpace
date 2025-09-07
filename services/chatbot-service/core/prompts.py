@@ -5,7 +5,7 @@ INTENT_OPTIONS = ["quick", "detailed", "recommend", "compare", "discover"]
 
 def get_decomposer_prompt() -> ChatPromptTemplate:
     return ChatPromptTemplate.from_messages([
-        ("system", f"""
+        ("system", """
         You are an expert query analyst for a book recommendation chatbot. Your task is to
         deconstruct the user's LATEST query into simple, independent sub-questions, using the
         chat history for context. For each sub-question, classify its primary intent.
