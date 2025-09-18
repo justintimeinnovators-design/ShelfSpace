@@ -14,7 +14,7 @@ if str(current_dir) not in sys.path:
 
 import logging
 import json
-from typing import List, Dict, Any
+from typing import List, Dict, Any, AsyncGenerator
 from collections import defaultdict
 
 try:
@@ -169,6 +169,32 @@ class Chatbot:
             logger.error(f"Error during RAG chain invocation: {e}", exc_info=True)
             return "I apologize, but I encountered an error while crafting a response. Please try again."
         
+    async def stream_response(self, user_query: str, session_id: str) -> AsyncGenerator[str, None]:
+        session_data = self.histories[session_id]
+        chain_input = {
+            'user_query': user_query,
+            'chat_history': session_data['messages']
+        }
+        full_response = []
+
+        try:
+            async for chunk in self.rag_chain.astream(chain_input):
+                full_response.append(chunk)
+                yield chunk
+        finally:
+            final_answer = "".join(full_response)
+
+            decomposed_tasks = self.decomposer_chain.invoke(chain_input)
+            retrieval_result = self._retrieve_context({"tasks": decomposed_tasks})
+            # new_active_work_id = retrieval_result['new_active_work_id']
+
+            session_data["messages"].append({"role": "user", "content": user_query})
+            session_data["messages"].append({"role": "ai", "content": final_answer})
+            # if new_active_work_id:
+            #     session_data["active_work_id"] = new_active_work_id
+            logger.info(f"Stream complete. History updated for session {session_id}.")
+
+
 if __name__ == '__main__':
     chatbot = Chatbot()
     session_id = "test_session_123"
