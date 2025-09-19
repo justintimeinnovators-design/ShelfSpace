@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Book } from '../../../types/library';
-import BookCard from './BookCard';
+import BookCard from '../common/BookCard';
 
 interface BookGridProps {
   books: Book[];

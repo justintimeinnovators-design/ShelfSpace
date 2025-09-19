@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Search, Filter } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import BookCard from './BookCard';
 import { Book } from '../../../types/models';
 
@@ -13,9 +14,10 @@ const getCover = (title: string) => `/book-covers/${title.toLowerCase().replace(
 
 const RecentBooksSection: React.FC<RecentBooksSectionProps> = ({ currentlyReading }) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
 
   const handleBookClick = (id: string) => {
-    console.log('Book clicked:', id);
+    router.push(`/book/${id}`);
   };
 
   const handleBookMoreClick = (id: string) => {

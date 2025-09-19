@@ -1,5 +1,8 @@
+const colors = require('tailwindcss/colors');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: 'class',
   content: [
     "./src/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
@@ -9,11 +12,15 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#413C58',
-        secondary: '#A3C4BC',
-        tertiary: '#BFD7B5',
-        text: '#000000',
-        whiteBg: '#ffffff',
+        primary: '#213A45',
+        secondary: '#D0C87F',
+        accent: '#FF7700',
+        text: '#111827',
+        background: '#FFFFFF',
+        surface: '#FAFAFA',
+        border: '#E5E7EB',
+        error: '#a30000',
+        gray: colors.gray,
       },
       fontFamily: {
         sans: ['Inter', 'sans-serif'],
@@ -58,4 +65,4 @@ module.exports = {
     },
   },
   plugins: [],
-}; 
+};

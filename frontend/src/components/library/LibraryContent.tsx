@@ -31,7 +31,7 @@ const mockReadingLists: ReadingList[] = [
         lastRead: '2024-01-20',
         pages: 368,
         isbn: '978-0465050659',
-        coverImage: 'https://images.gr-assets.com/books/1327909635m/28348.jpg',
+        cover: 'https://images.gr-assets.com/books/1327909635m/28348.jpg',
       },
       {
         id: '2',
@@ -46,7 +46,7 @@ const mockReadingLists: ReadingList[] = [
         lastRead: '2024-01-19',
         pages: 320,
         isbn: '978-0735211292',
-        coverImage: 'https://images-na.ssl-images-amazon.com/images/I/91bYsX41DVL.jpg',
+        cover: 'https://images-na.ssl-images-amazon.com/images/I/91bYsX41DVL.jpg',
       },
       {
         id: '3',
@@ -61,7 +61,7 @@ const mockReadingLists: ReadingList[] = [
         lastRead: '2024-01-18',
         pages: 464,
         isbn: '978-0062316097',
-        coverImage: 'https://images.gr-assets.com/books/1420585954m/23692271.jpg',
+        cover: 'https://images.gr-assets.com/books/1420585954m/23692271.jpg',
       }
     ]
   },
@@ -83,7 +83,7 @@ const mockReadingLists: ReadingList[] = [
         dateAdded: '2024-01-12',
         pages: 499,
         isbn: '978-0374533557',
-        coverImage: 'https://images.gr-assets.com/books/1317793965m/11468377.jpg',
+        cover: 'https://images.gr-assets.com/books/1317793965m/11468377.jpg',
       },
       {
         id: '5',
@@ -95,7 +95,7 @@ const mockReadingLists: ReadingList[] = [
         dateAdded: '2024-01-08',
         pages: 336,
         isbn: '978-0307887894',
-        coverImage: 'https://images.gr-assets.com/books/1348143751m/10127019.jpg',
+        cover: 'https://images.gr-assets.com/books/1348143751m/10127019.jpg',
       },
       {
         id: '6',
@@ -107,7 +107,7 @@ const mockReadingLists: ReadingList[] = [
         dateAdded: '2024-01-14',
         pages: 496,
         isbn: '978-0593135204',
-        coverImage: 'https://images.gr-assets.com/books/1597695869m/54493401.jpg',
+        cover: 'https://images.gr-assets.com/books/1597695869m/54493401.jpg',
       }
     ]
   },
@@ -130,7 +130,7 @@ const mockReadingLists: ReadingList[] = [
         lastRead: '2023-12-15',
         pages: 288,
         isbn: '978-0525559474',
-        coverImage: 'https://images.gr-assets.com/books/1588763866m/52578297.jpg',
+        cover: 'https://images.gr-assets.com/books/1588763866m/52578297.jpg',
       },
       {
         id: '8',
@@ -143,7 +143,7 @@ const mockReadingLists: ReadingList[] = [
         lastRead: '2023-12-10',
         pages: 688,
         isbn: '978-0441172719',
-        coverImage: 'https://images.gr-assets.com/books/1555447414m/44767458.jpg',
+        cover: 'https://images.gr-assets.com/books/1555447414m/44767458.jpg',
       },
       {
         id: '9',
@@ -156,7 +156,7 @@ const mockReadingLists: ReadingList[] = [
         lastRead: '2023-11-25',
         pages: 304,
         isbn: '978-1455586692',
-        coverImage: 'https://images.gr-assets.com/books/1447957962m/25744928.jpg',
+        cover: 'https://images.gr-assets.com/books/1447957962m/25744928.jpg',
       }
     ]
   },
@@ -179,7 +179,7 @@ const mockReadingLists: ReadingList[] = [
         lastRead: '2023-09-20',
         pages: 662,
         isbn: '978-0756404741',
-        coverImage: 'https://images.gr-assets.com/books/1554006152m/186074.jpg',
+        cover: 'https://images.gr-assets.com/books/1554006152m/186074.jpg',
       },
       {
         id: '11',
@@ -192,7 +192,7 @@ const mockReadingLists: ReadingList[] = [
         lastRead: '2023-08-05',
         pages: 334,
         isbn: '978-0399590504',
-        coverImage: 'https://images.gr-assets.com/books/1506026635m/35133922.jpg',
+        cover: 'https://images.gr-assets.com/books/1506026635m/35133922.jpg',
       }
     ]
   }
