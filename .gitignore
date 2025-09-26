@@ -56,3 +56,5 @@ ml-lab/notebooks
 requirements.txt
 services/chatbot-service/data_processing/chunks.json
 services/chatbot-service/data_processing/enhanced_records.json
+ml-lab/notebooks/search.ipynb
+ml-lab/notebooks/datasetreduce.ipynb
