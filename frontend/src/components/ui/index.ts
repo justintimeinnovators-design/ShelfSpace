@@ -19,8 +19,11 @@ export {
   SkeletonCard,
   skeletonVariants,
 } from "./Skeleton";
-export { Spinner, spinnerVariants } from "./Spinner";
-export { OptimizedImage } from "./OptimizedImage";
-
-// Re-export the existing DesignSystem component
-export { default as DesignSystem } from "./DesignSystem";
+export { Spinner } from "./Spinner";
+export { OptimizedImage, ImageGallery, ResponsiveImage } from "./OptimizedImage";
+export { AnimatedCard, FloatingElement, PulseElement, StaggerContainer, StaggerItem } from "./AnimatedCard";
+export { ProgressRing, AnimatedCounter, GradientProgressBar } from "./ProgressRing";
+export { InteractiveButton, FloatingActionButton, ToggleButton } from "./InteractiveButton";
+export { EnhancedLoading, PageLoading, InlineLoading, ButtonLoading } from "./EnhancedLoading";
+export { ToastProvider, useToast, useToastNotifications } from "./Toast";
+export { SearchInput, AdvancedSearch } from "./SearchInput";

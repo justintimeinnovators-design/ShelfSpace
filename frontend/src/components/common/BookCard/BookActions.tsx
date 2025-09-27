@@ -3,7 +3,7 @@
 import React, { memo } from "react";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { Book } from "@/types";
+import { Book } from "../../../../types";
 import { BookCardActions } from "@/hooks/useBookCard";
 import { cn } from "@/utils/cn";
 

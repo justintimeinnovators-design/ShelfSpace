@@ -212,5 +212,3 @@ if __name__ == '__main__':
     response2 = chatbot.generate_response(query2, session_id)
     print(f"AI: {response2}")
     print("="*50)
-
-

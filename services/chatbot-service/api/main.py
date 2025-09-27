@@ -90,7 +90,7 @@ async def handle_chat_query(request: ChatQuery):
     try:
         # Pass both query and session_id to the chatbot's brain
         response_text = chatbot.generate_response(request.query, session_id)
-        
+        # print(response_text)
         # Return the answer and the session_id so the client can continue the conversation
         return ChatResponse(answer=response_text, session_id=session_id)
     except Exception as e:
@@ -109,4 +109,3 @@ def health_check():
 if __name__ == "__main__":
     logger.info("Starting the FastAPI server for local testing...")
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
-

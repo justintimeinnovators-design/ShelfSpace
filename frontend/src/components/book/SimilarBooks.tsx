@@ -1,6 +1,6 @@
 "use client";
 
-import { SimilarBookItem } from "@/types";
+import { SimilarBookItem } from "../../../types";
 import { BookCard } from "@/components/common/BookCard";
 
 interface SimilarBooksProps {

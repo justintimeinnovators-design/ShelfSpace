@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import ReactMarkdown from "react-markdown";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { ChatErrorFallback } from "@/components/common/ErrorFallbacks/ChatErrorFallback";
 import { useChatState } from "@/hooks/chat/useChatState";
@@ -156,16 +157,16 @@ export function ChatFeature({ className }: ChatFeatureProps) {
                       {messages.map((message, index) => (
                         <div
                           key={index}
-                          className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                          className={`flex ${message.type === "user" ? "justify-end" : "justify-start"}`}
                         >
-                          <div className={`flex items-start space-x-3 max-w-4xl ${message.role === "user" ? "flex-row-reverse space-x-reverse" : ""}`}>
+                          <div className={`flex items-start space-x-3 max-w-4xl ${message.type === "user" ? "flex-row-reverse space-x-reverse" : ""}`}>
                             {/* Avatar */}
                             <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center shadow-lg ${
-                              message.role === "user" 
+                              message.type === "user" 
                                 ? "bg-gradient-to-br from-indigo-500 to-purple-600" 
                                 : "bg-gradient-to-br from-amber-400 to-orange-500"
                             }`}>
-                              {message.role === "user" ? (
+                              {message.type === "user" ? (
                                 <User className="h-5 w-5 text-white" />
                               ) : (
                                 <BookOpen className="h-5 w-5 text-white" />
@@ -174,27 +175,44 @@ export function ChatFeature({ className }: ChatFeatureProps) {
                             
                             {/* Message Bubble */}
                             <div className={`flex-1 ${
-                              message.role === "user" ? "flex justify-end" : "flex justify-start"
+                              message.type === "user" ? "flex justify-end" : "flex justify-start"
                             }`}>
                               <div className={`px-6 py-4 rounded-2xl shadow-lg max-w-3xl relative ${
-                                message.role === "user"
+                                message.type === "user"
                                   ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white"
                                   : "bg-gradient-to-r from-amber-50 to-orange-50 dark:from-slate-700 dark:to-slate-600 text-gray-900 dark:text-slate-100 border border-amber-200 dark:border-slate-600"
                               }`}>
                                 {/* Message tail */}
                                 <div className={`absolute top-4 w-0 h-0 ${
-                                  message.role === "user" 
+                                  message.type === "user" 
                                     ? "right-[-8px] border-l-[8px] border-l-indigo-500" 
                                     : "left-[-8px] border-r-[8px] border-r-amber-200 dark:border-r-slate-600"
                                 } border-t-[8px] border-t-transparent border-b-[8px] border-b-transparent`}></div>
                                 
                                 <div className="prose prose-sm max-w-none dark:prose-invert">
-                                  <p className="mb-0 leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                                  {message.type === "ai" ? (
+                                    <ReactMarkdown
+                                      components={{
+                                        p: ({ children }) => <p className="mb-2 last:mb-0 leading-relaxed">{children}</p>,
+                                        strong: ({ children }) => <strong className="font-semibold text-amber-600 dark:text-amber-400">{children}</strong>,
+                                        em: ({ children }) => <em className="italic text-blue-600 dark:text-blue-400">{children}</em>,
+                                        ul: ({ children }) => <ul className="list-disc list-inside mb-2 space-y-1">{children}</ul>,
+                                        li: ({ children }) => <li className="text-gray-700 dark:text-slate-300">{children}</li>,
+                                        h1: ({ children }) => <h1 className="text-lg font-bold mb-2 text-gray-900 dark:text-slate-100">{children}</h1>,
+                                        h2: ({ children }) => <h2 className="text-base font-semibold mb-2 text-gray-900 dark:text-slate-100">{children}</h2>,
+                                        h3: ({ children }) => <h3 className="text-sm font-semibold mb-1 text-gray-900 dark:text-slate-100">{children}</h3>,
+                                      }}
+                                    >
+                                      {message.content}
+                                    </ReactMarkdown>
+                                  ) : (
+                                    <p className="mb-0 leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                                  )}
                                 </div>
                                 
                                 {/* Message timestamp */}
                                 <div className={`text-xs mt-2 opacity-70 ${
-                                  message.role === "user" ? "text-indigo-100" : "text-gray-500 dark:text-slate-400"
+                                  message.type === "user" ? "text-indigo-100" : "text-gray-500 dark:text-slate-400"
                                 }`}>
                                   {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                 </div>

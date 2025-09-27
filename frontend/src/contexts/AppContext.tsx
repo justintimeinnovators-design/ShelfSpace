@@ -9,8 +9,9 @@ import React, {
   ReactNode,
   useEffect,
 } from "react";
-// import { signOut } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { AppState, AppActions } from "@/types/state";
+import { userService } from "@/lib/user-service";
 
 // Initial state
 const initialState: AppState = {
@@ -146,11 +147,24 @@ export function AppProvider({ children, initialUser }: AppProviderProps) {
       []
     ),
 
-    signOut: useCallback(() => {
+    signOut: useCallback(async () => {
       dispatch({ type: "SET_LOADING", payload: true });
-      signOut({ callbackUrl: "/login" }).finally(() => {
+      
+      try {
+        // Clear user service token
+        userService.clearToken();
+        
+        // Clear any local storage items
+        localStorage.removeItem("userPreferences");
+        localStorage.removeItem("chatSession");
+        
+        // Sign out from NextAuth
+        await signOut({ callbackUrl: "/login" });
+      } catch (error) {
+        console.error("Error during sign out:", error);
+      } finally {
         dispatch({ type: "RESET_STATE" });
-      });
+      }
     }, []),
 
     refreshUser: useCallback(async () => {

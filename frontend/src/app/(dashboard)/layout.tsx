@@ -1,9 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navigation from "@/components/layout/Navigation";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { DashboardErrorFallback } from "@/components/common/ErrorFallbacks/DashboardErrorFallback";
+import { PerformanceMonitor, usePerformanceOptimization } from "@/components/common/PerformanceMonitor";
+import { PerformanceDashboard } from "@/components/common/PerformanceDashboard";
+import { AccessibilityPanel } from "@/components/common/AccessibilityEnhancer";
 import { signOut } from "next-auth/react";
 
 interface DashboardLayoutProps {
@@ -13,10 +16,50 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showAccessibilityPanel, setShowAccessibilityPanel] = useState(false);
+  const [showPerformanceDashboard, setShowPerformanceDashboard] = useState(false);
+  
+  // Initialize performance optimizations
+  usePerformanceOptimization();
 
-  const handleSignOut = () => {
-    signOut({ callbackUrl: "/login" });
-    console.log("Sign out clicked");
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ctrl+Shift+P for performance dashboard
+      if (e.ctrlKey && e.shiftKey && e.key === 'P') {
+        e.preventDefault();
+        setShowPerformanceDashboard(true);
+      }
+      
+      // Ctrl+Shift+A for accessibility panel
+      if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+        e.preventDefault();
+        setShowAccessibilityPanel(true);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const handleSignOut = async () => {
+    try {
+      // Clear user service token
+      const { userService } = await import("@/lib/user-service");
+      userService.clearToken();
+      
+      // Clear any local storage items
+      localStorage.removeItem("userPreferences");
+      localStorage.removeItem("chatSession");
+      
+      // Sign out from NextAuth
+      await signOut({ callbackUrl: "/login" });
+      console.log("Sign out completed");
+    } catch (error) {
+      console.error("Error during sign out:", error);
+      // Still try to sign out even if clearing fails
+      await signOut({ callbackUrl: "/login" });
+    }
   };
 
   const handleToggleCollapse = () => {
@@ -73,6 +116,21 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             {children}
           </div>
         </main>
+        
+        {/* Performance Monitor (Development Only) */}
+        <PerformanceMonitor />
+        
+        {/* Performance Dashboard */}
+        <PerformanceDashboard 
+          isOpen={showPerformanceDashboard} 
+          onClose={() => setShowPerformanceDashboard(false)} 
+        />
+        
+        {/* Accessibility Panel */}
+        <AccessibilityPanel 
+          isOpen={showAccessibilityPanel} 
+          onClose={() => setShowAccessibilityPanel(false)} 
+        />
       </div>
     </ErrorBoundary>
   );

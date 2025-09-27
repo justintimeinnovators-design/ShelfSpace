@@ -36,16 +36,41 @@ router.post(
     const data = parseResult.data;
 
     try {
+      // Check if user already exists by email
+      const existingUser = await prisma.user.findUnique({
+        where: { email: data.email },
+        include: { preferences: true }
+      });
+
+      if (existingUser) {
+        // User exists, log them in
+        console.log("User exists, logging in:", existingUser.email);
+        const token = await signToken({ id: existingUser.id });
+        res.json({ 
+          token: token,
+          user: existingUser,
+          isNewUser: false,
+          needsPreferences: !existingUser.preferences
+        });
+        return;
+      }
+
+      // User doesn't exist, create new user
       const user = await prisma.user.create({
         data: data,
+        include: { preferences: true }
       });
-      console.log(user);
-      // const token = "qqqqqqqqqqqqqqqq";
+      console.log("New user created:", user.email);
+      
       const token = await signToken({ id: user.id });
-      res.json({ token: token });
-      // res.status(200).json();
+      res.json({ 
+        token: token,
+        user: user,
+        isNewUser: true,
+        needsPreferences: true
+      });
     } catch (error) {
-      console.error("Error updating user:", error);
+      console.error("Error creating/finding user:", error);
       res.status(500).json({ error: "Internal server error" });
     }
   }

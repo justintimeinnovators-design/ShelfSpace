@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useCallback, useMemo } from "react";
+import { useSession } from "next-auth/react";
 import { ChatState, ChatActions } from "../../../types/state";
 import { Message } from "../../../types/Message";
 import { initialMessages } from "../../services/mockData/chat";
@@ -12,9 +13,11 @@ const initialState: Omit<ChatState, "isLoading" | "error"> = {
   isTyping: false,
   chatMode: "general",
   activeConversation: null,
+  sessionId: null,
 };
 
 export function useChatState() {
+  const { data: session } = useSession();
   const [state, setState] =
     useState<Omit<ChatState, "isLoading" | "error">>(initialState);
   const [isLoading, setIsLoading] = useState(false);
@@ -22,8 +25,9 @@ export function useChatState() {
 
   // Individual action callbacks
   const sendMessage = useCallback(
-    async (messageText: string) => {
-      if (!messageText.trim()) return;
+    async (messageText?: string) => {
+      const textToSend = messageText || state.inputMessage;
+      if (!textToSend?.trim()) return;
 
       try {
         setError(null);
@@ -31,7 +35,7 @@ export function useChatState() {
         const userMessage: Message = {
           id: state.messages.length + 1,
           type: "user",
-          content: messageText,
+          content: textToSend,
           timestamp: new Date(),
         };
 
@@ -44,33 +48,33 @@ export function useChatState() {
 
         setIsLoading(true);
 
-        // Simulate AI response delay
-        setTimeout(async () => {
-          try {
-            const { generateAIResponse } = await import("../../utils/chatbot");
-            const aiResponse = await generateAIResponse(
-              messageText,
-              state.messages
-            );
+        // Call chatbot service with session management
+        try {
+          const { generateAIResponse } = await import("../../utils/chatbot");
+          const { message: aiResponse, sessionId } = await generateAIResponse(
+            textToSend,
+            state.sessionId || undefined
+          );
 
-            setState((prev) => ({
-              ...prev,
-              messages: [...prev.messages, aiResponse],
-              isTyping: false,
-            }));
-          } catch {
-            setError("Failed to generate AI response");
-            setState((prev) => ({ ...prev, isTyping: false }));
-          } finally {
-            setIsLoading(false);
-          }
-        }, 1500);
+          setState((prev) => ({
+            ...prev,
+            messages: [...prev.messages, aiResponse],
+            isTyping: false,
+            sessionId: sessionId, // Update session ID for conversation continuity
+          }));
+        } catch (error) {
+          console.error("Chatbot error:", error);
+          setError("Failed to generate AI response");
+          setState((prev) => ({ ...prev, isTyping: false }));
+        } finally {
+          setIsLoading(false);
+        }
       } catch {
         setError("Failed to send message");
         setIsLoading(false);
       }
     },
-    [state.messages]
+    [state.messages, state.inputMessage, state.sessionId, session?.user?.id]
   );
 
   const setInputMessage = useCallback((message: string) => {
@@ -82,7 +86,7 @@ export function useChatState() {
   }, []);
 
   const clearMessages = useCallback(() => {
-    setState((prev) => ({ ...prev, messages: [] }));
+    setState((prev) => ({ ...prev, messages: [], sessionId: null }));
   }, []);
 
   const setActiveConversation = useCallback((id: string | null) => {
@@ -129,6 +133,7 @@ export function useChatState() {
     isTyping: state.isTyping,
     chatMode: state.chatMode,
     activeConversation: state.activeConversation,
+    sessionId: state.sessionId,
     isLoading,
     error,
 

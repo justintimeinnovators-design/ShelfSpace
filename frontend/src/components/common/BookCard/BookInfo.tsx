@@ -4,7 +4,7 @@ import React, { memo } from "react";
 import { Star, BookOpen, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { cn } from "@/utils/cn";
-import { Book } from "@/types";
+import { Book } from "../../../../types";
 
 interface BookInfoProps {
   book: Book;

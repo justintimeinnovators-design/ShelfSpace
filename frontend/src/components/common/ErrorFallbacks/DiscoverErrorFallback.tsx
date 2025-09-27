@@ -1,6 +1,6 @@
 import React from "react";
 import { BookOpen, ArrowLeft } from "lucide-react";
-import { ErrorFallbackProps } from "@/types";
+import { ErrorFallbackProps } from "../../../../types/error";
 
 export function DiscoverErrorFallback({ error, resetError }: ErrorFallbackProps) {
   return (

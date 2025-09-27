@@ -1,11 +1,11 @@
 "use client"; // This component uses client-side hooks like useSession and useEffect
 
-// import { signIn, useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation"; // For client-side navigation
 import { useEffect } from "react"; // For side effects like redirection
 
 export default function LoginPage() {
-  // const { status } = useSession(); // Get loading status
+  const { status } = useSession(); // Get loading status
   const router = useRouter(); // Initialize Next.js router for navigation
 
   // Effect hook to handle redirection based on authentication status.

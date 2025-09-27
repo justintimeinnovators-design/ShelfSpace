@@ -37,6 +37,7 @@ export interface ChatState extends BaseState {
   isTyping: boolean;
   chatMode: "general" | "recommendations" | "discussion";
   activeConversation: string | null;
+  sessionId: string | null;
 }
 
 export interface NavigationState extends BaseState {

@@ -9,8 +9,8 @@ import {
   ErrorBoundaryState,
   ErrorFallbackProps,
   AppError,
-} from "@/types";
-// import { errorLogger, logError } from "@/utils/errorLogger";
+} from "../../../types/error";
+import { errorLogger, logError } from "@/utils/errorLogger";
 
 // Default error fallback component with enhanced debugging
 const DefaultErrorFallback: React.FC<ErrorFallbackProps> = ({
@@ -317,4 +317,4 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
   }
 }
 
-export { ErrorBoundary, DefaultErrorFallback };
+export { ErrorBoundary, DefaultErrorFallback, type ErrorFallbackProps };
