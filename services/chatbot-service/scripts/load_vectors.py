@@ -179,7 +179,7 @@ class PineconeVectorStore:
             "chunk_type": chunk.chunk_type,
             "priority": chunk.priority,
             "book_id": chunk.book_id,
-            "work_id": chunk.work_id or chunk.book_id,
+            "work_id": chunk.work_id,
             "intent_relevance": chunk.intent_relevance,
             "total_ratings": nested_meta.get("total_ratings", 0),
             "publication_year": nested_meta.get("publication_year", 0),
@@ -259,7 +259,7 @@ def process_chunks_streaming(json_file_path: Path,
                     intent_relevance=chunk_data['intent_relevance'],
                     book_id=chunk_data['book_id'],
                     metadata=chunk_data['metadata'],
-                    work_id= chunk_data['metadata'].get('work_id')
+                    work_id= chunk_data['work_id']
                 )
                 chunks.append(chunk)
             except KeyError as e:

@@ -25,8 +25,7 @@ export const generateAIResponse = async (
       {
         headers: {
           "Content-Type": "application/json",
-        },
-        timeout: 10000, // 10 second timeout
+        }
       }
     );
     const { answer, session_id } = response.data;

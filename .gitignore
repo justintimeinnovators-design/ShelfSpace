@@ -45,9 +45,16 @@ pip-log.txt
 # Build Artif
 
 # ml-experimentation
-ml-lab/.venv/
-ml-lab/__pycache__/
-ml-lab/data/
-ml-lab/models/
+ml-lab/
+ml-lab/notebooks
+*.ipynb
+# ml-lab/.venv/
+# ml-lab/__pycache__/
+# ml-lab/data/
+# ml-lab/models/
 
 requirements.txt
+services/chatbot-service/data_processing/chunks.json
+services/chatbot-service/data_processing/enhanced_records.json
+ml-lab/notebooks/search.ipynb
+ml-lab/notebooks/datasetreduce.ipynb
