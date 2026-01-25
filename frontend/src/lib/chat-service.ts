@@ -132,7 +132,8 @@ class ChatService {
   // }
 
   /**
-   * Send a message to the chatbot and store both user message and response
+   * Send a message to the chatbot and get response
+   * Messages are not persisted - handled by chatbot service
    */
   async sendChatMessage(
     token: string,

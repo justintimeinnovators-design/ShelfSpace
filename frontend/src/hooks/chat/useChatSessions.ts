@@ -49,10 +49,12 @@ export function useChatSessions() {
         limit: 50,
         includePinned: true,
       });
-      setSessions(sessionList);
+      // Ensure sessionList is an array
+      setSessions(Array.isArray(sessionList) ? sessionList : []);
     } catch (err) {
       console.error("Failed to load sessions:", err);
       setError("Failed to load chat history");
+      setSessions([]); // Reset to empty array on error
     }
   };
 
