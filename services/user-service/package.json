@@ -9,7 +9,7 @@
     "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
     "start": "node dist/index.js",
     "dev": "tsx watch src/index.ts",
-    "build": "prisma generate && prisma migrate && tsc",
+    "build": "prisma generate && prisma migrate deploy && tsc",
     "postinstall": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
