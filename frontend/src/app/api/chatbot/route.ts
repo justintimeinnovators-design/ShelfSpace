@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 
-const CHATBOT_URL =
-  process.env.NODE_ENV === "production"
+const CHATBOT_URL = process.env['CHATBOT_SERVICE_URL'] || 
+  (process.env.NODE_ENV === "production"
     ? "http://chatbot-service:8000/chat"
-    : "http://localhost:8000/chat";
+    : "http://localhost:8000/chat");
 
 export async function POST(request: NextRequest) {
   try {

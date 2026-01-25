@@ -2,9 +2,10 @@ import axios from "axios";
 import { Message, MessageStatus } from "../../types/chat";
 
 // Chatbot service URL
-const CHATBOT_URL = process.env.NODE_ENV === 'production' 
-  ? "http://chatbot-service:8000/chat"
-  : "http://localhost:8000/chat";
+const CHATBOT_URL = process.env['CHATBOT_SERVICE_URL'] || 
+  (process.env.NODE_ENV === 'production' 
+    ? "http://chatbot-service:8000/chat"
+    : "http://localhost:8000/chat");
 
 export interface ChatbotResponse {
   answer: string;
