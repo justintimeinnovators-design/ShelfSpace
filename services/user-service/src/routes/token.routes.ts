@@ -9,7 +9,7 @@ const router = express.Router();
 // NOTE: This is a public route for testing/development. Should be secured in production.
 router.get("/:userId", async (req: Request, res: Response) => {
   try {
-    const { userId } = req.params;
+    const userId = req.params.userId as string;
     
     const user = await prisma.user.findUnique({
       where: { id: userId },

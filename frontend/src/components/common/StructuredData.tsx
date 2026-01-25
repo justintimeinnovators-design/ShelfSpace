@@ -1,5 +1,3 @@
-import React from "react";
-
 type StructuredDataProps = {
   data: Record<string, unknown>;
 };

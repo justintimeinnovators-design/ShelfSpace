@@ -1,7 +1,7 @@
 // src/contexts/CombinedProvider.tsx
 "use client";
 
-import React, { ReactNode } from "react";
+import { ReactNode } from "react";
 import { AppProvider } from "./AppContext";
 import { ThemeProvider } from "./ThemeContext";
 

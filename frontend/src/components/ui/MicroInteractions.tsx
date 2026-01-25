@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
+import { useState, useEffect, useRef } from "react";
 import { Check, X, AlertCircle, Info } from "lucide-react";
 
 // Ripple effect component

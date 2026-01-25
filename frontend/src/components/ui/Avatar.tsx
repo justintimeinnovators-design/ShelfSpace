@@ -1,6 +1,6 @@
 "use client";
 
-import React, { forwardRef, useState } from "react";
+import { forwardRef, useState } from "react";
 import { User } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { AvatarProps } from "@/types/components";

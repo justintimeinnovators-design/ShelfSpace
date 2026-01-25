@@ -1,4 +1,3 @@
-import React from "react";
 import { ForumPostFeature } from "@/components/groups/ForumPostFeature";
 
 interface ForumPostPageProps {

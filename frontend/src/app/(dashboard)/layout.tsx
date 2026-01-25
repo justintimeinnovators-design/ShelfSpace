@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { useState, useEffect } from "react";
 import Navigation from "@/components/layout/Navigation";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { DashboardErrorFallback } from "@/components/common/ErrorFallbacks/DashboardErrorFallback";

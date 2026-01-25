@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { AnimatedCard, StaggerContainer, StaggerItem, FloatingElement, GradientProgressBar } from '@/components/ui';
 import { BookOpen, Clock, Star, Play, Pause, BookMarked } from 'lucide-react';
 import { useReadingLists } from '@/hooks/data/useReadingLists';

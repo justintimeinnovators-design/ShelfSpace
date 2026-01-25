@@ -1,6 +1,7 @@
 "use client";
 
-import React, { memo } from "react";
+import React from "react";
+import { memo } from "react";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Book } from "@/types/book";

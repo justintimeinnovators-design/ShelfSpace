@@ -1,6 +1,6 @@
 "use client";
 
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { ButtonProps } from "@/types/components";

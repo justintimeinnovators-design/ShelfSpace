@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useRef } from "react";
+import React from "react";
+import { useRef } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { BookCard } from "@/components/common/BookCard";
 import { Book } from "@/types/book";

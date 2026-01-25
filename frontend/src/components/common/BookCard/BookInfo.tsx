@@ -1,6 +1,7 @@
 "use client";
 
-import React, { memo } from "react";
+import React from "react";
+import { memo } from "react";
 import { Star, BookOpen, Clock } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { cn } from "@/utils/cn";

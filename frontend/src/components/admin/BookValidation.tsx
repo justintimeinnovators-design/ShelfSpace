@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { BookOpen, Loader2, CheckCircle, XCircle, Clock, Search } from "lucide-react";
 import { useBookValidation } from "@/hooks/data/useAdmin";
 import { ValidationStatus } from "@/lib/admin-service";

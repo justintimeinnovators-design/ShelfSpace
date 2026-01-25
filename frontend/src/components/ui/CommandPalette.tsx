@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React from "react";
+import { useState, useEffect, useRef } from "react";
 import { Search, ArrowRight, Clock } from "lucide-react";
 
 interface Command {

@@ -1,4 +1,3 @@
-import React from "react";
 import { GroupForumFeature } from "@/components/groups/GroupForumFeature";
 
 interface GroupPageProps {

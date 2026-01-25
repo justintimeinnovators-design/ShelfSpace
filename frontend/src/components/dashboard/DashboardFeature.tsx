@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { DashboardErrorFallback } from "@/components/common/ErrorFallbacks/DashboardErrorFallback";
@@ -131,7 +131,7 @@ export function DashboardFeature({ className }: DashboardFeatureProps) {
   }, [readingLists]);
 
   // Show preferences modal for new users or users without preferences
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isLoading && needsPreferences) {
       setShowPreferences(true);
     }

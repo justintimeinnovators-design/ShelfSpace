@@ -63,7 +63,7 @@ router.post("/sessions", async (req, res) => {
  */
 router.get("/sessions/:sessionId", async (req, res) => {
     try {
-        const { sessionId } = req.params;
+        const sessionId = req.params.sessionId;
         // Verify session belongs to user
         const session = await prisma.chatSession.findFirst({
             where: {
@@ -103,7 +103,7 @@ router.get("/sessions/:sessionId", async (req, res) => {
  */
 router.post("/sessions/:sessionId/messages", async (req, res) => {
     try {
-        const { sessionId } = req.params;
+        const sessionId = req.params.sessionId;
         const { role, content, bookContext, metadata } = req.body;
         if (!role || !content) {
             res.status(400).json({ error: "Role and content are required" });
@@ -164,7 +164,7 @@ router.post("/sessions/:sessionId/messages", async (req, res) => {
  */
 router.patch("/sessions/:sessionId", async (req, res) => {
     try {
-        const { sessionId } = req.params;
+        const sessionId = req.params.sessionId;
         const { title, isPinned, isVisible } = req.body;
         const updateData = {};
         if (title !== undefined)
@@ -197,7 +197,7 @@ router.patch("/sessions/:sessionId", async (req, res) => {
  */
 router.delete("/sessions/:sessionId", async (req, res) => {
     try {
-        const { sessionId } = req.params;
+        const sessionId = req.params.sessionId;
         // Delete from database
         const result = await prisma.chatSession.deleteMany({
             where: {
@@ -224,7 +224,7 @@ router.delete("/sessions/:sessionId", async (req, res) => {
  */
 router.post("/sessions/:sessionId/refresh", async (req, res) => {
     try {
-        const { sessionId } = req.params;
+        const sessionId = req.params.sessionId;
         // Verify session belongs to user
         const session = await prisma.chatSession.findFirst({
             where: {

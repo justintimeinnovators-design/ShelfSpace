@@ -1,7 +1,7 @@
 // src/contexts/ThemeContext.tsx
 "use client";
 
-import React, {
+import {
   createContext,
   useContext,
   useState,

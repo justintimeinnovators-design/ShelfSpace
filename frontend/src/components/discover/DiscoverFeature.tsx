@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { DiscoverErrorFallback } from "@/components/common/ErrorFallbacks/DiscoverErrorFallback";
 import { bookService } from "@/lib/book-service";

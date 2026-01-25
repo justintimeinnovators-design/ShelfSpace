@@ -1,4 +1,3 @@
-import React from "react";
 import { BookOpen, ArrowLeft } from "lucide-react";
 import { ErrorFallbackProps } from "@/components/common/ErrorBoundary";
 

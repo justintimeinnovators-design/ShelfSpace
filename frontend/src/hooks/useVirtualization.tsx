@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 
 interface VirtualizationOptions {

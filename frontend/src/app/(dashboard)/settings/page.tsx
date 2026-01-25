@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { ProfileSettings } from "@/components/settings/ProfileSettings";
 import { PreferencesSettings } from "@/components/settings/PreferencesSettings";
 import { AccountSettings } from "@/components/settings/AccountSettings";

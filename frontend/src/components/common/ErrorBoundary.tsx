@@ -1,6 +1,7 @@
 "use client";
 
-import React, { Component } from "react";
+import React from "react";
+import { Component } from "react";
 import { AlertTriangle, RefreshCw, Home, Copy, Bug } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";

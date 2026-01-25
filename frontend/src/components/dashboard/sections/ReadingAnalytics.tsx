@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { AnimatedCard, StaggerContainer, StaggerItem, AnimatedCounter } from '@/components/ui';
 import { 
   ReadingTrendsChart, 

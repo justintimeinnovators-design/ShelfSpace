@@ -78,7 +78,7 @@ router.post("/sessions", async (req: Request, res: Response) => {
  */
 router.get("/sessions/:sessionId", async (req: Request, res: Response) => {
   try {
-    const { sessionId } = req.params;
+    const sessionId = req.params.sessionId as string;
     
     // Verify session belongs to user
     const session = await prisma.chatSession.findFirst({
@@ -123,7 +123,7 @@ router.get("/sessions/:sessionId", async (req: Request, res: Response) => {
  */
 router.post("/sessions/:sessionId/messages", async (req: Request, res: Response) => {
   try {
-    const { sessionId } = req.params;
+    const sessionId = req.params.sessionId as string;
     const { role, content, bookContext, metadata } = req.body;
     
     if (!role || !content) {
@@ -193,7 +193,7 @@ router.post("/sessions/:sessionId/messages", async (req: Request, res: Response)
  */
 router.patch("/sessions/:sessionId", async (req: Request, res: Response) => {
   try {
-    const { sessionId } = req.params;
+    const sessionId = req.params.sessionId as string;
     const { title, isPinned, isVisible } = req.body;
     
     const updateData: any = {};
@@ -227,7 +227,7 @@ router.patch("/sessions/:sessionId", async (req: Request, res: Response) => {
  */
 router.delete("/sessions/:sessionId", async (req: Request, res: Response) => {
   try {
-    const { sessionId } = req.params;
+    const sessionId = req.params.sessionId as string;
     
     // Delete from database
     const result = await prisma.chatSession.deleteMany({
@@ -258,7 +258,7 @@ router.delete("/sessions/:sessionId", async (req: Request, res: Response) => {
  */
 router.post("/sessions/:sessionId/refresh", async (req: Request, res: Response) => {
   try {
-    const { sessionId } = req.params;
+    const sessionId = req.params.sessionId as string;
     
     // Verify session belongs to user
     const session = await prisma.chatSession.findFirst({

@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { ErrorFallbackProps } from "@/components/common/ErrorBoundary";
 import { BookOpen, RefreshCw } from "lucide-react";
 

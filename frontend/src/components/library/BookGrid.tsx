@@ -1,6 +1,7 @@
 "use client";
 
-import React, { memo, useMemo } from "react";
+import React from "react";
+import { memo, useMemo } from "react";
 import { Book } from "@/types/book";
 import { BookCard } from "@/components/common/BookCard";
 import { VirtualBookGrid } from "@/components/library/VirtualBookGrid";

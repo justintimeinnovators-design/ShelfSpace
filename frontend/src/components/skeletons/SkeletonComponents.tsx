@@ -1,5 +1,3 @@
-import React from "react";
-
 // Base skeleton component
 export const Skeleton = ({ className = "" }: { className?: string }) => (
   <div

@@ -1,6 +1,7 @@
 "use client";
 
-import React, { memo } from "react";
+import React from "react";
+import { memo } from "react";
 import { OptimizedImage } from "@/components/ui/OptimizedImage";
 import { cn } from "@/utils/cn";
 

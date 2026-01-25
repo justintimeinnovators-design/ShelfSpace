@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { Loader2, Shield, RefreshCw, AlertTriangle } from "lucide-react";
 import { useUserManagement } from "@/hooks/data/useAdmin";
 import { UserStatus } from "@/lib/admin-service";

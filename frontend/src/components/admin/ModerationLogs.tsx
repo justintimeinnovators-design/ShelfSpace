@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { FileText, RefreshCw, Loader2, XCircle, AlertCircle, CheckCircle } from "lucide-react";
 import { useModerationLogs } from "@/hooks/data/useAdmin";
 import { ModerationAction } from "@/lib/admin-service";

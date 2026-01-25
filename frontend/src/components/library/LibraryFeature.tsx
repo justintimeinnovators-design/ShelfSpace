@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense } from "react";
+import { Suspense } from "react";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { LibraryLoadingSkeleton } from "@/components/common/LoadingStates";
 import { LibraryErrorFallback } from "@/components/common/ErrorFallbacks/LibraryErrorFallback";

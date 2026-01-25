@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React from "react";
+import { useState, useRef, useEffect } from "react";
 import { Eye, EyeOff, X, Check, AlertCircle } from "lucide-react";
 
 interface EnhancedInputProps

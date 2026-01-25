@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { VirtualGrid, VirtualList } from "@/hooks/useVirtualization";
 import { useDebounce } from "@/hooks/useDebounce";
 import { OptimizedImage } from "@/components/ui";

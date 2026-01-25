@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { X, Keyboard } from "lucide-react";
 
 interface Shortcut {
@@ -125,14 +125,14 @@ export const KeyboardShortcutsModal: React.FC<KeyboardShortcutsModalProps> = ({
                         </span>
                         <div className="flex items-center gap-1">
                           {shortcut.keys.map((key, keyIndex) => (
-                            <React.Fragment key={keyIndex}>
+                            <Fragment key={keyIndex}>
                               <kbd className="px-2 py-1 text-xs font-semibold text-gray-800 dark:text-gray-200 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded shadow-sm">
                                 {key}
                               </kbd>
                               {keyIndex < shortcut.keys.length - 1 && (
                                 <span className="text-gray-400 text-xs">+</span>
                               )}
-                            </React.Fragment>
+                            </Fragment>
                           ))}
                         </div>
                       </div>
