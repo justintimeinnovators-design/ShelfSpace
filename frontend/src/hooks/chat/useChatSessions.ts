@@ -67,7 +67,9 @@ export function useChatSessions() {
     try {
       setIsLoading(true);
       const sessionData = await chatService.getSession(session.accessToken, sessionId);
-      setMessages(sessionData.messages || []);
+      // Ensure messages is always an array
+      const messagesList = Array.isArray(sessionData.messages) ? sessionData.messages : [];
+      setMessages(messagesList);
       setCurrentSession(sessionData);
     } catch (err: any) {
       console.error("Failed to load session:", err);
@@ -76,6 +78,7 @@ export function useChatSessions() {
       } else {
         setError("Failed to load messages");
       }
+      setMessages([]); // Reset to empty array on error
     } finally {
       setIsLoading(false);
     }
@@ -135,8 +138,8 @@ export function useChatSessions() {
         messageText
       );
 
-      // Update messages
-      setMessages((prev) => [...prev, userMsg, botMsg]);
+      // Update messages - ensure prev is always an array
+      setMessages((prev) => [...(Array.isArray(prev) ? prev : []), userMsg, botMsg]);
 
       // Update session title if it's the first message
       if (messages.length === 0 && currentSession) {
@@ -146,13 +149,13 @@ export function useChatSessions() {
         // Update local session
         setCurrentSession((prev) => prev ? { ...prev, title } : null);
         setSessions((prev) =>
-          prev.map((s) => (s.id === sessionId ? { ...s, title } : s))
+          (Array.isArray(prev) ? prev : []).map((s) => (s.id === sessionId ? { ...s, title } : s))
         );
       }
 
       // Update lastMessageAt in sessions list
       setSessions((prev) =>
-        prev.map((s) =>
+        (Array.isArray(prev) ? prev : []).map((s) =>
           s.id === sessionId
             ? { ...s, lastMessageAt: new Date().toISOString() }
             : s
@@ -185,7 +188,7 @@ export function useChatSessions() {
 
     try {
       // await chatService.deleteSession(session.accessToken, sessionId);
-      setSessions((prev) => prev.filter((s) => s.id !== sessionId));
+      setSessions((prev) => (Array.isArray(prev) ? prev : []).filter((s) => s.id !== sessionId));
 
       // If deleting current session, clear it
       if (currentSession?.id === sessionId) {
@@ -213,7 +216,7 @@ export function useChatSessions() {
       // });
 
       setSessions((prev) =>
-        prev.map((s) =>
+        (Array.isArray(prev) ? prev : []).map((s) =>
           s.id === sessionId ? { ...s, isPinned: !s.isPinned } : s
         )
       );
@@ -235,7 +238,7 @@ export function useChatSessions() {
       // });
 
       setSessions((prev) =>
-        prev.map((s) => (s.id === sessionId ? { ...s, title: newTitle } : s))
+        (Array.isArray(prev) ? prev : []).map((s) => (s.id === sessionId ? { ...s, title: newTitle } : s))
       );
 
       if (currentSession?.id === sessionId) {
