@@ -12,7 +12,6 @@ import {
   BookOpen, 
   Check, 
   ArrowRight, 
-  Loader2, 
   User, 
   Settings, 
   Heart,

@@ -6,7 +6,7 @@ import { publishAnalyticsEvents } from "../kafka/producer.js";
 
 async function emitAnalyticsEvent(req: Request, payload: Record<string, any>) {
   try {
-    await publishAnalyticsEvents([{ userId: req.userId, ...payload }]);
+    await publishAnalyticsEvents([{ userId: req.user?.id, ...payload }]);
   } catch {
     console.warn("Failed to emit analytics event to Kafka");
   }

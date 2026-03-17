@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
 const ANALYTICS_SERVICE_URL =
-  process.env.ANALYTICS_SERVICE_URL || "http://localhost:3008";
+  process.env["ANALYTICS_SERVICE_URL"] || "http://localhost:3008";
 
 async function proxy(req: NextRequest, params: Promise<{ path: string[] }>) {
   const session = await getServerSession(authOptions);

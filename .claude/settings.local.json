@@ -1,23 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(rm:*)",
-      "Bash(ls:*)",
-      "Bash(cd:*)",
-      "Bash(npx tsc:*)",
-      "Bash(find:*)",
-      "Read(//proc/13618/**)",
-      "Bash(chmod:*)",
-      "Bash(for f:*)",
-      "Bash(do)",
-      "Read(//home/the_hero_of_ages/Projects/Marquee/ShelfSpace/services/$f/**)",
-      "Bash(echo \"$f: already has KAFKA_BROKERS\")",
-      "Bash(echo \"$f: missing\")",
-      "Bash(done)",
-      "Bash(grep:*)",
-      "Bash(for svc:*)",
-      "Bash(echo \"=== $svc ===\")",
-      "Read(//home/the_hero_of_ages/Projects/Marquee/ShelfSpace/services/$svc/src/**)"
+      "Bash(grep:*)"
     ]
   }
 }

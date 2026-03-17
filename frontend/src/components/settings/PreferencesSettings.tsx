@@ -26,23 +26,6 @@ type SettingsBlob = {
   profile?: { location?: string; favoriteGenres?: string[] };
 };
 
-const defaultNotifications: NotificationChannels = {
-  email: { newMessages: true, groupUpdates: true, bookRecommendations: false, readingReminders: true, weeklyDigest: true },
-  push: { newMessages: true, groupUpdates: false, bookRecommendations: true, readingReminders: false, weeklyDigest: false },
-  inApp: { newMessages: true, groupUpdates: true, bookRecommendations: true, readingReminders: true, weeklyDigest: true },
-  sound: { enabled: true, volume: 70 },
-};
-
-const defaultPrivacy: PrivacySettings = {
-  profile: { showEmail: false, showLocation: true, showBio: true, showReadingGoal: true },
-  reading: { showCurrentlyReading: true, showReadingProgress: true, showReviews: true, showRatings: true, showReadingHistory: false },
-  social: { allowMessages: true, allowFriendRequests: true, showInSearch: true, showOnlineStatus: true },
-  data: { allowAnalytics: true, allowPersonalization: true, allowMarketing: false },
-};
-
-const channelEnabled = (channel?: Record<string, boolean>) =>
-  channel ? Object.values(channel).some(Boolean) : false;
-
 /**
  * Preferences Settings.
  */
@@ -109,7 +92,6 @@ export function PreferencesSettings() {
       setSaveMessage(null);
       try {
         const existingSettings = serverSettings ?? {};
-        const existingNotifications = existingSettings.notifications ?? defaultNotifications;
 
         const updatedSettings: SettingsBlob = {
           ...existingSettings,

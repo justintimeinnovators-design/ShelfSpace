@@ -12,7 +12,7 @@ export const LoadingSpinner: React.FC<{
   message?: string;
   size?: "sm" | "md" | "lg";
   className?: string;
-}> = ({ message = "Loading...", size = "md", className }) => {
+}> = ({ message: _message = "Loading...", size = "md", className }) => {
   const sizeMap = { sm: "h-4 w-24", md: "h-6 w-32", lg: "h-8 w-40" };
   return (
     <div

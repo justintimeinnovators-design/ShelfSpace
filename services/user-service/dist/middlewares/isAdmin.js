@@ -1,4 +1,10 @@
 import prisma from "../prisma.js";
+/**
+ * Is Admin.
+ * @param req - req value.
+ * @param res - res value.
+ * @param next - next value.
+ */
 export const isAdmin = async (req, res, next) => {
     if (!req.userId) {
         return res.status(401).json({ message: "Unauthorized" });

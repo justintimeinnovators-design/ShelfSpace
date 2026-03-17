@@ -1,6 +1,10 @@
 import { SignJWT, jwtVerify } from "jose";
 const secretKey = new TextEncoder().encode(process.env.JWT_SECRET);
 const algorithm = "HS256";
+/**
+ * Sign Token.
+ * @param payload - payload value.
+ */
 export async function signToken(payload) {
     const token = new SignJWT(payload)
         .setProtectedHeader({ alg: algorithm })
@@ -9,6 +13,10 @@ export async function signToken(payload) {
         .sign(secretKey);
     return token;
 }
+/**
+ * Verify Token.
+ * @param token - token value.
+ */
 export async function verifyToken(token) {
     try {
         const { payload } = await jwtVerify(token, secretKey, {
@@ -20,6 +28,12 @@ export async function verifyToken(token) {
         return null;
     }
 }
+/**
+ * Is Authenticated.
+ * @param req - req value.
+ * @param res - res value.
+ * @param next - next value.
+ */
 export async function isAuthenticated(req, res, next) {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {

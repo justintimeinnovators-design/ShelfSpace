@@ -1,1 +1,0 @@
-[?1049h[22;0;0t[1;24r(B[m[4l[?7h[?25l[H[2J[2d[AEvery 2.0s: src/index.ts[1;58HFernir: 11:07:16 AM IST[2;66Hin 0.003s (127)[3;1Hsh: line 1: src/index.ts: No such file or directory[24;1H[?12l[?25h[?1049l[23;0;0t[?1l>

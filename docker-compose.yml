@@ -158,15 +158,35 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost}
+        NEXT_PUBLIC_BOOK_SERVICE_URL: ${NEXT_PUBLIC_BOOK_SERVICE_URL:-http://localhost}
+        NEXT_PUBLIC_FORUM_SERVICE_URL: ${NEXT_PUBLIC_FORUM_SERVICE_URL:-http://localhost}
+        NEXT_PUBLIC_REVIEW_SERVICE_URL: ${NEXT_PUBLIC_REVIEW_SERVICE_URL:-http://localhost}
+        NEXT_PUBLIC_LIBRARY_SERVICE_URL: ${NEXT_PUBLIC_LIBRARY_SERVICE_URL:-http://localhost/api/library}
+        NEXT_PUBLIC_USER_SERVICE_URL: ${NEXT_PUBLIC_USER_SERVICE_URL:-http://localhost/api/users}
     container_name: shelfspace-frontend
     environment:
       NODE_ENV: ${NODE_ENV:-development}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:?GOOGLE_CLIENT_ID environment variable is required}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:?GOOGLE_CLIENT_SECRET environment variable is required}
       NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:?NEXTAUTH_SECRET environment variable is required}
-      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3000}
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost/api}
-      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost}
+
+      # Public (browser-side) URLs — all routed through NGINX on port 80
+      # Books, forums, reviews are called directly from the browser via NGINX
+      NEXT_PUBLIC_BOOK_SERVICE_URL: ${NEXT_PUBLIC_BOOK_SERVICE_URL:-http://localhost}
+      NEXT_PUBLIC_FORUM_SERVICE_URL: ${NEXT_PUBLIC_FORUM_SERVICE_URL:-http://localhost}
+      NEXT_PUBLIC_REVIEW_SERVICE_URL: ${NEXT_PUBLIC_REVIEW_SERVICE_URL:-http://localhost}
+      NEXT_PUBLIC_LIBRARY_SERVICE_URL: ${NEXT_PUBLIC_LIBRARY_SERVICE_URL:-http://localhost/api/library}
+      # User service: browser calls /api/users/* which NGINX rewrites to /api/* on user-service
+      NEXT_PUBLIC_USER_SERVICE_URL: ${NEXT_PUBLIC_USER_SERVICE_URL:-http://localhost/api/users}
+
+      # Server-side (container-internal) URLs — bypass NGINX for lower latency
+      USER_SERVICE_URL: http://user-service:3001/api
+      ANALYTICS_SERVICE_URL: http://analytics-service:3008
+      CHATBOT_SERVICE_URL: ${CHATBOT_SERVICE_URL:-http://chatbot-service:8000}
     networks:
       - shelfspace-net
     depends_on:
@@ -202,7 +222,11 @@ services:
       LIBRARY_SERVICE_URL: http://user-library-service:3003
       REDIS_URL: redis://redis:6379
       ANALYTICS_SERVICE_URL: http://analytics-service:3008
-      KAFKA_BROKERS: kafka:9092
+      KAFKA_BROKERS: ${KAFKA_BROKERS:-kafka:9092}
+      KAFKA_SASL_USERNAME: ${KAFKA_SASL_USERNAME:-}
+      KAFKA_SASL_PASSWORD: ${KAFKA_SASL_PASSWORD:-}
+      KAFKA_SSL: ${KAFKA_SSL:-false}
+      KAFKA_SASL_MECHANISM: ${KAFKA_SASL_MECHANISM:-scram-sha-256}
     networks:
       - shelfspace-net
     depends_on:
@@ -235,7 +259,11 @@ services:
       USER_SERVICE_URL: http://user-service:3001
       ANALYTICS_SERVICE_URL: http://analytics-service:3008
       BOOK_SERVICE_URL: http://book-service:3004
-      KAFKA_BROKERS: kafka:9092
+      KAFKA_BROKERS: ${KAFKA_BROKERS:-kafka:9092}
+      KAFKA_SASL_USERNAME: ${KAFKA_SASL_USERNAME:-}
+      KAFKA_SASL_PASSWORD: ${KAFKA_SASL_PASSWORD:-}
+      KAFKA_SSL: ${KAFKA_SSL:-false}
+      KAFKA_SASL_MECHANISM: ${KAFKA_SASL_MECHANISM:-scram-sha-256}
     networks:
       - shelfspace-net
     depends_on:
@@ -268,7 +296,11 @@ services:
       USER_SERVICE_URL: http://user-service:3001
       BOOK_SERVICE_URL: http://book-service:3004
       ANALYTICS_SERVICE_URL: http://analytics-service:3008
-      KAFKA_BROKERS: kafka:9092
+      KAFKA_BROKERS: ${KAFKA_BROKERS:-kafka:9092}
+      KAFKA_SASL_USERNAME: ${KAFKA_SASL_USERNAME:-}
+      KAFKA_SASL_PASSWORD: ${KAFKA_SASL_PASSWORD:-}
+      KAFKA_SSL: ${KAFKA_SSL:-false}
+      KAFKA_SASL_MECHANISM: ${KAFKA_SASL_MECHANISM:-scram-sha-256}
     networks:
       - shelfspace-net
     depends_on:
@@ -302,9 +334,11 @@ services:
       MONGO_URI: mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongodb:27017/${MONGO_DATABASE:-books}?authSource=admin
       USER_SERVICE_URL: http://user-service:3001
       ANALYTICS_SERVICE_URL: http://analytics-service:3008
-      KAFKA_BROKERS: kafka:9092
-    ports:
-      - "3004:3004"
+      KAFKA_BROKERS: ${KAFKA_BROKERS:-kafka:9092}
+      KAFKA_SASL_USERNAME: ${KAFKA_SASL_USERNAME:-}
+      KAFKA_SASL_PASSWORD: ${KAFKA_SASL_PASSWORD:-}
+      KAFKA_SSL: ${KAFKA_SSL:-false}
+      KAFKA_SASL_MECHANISM: ${KAFKA_SASL_MECHANISM:-scram-sha-256}
     networks:
       - shelfspace-net
     depends_on:
@@ -334,7 +368,11 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-shelfspace}
       USER_SERVICE_URL: http://user-service:3001
       ANALYTICS_SERVICE_URL: http://analytics-service:3008
-      KAFKA_BROKERS: kafka:9092
+      KAFKA_BROKERS: ${KAFKA_BROKERS:-kafka:9092}
+      KAFKA_SASL_USERNAME: ${KAFKA_SASL_USERNAME:-}
+      KAFKA_SASL_PASSWORD: ${KAFKA_SASL_PASSWORD:-}
+      KAFKA_SSL: ${KAFKA_SSL:-false}
+      KAFKA_SASL_MECHANISM: ${KAFKA_SASL_MECHANISM:-scram-sha-256}
     networks:
       - shelfspace-net
     depends_on:
@@ -369,7 +407,11 @@ services:
       REDIS_URL: redis://redis:6379
       ALLOWED_ORIGINS: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
       ANALYTICS_SERVICE_URL: http://analytics-service:3008
-      KAFKA_BROKERS: kafka:9092
+      KAFKA_BROKERS: ${KAFKA_BROKERS:-kafka:9092}
+      KAFKA_SASL_USERNAME: ${KAFKA_SASL_USERNAME:-}
+      KAFKA_SASL_PASSWORD: ${KAFKA_SASL_PASSWORD:-}
+      KAFKA_SSL: ${KAFKA_SSL:-false}
+      KAFKA_SASL_MECHANISM: ${KAFKA_SASL_MECHANISM:-scram-sha-256}
     networks:
       - shelfspace-net
     depends_on:
@@ -405,7 +447,11 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-shelfspace}
       USER_SERVICE_URL: http://user-service:3001
       ANALYTICS_SERVICE_URL: http://analytics-service:3008
-      KAFKA_BROKERS: kafka:9092
+      KAFKA_BROKERS: ${KAFKA_BROKERS:-kafka:9092}
+      KAFKA_SASL_USERNAME: ${KAFKA_SASL_USERNAME:-}
+      KAFKA_SASL_PASSWORD: ${KAFKA_SASL_PASSWORD:-}
+      KAFKA_SSL: ${KAFKA_SSL:-false}
+      KAFKA_SASL_MECHANISM: ${KAFKA_SASL_MECHANISM:-scram-sha-256}
     networks:
       - shelfspace-net
     depends_on:
@@ -437,7 +483,11 @@ services:
       MONGO_URI: mongodb://${MONGO_USER}:${MONGO_PASSWORD}@mongodb:27017/${MONGO_ANALYTICS_DB:-analytics}?authSource=admin
       MONGO_DB: ${MONGO_ANALYTICS_DB:-analytics}
       USER_SERVICE_URL: http://user-service:3001
-      KAFKA_BROKERS: kafka:9092
+      KAFKA_BROKERS: ${KAFKA_BROKERS:-kafka:9092}
+      KAFKA_SASL_USERNAME: ${KAFKA_SASL_USERNAME:-}
+      KAFKA_SASL_PASSWORD: ${KAFKA_SASL_PASSWORD:-}
+      KAFKA_SSL: ${KAFKA_SSL:-false}
+      KAFKA_SASL_MECHANISM: ${KAFKA_SASL_MECHANISM:-scram-sha-256}
     networks:
       - shelfspace-net
     depends_on:

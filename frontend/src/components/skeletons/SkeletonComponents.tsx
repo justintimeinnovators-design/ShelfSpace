@@ -87,7 +87,7 @@ export const ListItemSkeleton = () => (
 // Page Loader (root loading)
 // ---------------------------------------------------------------------------
 
-export const PageLoader = ({ message = "Loading..." }: { message?: string }) => (
+export const PageLoader = ({ message: _message = "Loading..." }: { message?: string }) => (
   <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800">
     <div className="w-full max-w-xs animate-pulse px-4">
       <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-amber-200 dark:border-slate-700 p-8 space-y-4">

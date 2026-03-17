@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import React from "react";
 import { BookDetailFeature } from "@/components/book/BookDetailFeature";
 import { parseBookSlug } from "@/lib/book-slug";
 

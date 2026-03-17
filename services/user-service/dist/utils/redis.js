@@ -1,15 +1,27 @@
 import Redis from 'ioredis';
 const REDIS_URL = process.env.REDIS_URL || process.env.UPSTASH_REDIS_URL || 'redis://localhost:6379';
 let redis = null;
+/**
+ * Get Redis Client.
+ * @returns Redis.Redis.
+ */
 export function getRedisClient() {
     if (!redis) {
         const isUpstash = REDIS_URL.startsWith('rediss://');
         redis = new Redis.default(REDIS_URL, {
             maxRetriesPerRequest: 3,
+            /**
+             * Retry Strategy.
+             * @param times - times value.
+             */
             retryStrategy(times) {
                 const delay = Math.min(times * 50, 2000);
                 return delay;
             },
+            /**
+             * Reconnect On Error.
+             * @param err - err value.
+             */
             reconnectOnError(err) {
                 const targetError = 'READONLY';
                 if (err.message.includes(targetError)) {
@@ -34,6 +46,11 @@ export function getRedisClient() {
 }
 const CHAT_KEY_PREFIX = 'chat:';
 const CHAT_TTL = 86400; // 24 hours in seconds
+/**
+ * Get Chat Messages.
+ * @param sessionId - session Id value.
+ * @returns Promise<ChatMessage[]>.
+ */
 export async function getChatMessages(sessionId) {
     try {
         const client = getRedisClient();
@@ -49,6 +66,12 @@ export async function getChatMessages(sessionId) {
         return [];
     }
 }
+/**
+ * Set Chat Messages.
+ * @param sessionId - session Id value.
+ * @param messages - messages value.
+ * @returns Promise<boolean>.
+ */
 export async function setChatMessages(sessionId, messages) {
     try {
         const client = getRedisClient();
@@ -62,6 +85,12 @@ export async function setChatMessages(sessionId, messages) {
         return false;
     }
 }
+/**
+ * Append Chat Message.
+ * @param sessionId - session Id value.
+ * @param message - message value.
+ * @returns Promise<boolean>.
+ */
 export async function appendChatMessage(sessionId, message) {
     try {
         const messages = await getChatMessages(sessionId);
@@ -73,6 +102,11 @@ export async function appendChatMessage(sessionId, message) {
         return false;
     }
 }
+/**
+ * Delete Chat Messages.
+ * @param sessionId - session Id value.
+ * @returns Promise<boolean>.
+ */
 export async function deleteChatMessages(sessionId) {
     try {
         const client = getRedisClient();
@@ -85,6 +119,11 @@ export async function deleteChatMessages(sessionId) {
         return false;
     }
 }
+/**
+ * Refresh Chat TTL.
+ * @param sessionId - session Id value.
+ * @returns Promise<boolean>.
+ */
 export async function refreshChatTTL(sessionId) {
     try {
         const client = getRedisClient();

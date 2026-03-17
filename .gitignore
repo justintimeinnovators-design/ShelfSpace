@@ -1,6 +1,9 @@
 # Node.js Dependencies
 node_modules/
 **/node_modules/
+articles/
+mermaid/
+.claude
 
 # Python Dependencies & Bytecode
 __pycache__/
@@ -35,6 +38,7 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+docs/
 
 # Logs
 npm-debug.log*

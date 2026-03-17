@@ -5,6 +5,14 @@ const KAFKA_BROKERS = (process.env.KAFKA_BROKERS || "kafka:9092").split(",");
 const kafka = new Kafka({
   clientId: "analytics-service-producer",
   brokers: KAFKA_BROKERS,
+  ...(process.env.KAFKA_SSL === "true" && { ssl: true }),
+  ...(process.env.KAFKA_SASL_USERNAME && {
+    sasl: {
+      mechanism: (process.env.KAFKA_SASL_MECHANISM || "scram-sha-256") as "scram-sha-256" | "scram-sha-512",
+      username: process.env.KAFKA_SASL_USERNAME,
+      password: process.env.KAFKA_SASL_PASSWORD!,
+    },
+  }),
 });
 
 const producer = kafka.producer();

@@ -1,5 +1,7 @@
 import { LibraryFeatureWithBoundary } from "../../../components/library/LibraryFeature";
 
+export const dynamic = "force-dynamic";
+
 interface LibraryPageProps {
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatedCard, StaggerContainer, StaggerItem, FloatingElement } from '@/components/ui';
-import { Clock, BookOpen, Star, Heart, Users, Trophy, BookMarked, Plus } from 'lucide-react';
+import { Clock, BookOpen, Star, Heart, Users, Trophy, BookMarked } from 'lucide-react';
 import { useActivityTimelineData } from '@/hooks/data/useAnalytics';
 
 interface ActivityItem {

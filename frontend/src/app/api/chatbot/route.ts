@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 
-const CHATBOT_URL = process.env['CHATBOT_SERVICE_URL'] || 
-  (process.env.NODE_ENV === "production"
-    ? "http://chatbot-service:8000/chat"
-    : "http://localhost:8000/chat");
+// Set CHATBOT_SERVICE_URL to Upstash URL in production
+const CHATBOT_URL =
+  process.env["CHATBOT_SERVICE_URL"] || "http://localhost:8000/chat";
 
-// console.log("[Chatbot Route] Using chatbot URL:", CHATBOT_URL);
+console.log("[Chatbot Route] Using chatbot URL:", CHATBOT_URL);
 
 /**
  * POST.
@@ -21,7 +20,7 @@ export async function POST(request: NextRequest) {
     if (!message) {
       return NextResponse.json(
         { error: "Message is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -37,7 +36,7 @@ export async function POST(request: NextRequest) {
           "Content-Type": "application/json",
         },
         timeout: 30000, // 30 second timeout
-      }
+      },
     );
 
     const { answer, session_id } = response.data;
@@ -56,7 +55,7 @@ export async function POST(request: NextRequest) {
     if (error.code === "ECONNABORTED") {
       return NextResponse.json(
         { error: "Request timeout - chatbot service took too long to respond" },
-        { status: 504 }
+        { status: 504 },
       );
     }
 
@@ -64,7 +63,7 @@ export async function POST(request: NextRequest) {
     if (error.code === "ECONNREFUSED") {
       return NextResponse.json(
         { error: "Chatbot service is unavailable" },
-        { status: 503 }
+        { status: 503 },
       );
     }
 
@@ -74,7 +73,7 @@ export async function POST(request: NextRequest) {
         error: "Failed to get response from chatbot",
         details: error.message,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

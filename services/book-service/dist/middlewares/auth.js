@@ -1,5 +1,11 @@
 import axios from "axios";
 const USER_SERVICE_URL = process.env.USER_SERVICE_URL?.trim() || "http://localhost:3001";
+/**
+ * Authenticate Token.
+ * @param req - req value.
+ * @param res - res value.
+ * @param next - next value.
+ */
 export const authenticateToken = async (req, res, next) => {
     const authHeader = req.headers["authorization"];
     const token = authHeader?.split(" ")[1];

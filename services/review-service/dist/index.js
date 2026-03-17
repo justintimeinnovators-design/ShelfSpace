@@ -1,12 +1,11 @@
+import "dotenv/config";
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import helmet from "helmet";
-import dotenv from "dotenv";
 import { randomUUID } from "crypto";
 import reviewRoutes from "./routes/review.routes.js";
 import prisma from "./prisma.js";
-dotenv.config();
 const app = express();
 const port = process.env.PORT || 3002;
 // Security middleware - must be first
@@ -79,3 +78,10 @@ app.get("/health", async (_req, res) => {
 app.listen(port, () => {
     console.log(`Review service listening on port ${port}`);
 });
+import { disconnectProducer } from "./kafka/producer.js";
+const shutdown = async () => {
+    await disconnectProducer();
+    process.exit(0);
+};
+process.on("SIGTERM", shutdown);
+process.on("SIGINT", shutdown);

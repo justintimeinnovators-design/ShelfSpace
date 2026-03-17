@@ -5,6 +5,8 @@ import { LandingPage } from "@/components/landing/LandingPage";
 
 const APP_URL = process.env["NEXT_PUBLIC_APP_URL"] || "https://shelfspace.app";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "ShelfSpace — Track Books, Get AI Recommendations & Join Reading Forums",
   description:
