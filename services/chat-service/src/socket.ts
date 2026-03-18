@@ -10,6 +10,10 @@ const USER_SERVICE_URL = process.env.USER_SERVICE_URL || "http://localhost:3001"
 const FORUM_SERVICE_URL = process.env.FORUM_SERVICE_URL || "http://localhost:3005";
 const REDIS_URL = process.env.REDIS_URL || "redis://redis:6379";
 
+/**
+ * Initialize Socket.
+ * @param httpServer - http Server value.
+ */
 export default async function initializeSocket(httpServer: ReturnType<typeof createServer>) {
   const allowedOrigins = (process.env.ALLOWED_ORIGINS || "http://localhost:3000").split(",").map((o) => o.trim());
   const io = new Server(httpServer, {

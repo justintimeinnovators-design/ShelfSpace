@@ -10,6 +10,10 @@ const MONGO_DB = process.env.MONGO_DB || "analytics";
 let client: MongoClient | null = null;
 let db: Db | null = null;
 
+/**
+ * Get Db.
+ * @returns Promise<Db>.
+ */
 export async function getDb(): Promise<Db> {
   if (db) return db;
   client = new MongoClient(MONGO_URI);
@@ -18,6 +22,9 @@ export async function getDb(): Promise<Db> {
   return db;
 }
 
+/**
+ * Get Collections.
+ */
 export async function getCollections() {
   const database = await getDb();
   return {
@@ -26,6 +33,9 @@ export async function getCollections() {
   };
 }
 
+/**
+ * Close Db.
+ */
 export async function closeDb(): Promise<void> {
   if (client) {
     await client.close();

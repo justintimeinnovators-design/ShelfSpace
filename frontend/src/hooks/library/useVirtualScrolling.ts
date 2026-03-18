@@ -15,6 +15,15 @@ interface UseVirtualScrollingReturn {
   overscan: number;
 }
 
+/**
+ * Use Virtual Scrolling.
+ * @param {
+  itemCount,
+  viewMode,
+  threshold = 50,
+} - { item Count, view Mode, threshold = 50, } value.
+ * @returns UseVirtualScrollingReturn.
+ */
 export function useVirtualScrolling({
   itemCount,
   viewMode,
@@ -23,6 +32,9 @@ export function useVirtualScrolling({
   const [_containerHeight, setContainerHeight] = useState(0);
 
   useEffect(() => {
+/**
+ * Update Height.
+ */
     const updateHeight = () => {
       setContainerHeight(window.innerHeight);
     };

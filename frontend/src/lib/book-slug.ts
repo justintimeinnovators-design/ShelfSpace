@@ -1,5 +1,10 @@
 import type { Book } from "@/types/book";
 
+/**
+ * Slugify Title.
+ * @param title - title value.
+ * @returns string.
+ */
 function slugifyTitle(title: string): string {
   return title
     .toLowerCase()
@@ -8,11 +13,21 @@ function slugifyTitle(title: string): string {
     .slice(0, 80);
 }
 
+/**
+ * To Book Slug.
+ * @param book - book value.
+ * @returns string.
+ */
 export function toBookSlug(book: Pick<Book, "id" | "title">): string {
   const base = slugifyTitle(book.title || "book");
   return `${base}--${book.id}`;
 }
 
+/**
+ * Parse Book Slug.
+ * @param slug - slug value.
+ * @returns { id: string; titlePart: string }.
+ */
 export function parseBookSlug(slug: string): { id: string; titlePart: string } {
   const parts = slug.split("--");
   if (parts.length >= 2) {

@@ -1,3 +1,9 @@
+/**
+ * Analytics query hooks.
+ *
+ * Provides thin typed wrappers around analytics API calls with a shared
+ * loading/error/refetch pattern.
+ */
 import { useState, useEffect, useCallback } from "react";
 import {
   getDashboardSummary,
@@ -16,6 +22,11 @@ interface UseAnalyticsState<T> {
   error: Error | null;
 }
 
+/**
+ * Generic internal query primitive for analytics endpoints.
+ *
+ * @param fetcher Promise-returning analytics request function.
+ */
 function useAnalyticsQuery<T>(fetcher: () => Promise<T>) {
   const [state, setState] = useState<UseAnalyticsState<T>>({
     data: null,
@@ -44,18 +55,30 @@ function useAnalyticsQuery<T>(fetcher: () => Promise<T>) {
   };
 }
 
+/**
+ * Fetches summary counters for dashboard header/stat cards.
+ */
 export function useDashboardSummary() {
   return useAnalyticsQuery<DashboardSummary>(getDashboardSummary);
 }
 
+/**
+ * Fetches reading analytics chart datasets.
+ */
 export function useReadingAnalyticsData() {
   return useAnalyticsQuery<ReadingAnalyticsResponse>(getReadingAnalytics);
 }
 
+/**
+ * Fetches goals/progress datasets.
+ */
 export function useReadingGoalsData() {
   return useAnalyticsQuery<ReadingGoalsResponse>(getReadingGoals);
 }
 
+/**
+ * Fetches recent activity timeline entries.
+ */
 export function useActivityTimelineData() {
   return useAnalyticsQuery<ActivityTimelineResponse>(getActivityTimeline);
 }

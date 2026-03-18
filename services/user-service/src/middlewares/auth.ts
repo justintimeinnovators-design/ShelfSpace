@@ -9,6 +9,10 @@ interface CustomJWTPayload extends JWTPayload {
   id: string;
 }
 
+/**
+ * Sign Token.
+ * @param payload - payload value.
+ */
 export async function signToken(payload: { id: string }) {
   const token = new SignJWT(payload)
     .setProtectedHeader({ alg: algorithm })
@@ -19,6 +23,10 @@ export async function signToken(payload: { id: string }) {
   return token;
 }
 
+/**
+ * Verify Token.
+ * @param token - token value.
+ */
 export async function verifyToken(token: string) {
   try {
     const { payload } = await jwtVerify<CustomJWTPayload>(token, secretKey, {
@@ -30,6 +38,12 @@ export async function verifyToken(token: string) {
   }
 }
 
+/**
+ * Is Authenticated.
+ * @param req - req value.
+ * @param res - res value.
+ * @param next - next value.
+ */
 export async function isAuthenticated(
   req: Request,
   res: Response,

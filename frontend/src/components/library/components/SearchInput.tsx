@@ -9,11 +9,23 @@ interface SearchInputProps {
   placeholder?: string;
 }
 
+/**
+ * Search Input.
+ * @param {
+  value,
+  onChange,
+  placeholder = "Search...",
+} - { value, on Change, placeholder = "Search...", } value.
+ */
 export const SearchInput: React.FC<SearchInputProps> = ({
   value,
   onChange,
   placeholder = "Search...",
 }) => {
+/**
+ * Handle Change.
+ * @param event - event value.
+ */
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     onChange(event.target.value);
   };

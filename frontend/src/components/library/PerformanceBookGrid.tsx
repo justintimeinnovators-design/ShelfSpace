@@ -29,6 +29,18 @@ interface PerformanceBookGridProps {
   containerHeight?: number;
 }
 
+/**
+ * Performance Book Grid.
+ * @param {
+  books,
+  onBookSelect,
+  onBookAction,
+  className = "",
+  itemWidth = 200,
+  itemHeight = 300,
+  containerHeight = 600
+} - { books, on Book Select, on Book Action, class Name = "", item Width = 200, item Height = 300, container Height = 600 } value.
+ */
 export function PerformanceBookGrid({
   books,
   onBookSelect,
@@ -91,6 +103,11 @@ export function PerformanceBookGrid({
   }, [books]);
 
   // Render individual book item
+/**
+ * Render Book Item.
+ * @param book - book value.
+ * @param _index - index value.
+ */
   const renderBookItem = (book: Book, _index: number) => (
     <div
       key={book.id}
@@ -261,6 +278,17 @@ interface PerformanceBookListProps {
   containerHeight?: number;
 }
 
+/**
+ * Performance Book List.
+ * @param {
+  books,
+  onBookSelect,
+  onBookAction,
+  className = "",
+  itemHeight = 120,
+  containerHeight = 600
+} - { books, on Book Select, on Book Action, class Name = "", item Height = 120, container Height = 600 } value.
+ */
 export function PerformanceBookList({
   books,
   onBookSelect,
@@ -286,6 +314,11 @@ export function PerformanceBookList({
   }, [books, debouncedSearchQuery]);
 
   // Render book list item
+/**
+ * Render Book Item.
+ * @param book - book value.
+ * @param _index - index value.
+ */
   const renderBookItem = (book: Book, _index: number) => (
     <div
       key={book.id}

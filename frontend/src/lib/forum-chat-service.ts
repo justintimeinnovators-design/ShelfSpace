@@ -5,6 +5,12 @@ import api from "./api";
 import { getErrorMessage } from "./api-utils";
 
 export class ChatService {
+/**
+ * Get Messages.
+ * @param forumId - forum Id value.
+ * @param options - options value.
+ * @returns Promise<any[]>.
+ */
   static async getMessages(
     forumId: string,
     options: { limit?: number; offset?: number }

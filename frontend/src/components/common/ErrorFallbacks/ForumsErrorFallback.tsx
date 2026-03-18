@@ -5,6 +5,13 @@ interface ForumsErrorFallbackProps {
   resetErrorBoundary?: () => void;
 }
 
+/**
+ * Forums Error Fallback.
+ * @param {
+  error,
+  resetErrorBoundary,
+} - { error, reset Error Boundary, } value.
+ */
 export const ForumsErrorFallback: React.FC<ForumsErrorFallbackProps> = ({
   error,
   resetErrorBoundary,

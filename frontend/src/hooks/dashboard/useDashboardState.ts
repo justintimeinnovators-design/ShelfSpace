@@ -18,6 +18,9 @@ const initialState: Omit<DashboardState, "isLoading" | "error"> = {
   refreshInterval: 300000, // 5 minutes
 };
 
+/**
+ * Use Dashboard State.
+ */
 export function useDashboardState() {
   const [state, setState] =
     useState<Omit<DashboardState, "isLoading" | "error">>(initialState);

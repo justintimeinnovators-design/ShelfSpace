@@ -26,6 +26,13 @@ interface ThemeProviderProps {
   defaultTheme?: Theme;
 }
 
+/**
+ * Theme Provider.
+ * @param {
+  children,
+  defaultTheme = "system",
+} - { children, default Theme = "system", } value.
+ */
 export function ThemeProvider({
   children,
   defaultTheme = "system",
@@ -115,6 +122,9 @@ export function ThemeProvider({
     if (theme === "system") {
       const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
+/**
+ * Handle Change.
+ */
       const handleChange = () => {
         // Apply theme directly to avoid dependency loop
         const root = document.documentElement;
@@ -149,6 +159,9 @@ export function ThemeProvider({
 }
 
 // Hook to use the theme context
+/**
+ * Use Theme.
+ */
 export function useTheme() {
   const context = useContext(ThemeContext);
   if (!context) {

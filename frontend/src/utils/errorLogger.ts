@@ -1,5 +1,11 @@
 /**
- * Error logging and debugging utilities for development and production
+ * Centralized error logging and diagnostics utilities.
+ *
+ * Capabilities:
+ * - Normalizes unknown errors into a common `BaseError` shape.
+ * - Tracks runtime breadcrumbs to reconstruct preceding user/system events.
+ * - Supports both local console output and optional remote log shipping.
+ * - Installs global listeners for unhandled errors in browser runtime.
  */
 
 import { BaseError, ErrorBreadcrumb, ErrorReport } from "../../types/error";
@@ -37,18 +43,23 @@ class ErrorLogger {
   private sessionId: string;
 
   constructor(config: Partial<ErrorLoggerConfig> = {}) {
+    // Runtime config overrides default environment-derived behavior.
     this.config = { ...defaultConfig, ...config };
     this.sessionId = this.generateSessionId();
     this.setupGlobalErrorHandlers();
   }
 
   /**
-   * Log an error with context and breadcrumbs
+   * Logs an error event with normalized structure and contextual metadata.
+   *
+   * @param error Any runtime or domain error.
+   * @param context Additional structured details useful for triage.
    */
   logError(
     error: Error | BaseError,
     context: Record<string, unknown> = {}
   ): void {
+    // Build one normalized report so console/remote logs are always aligned.
     const errorReport = this.createErrorReport(error, context);
 
     // Console logging for development
@@ -72,7 +83,7 @@ class ErrorLogger {
   }
 
   /**
-   * Log a warning message
+   * Logs a warning and records a breadcrumb.
    */
   logWarning(message: string, context: Record<string, unknown> = {}): void {
     const warning = {
@@ -96,7 +107,7 @@ class ErrorLogger {
   }
 
   /**
-   * Log an info message
+   * Logs informational diagnostics and records a breadcrumb.
    */
   logInfo(message: string, context: Record<string, unknown> = {}): void {
     const info = {
@@ -120,35 +131,35 @@ class ErrorLogger {
   }
 
   /**
-   * Add a breadcrumb for debugging
+   * Adds a breadcrumb event to the rolling in-memory trail.
    */
   addBreadcrumb(breadcrumb: ErrorBreadcrumb): void {
     if (!this.config.enableBreadcrumbs) return;
 
     this.breadcrumbs.push(breadcrumb);
 
-    // Keep only the most recent breadcrumbs
+    // Maintain bounded history to avoid unbounded memory growth.
     if (this.breadcrumbs.length > this.config.maxBreadcrumbs) {
       this.breadcrumbs = this.breadcrumbs.slice(-this.config.maxBreadcrumbs);
     }
   }
 
   /**
-   * Get current breadcrumbs
+   * Returns a defensive copy of current breadcrumbs.
    */
   getBreadcrumbs(): ErrorBreadcrumb[] {
     return [...this.breadcrumbs];
   }
 
   /**
-   * Clear all breadcrumbs
+   * Clears breadcrumb history for the current logger session.
    */
   clearBreadcrumbs(): void {
     this.breadcrumbs = [];
   }
 
   /**
-   * Create a comprehensive error report
+   * Builds the final transport/log payload for an error event.
    */
   private createErrorReport(
     error: Error | BaseError,
@@ -173,10 +184,11 @@ class ErrorLogger {
   }
 
   /**
-   * Normalize any error to BaseError format
+   * Converts native errors to `BaseError` while preserving stack metadata.
    */
   private normalizeError(error: Error | BaseError): BaseError {
     if (this.isBaseError(error)) {
+      // Preserve already-classified domain errors.
       return error;
     }
 
@@ -200,14 +212,14 @@ class ErrorLogger {
   }
 
   /**
-   * Check if error is already a BaseError
+   * Runtime type-guard for existing `BaseError` values.
    */
   private isBaseError(error: Error | BaseError): error is BaseError {
     return "code" in error && "category" in error && "severity" in error;
   }
 
   /**
-   * Log error to console with formatting
+   * Emits a grouped, readable console representation of an error report.
    */
   private logToConsole(errorReport: ErrorReport): void {
     console.group(`🚨 Error: ${errorReport.error.message}`);
@@ -237,7 +249,7 @@ class ErrorLogger {
   }
 
   /**
-   * Send error to remote logging service
+   * Sends error reports to configured remote endpoint (best-effort).
    */
   private async logToRemote(errorReport: ErrorReport): Promise<void> {
     if (!this.config.apiEndpoint || !this.config.apiKey) {
@@ -254,26 +266,26 @@ class ErrorLogger {
         body: JSON.stringify(errorReport),
       });
     } catch (remoteError) {
-      // Fallback to console if remote logging fails
+      // Never throw from logger; failures should degrade gracefully.
       console.error("Failed to log error remotely:", remoteError);
       console.error("Original error:", errorReport);
     }
   }
 
   /**
-   * Generate a unique session ID
+   * Generates a pseudo-unique session key used to correlate error events.
    */
   private generateSessionId(): string {
     return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   }
 
   /**
-   * Set up global error handlers
+   * Registers global browser listeners for unhandled runtime failures.
    */
   private setupGlobalErrorHandlers(): void {
     if (typeof window === "undefined") return;
 
-    // Handle unhandled promise rejections
+    // Capture async failures that otherwise bypass component error boundaries.
     window.addEventListener("unhandledrejection", (event) => {
       this.logError(new Error(event.reason), {
         type: "unhandledrejection",
@@ -297,19 +309,38 @@ class ErrorLogger {
 export const errorLogger = new ErrorLogger();
 
 // Convenience functions
+/**
+ * Log Error.
+ * @param error - error value.
+ * @param context - context value.
+ */
 export const logError = (
   error: Error | BaseError,
   context?: Record<string, unknown>
 ) => errorLogger.logError(error, context);
 
+/**
+ * Log Warning.
+ * @param message - message value.
+ * @param context - context value.
+ */
 export const logWarning = (
   message: string,
   context?: Record<string, unknown>
 ) => errorLogger.logWarning(message, context);
 
+/**
+ * Log Info.
+ * @param message - message value.
+ * @param context - context value.
+ */
 export const logInfo = (message: string, context?: Record<string, unknown>) =>
   errorLogger.logInfo(message, context);
 
+/**
+ * Add Breadcrumb.
+ * @param breadcrumb - breadcrumb value.
+ */
 export const addBreadcrumb = (breadcrumb: ErrorBreadcrumb) =>
   errorLogger.addBreadcrumb(breadcrumb);
 

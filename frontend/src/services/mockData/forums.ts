@@ -133,4 +133,8 @@ export const mockForumThreads: ForumThread[] = [
   }
 ];
 
+/**
+ * Generate Mock Forums.
+ * @returns Forum[].
+ */
 export const generateMockForums = (): Forum[] => mockForums;

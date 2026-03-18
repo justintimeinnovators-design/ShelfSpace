@@ -29,6 +29,16 @@ interface ForumCardProps {
   cardIndex?: number;
 }
 
+/**
+ * Forum Card.
+ * @param {
+  forum,
+  variant = "forums",
+  onForumClick,
+  onJoinForum,
+  className = "",
+} - { forum, variant = "forums", on Forum Click, on Join Forum, class Name = "", } value.
+ */
 const ForumCard: React.FC<ForumCardProps> = ({
   forum,
   variant = "forums",

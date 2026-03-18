@@ -1,4 +1,12 @@
-// src/hooks/library/useLibraryState.ts
+/**
+ * Library state orchestration hook.
+ *
+ * This hook combines:
+ * - server data (reading lists + books),
+ * - persistent/shareable URL-derived state (list/view/filter),
+ * - local interaction state (selected books),
+ * into one interface for library screens.
+ */
 "use client";
 
 import { useState, useCallback, useMemo, useEffect } from "react";
@@ -22,10 +30,16 @@ const initialState: Omit<LibraryState, "isLoading" | "error"> = {
   selectedBooks: [],
 };
 
+/**
+ * Creates and manages the complete library UI state model.
+ *
+ * @param searchParams Optional route search params used to seed initial state.
+ * @returns State slices, derived data, and actions for library screens.
+ */
 export function useLibraryState(searchParams?: { [key: string]: string | string[] | undefined }) {
   const [state, setState] = useState<Omit<LibraryState, "isLoading" | "error">>(
     () => {
-      // Initialize from URL search params if provided
+      // Seed UI state from URL so views are shareable/bookmarkable.
       if (searchParams) {
         const getParam = (key: string) => {
           const value = searchParams[key];
@@ -58,13 +72,14 @@ export function useLibraryState(searchParams?: { [key: string]: string | string[
     refetch: refetchReadingLists,
   } = useReadingLists({ includeBooks: true });
 
-  // Actions
+  // Public actions that mutate only local UI state (not server state).
   const setSelectedList = useCallback((listId: string) => {
     setState((prev) => ({ ...prev, selectedList: listId }));
   }, []);
 
   const setViewMode = useCallback((mode: "grid" | "list") => {
     try {
+      // Guard invalid view-mode transitions before committing to state.
       validateLibraryState({ viewMode: mode });
       setState((prev) => ({ ...prev, viewMode: mode }));
     } catch (error) {
@@ -118,12 +133,13 @@ export function useLibraryState(searchParams?: { [key: string]: string | string[
     ]
   );
 
-  // Computed values
+  // Derived values, memoized to keep render costs predictable.
   const selectedListData = useMemo(() => {
     return readingLists?.find((list) => list.id === state.selectedList);
   }, [readingLists, state.selectedList]);
 
   useEffect(() => {
+    // Auto-select first list whenever selected list is missing/invalid.
     if (!readingLists || readingLists.length === 0) return;
     if (state.selectedList && readingLists.some((list) => list.id === state.selectedList)) {
       return;
@@ -137,6 +153,7 @@ export function useLibraryState(searchParams?: { [key: string]: string | string[
   const filteredBooks = useMemo(() => {
     if (!selectedListData?.books) return [];
 
+    // Work on a copy so source list state remains immutable.
     let filtered = [...selectedListData.books];
 
     // Apply search filter
@@ -163,7 +180,7 @@ export function useLibraryState(searchParams?: { [key: string]: string | string[
       );
     }
 
-    // Apply sorting
+    // Sorting is done last so it applies to the final filtered set.
     filtered.sort((a, b) => {
       const aValue = a[state.filters.sortBy as keyof typeof a] || "";
       const bValue = b[state.filters.sortBy as keyof typeof b] || "";
@@ -175,7 +192,7 @@ export function useLibraryState(searchParams?: { [key: string]: string | string[
     return filtered;
   }, [selectedListData, state.filters]);
 
-  // Extract unique genres from all books
+  // Build global genre list for filter controls from all loaded lists.
   const genres = useMemo(() => {
     if (!readingLists) return [];
     const allBooks = readingLists.flatMap(list => list.books || []);
@@ -185,7 +202,9 @@ export function useLibraryState(searchParams?: { [key: string]: string | string[
 
   const createReadingList = useCallback(async (name: string) => {
     const trimmed = name.trim();
+    // Ignore empty input to avoid accidental blank lists.
     if (!trimmed) return;
+    // Persist to backend then refresh query data for consistency.
     await libraryService.createReadingList({ list: { name: trimmed } });
     await refetchReadingLists();
   }, [refetchReadingLists]);

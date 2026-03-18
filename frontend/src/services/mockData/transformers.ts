@@ -65,6 +65,10 @@ export const mockReadingLists = [
   },
 ];
 
+/**
+ * Generate Mock Books.
+ * @param count - count value.
+ */
 export const generateMockBooks = (count: number) => {
   return Array.from({ length: count }, (_, i) => ({
     id: `book-${i + 1}`,
@@ -80,6 +84,11 @@ export const generateMockBooks = (count: number) => {
 // API Response transformation utilities
 export class DataTransformer {
   // Transform API book response to internal Book interface
+/**
+ * Transform Api Book To Book.
+ * @param apiBook - api Book value.
+ * @returns Book.
+ */
   static transformApiBookToBook(apiBook: any): Book {
     return {
       id: apiBook.id?.toString() || "",
@@ -114,6 +123,11 @@ export class DataTransformer {
   }
 
   // Transform internal Book to API format
+/**
+ * Transform Book To Api Format.
+ * @param book - book value.
+ * @returns any.
+ */
   static transformBookToApiFormat(book: Book): any {
     return {
       id: book.id,
@@ -146,6 +160,12 @@ export class DataTransformer {
   }
 
   // Transform BookInput to Book (for creation)
+/**
+ * Transform Book Input To Book.
+ * @param input - input value.
+ * @param id - id value.
+ * @returns Book.
+ */
   static transformBookInputToBook(input: BookInput, id: ID): Book {
     const now = new Date().toISOString();
 
@@ -189,6 +209,11 @@ export class DataTransformer {
   }
 
   // Transform API reading list response to internal ReadingList interface
+/**
+ * Transform Api Reading List To Reading List.
+ * @param apiList - api List value.
+ * @returns ReadingList.
+ */
   static transformApiReadingListToReadingList(apiList: any): ReadingList {
     return {
       id: apiList.id?.toString() || "",
@@ -215,6 +240,11 @@ export class DataTransformer {
   }
 
   // Transform internal ReadingList to API format
+/**
+ * Transform Reading List To Api Format.
+ * @param list - list value.
+ * @returns any.
+ */
   static transformReadingListToApiFormat(list: ReadingList): any {
     return {
       id: list.id,
@@ -234,6 +264,13 @@ export class DataTransformer {
   }
 
   // Transform ReadingListInput to ReadingList (for creation)
+/**
+ * Transform Reading List Input To Reading List.
+ * @param input - input value.
+ * @param id - id value.
+ * @param userId - user Id value.
+ * @returns ReadingList.
+ */
   static transformReadingListInputToReadingList(
     input: ReadingListInput,
     id: ID,
@@ -268,6 +305,13 @@ export class DataTransformer {
   }
 
   // Transform legacy BookDetail to new Book interface
+/**
+ * Transform Legacy Book Detail To Book.
+ * @param bookDetail - book Detail value.
+ * @param status - status value.
+ * @param progress - progress value.
+ * @returns Book.
+ */
   static transformLegacyBookDetailToBook(
     bookDetail: BookDetail,
     status: BookStatus = "want-to-read",
@@ -314,6 +358,11 @@ export class DataTransformer {
   }
 
   // Transform genre strings to standardized format
+/**
+ * Transform Genre String.
+ * @param genre - genre value.
+ * @returns string.
+ */
   private static transformGenreString(genre: string): string {
     const genreMap: Record<string, string> = {
       Classic: "fiction",
@@ -348,10 +397,20 @@ export class DataTransformer {
   }
 
   // Batch transformation utilities
+/**
+ * Transform Api Book Array To Books.
+ * @param apiBooks - api Books value.
+ * @returns Book[].
+ */
   static transformApiBookArrayToBooks(apiBooks: any[]): Book[] {
     return apiBooks.map(this.transformApiBookToBook);
   }
 
+/**
+ * Transform Api Reading List Array To Reading Lists.
+ * @param apiLists - api Lists value.
+ * @returns ReadingList[].
+ */
   static transformApiReadingListArrayToReadingLists(
     apiLists: any[]
   ): ReadingList[] {
@@ -359,6 +418,11 @@ export class DataTransformer {
   }
 
   // Validation utilities
+/**
+ * Validate Book Data.
+ * @param book - book value.
+ * @returns string[].
+ */
   static validateBookData(book: Partial<Book>): string[] {
     const errors: string[] = [];
 
@@ -384,6 +448,11 @@ export class DataTransformer {
     return errors;
   }
 
+/**
+ * Validate Reading List Data.
+ * @param list - list value.
+ * @returns string[].
+ */
   static validateReadingListData(list: Partial<ReadingList>): string[] {
     const errors: string[] = [];
 
@@ -399,6 +468,11 @@ export class DataTransformer {
   }
 
   // Utility for handling different date formats
+/**
+ * Normalize Date.
+ * @param date - date value.
+ * @returns string | undefined.
+ */
   static normalizeDate(date: string | Date | undefined): string | undefined {
     if (!date) return undefined;
 
@@ -410,6 +484,11 @@ export class DataTransformer {
   }
 
   // Utility for handling different ID formats
+/**
+ * Normalize Id.
+ * @param id - id value.
+ * @returns string.
+ */
   static normalizeId(id: string | number): string {
     return id.toString();
   }

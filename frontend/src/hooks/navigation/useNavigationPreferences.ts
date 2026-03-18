@@ -8,6 +8,9 @@ const defaultPreferences: NavigationPreferences = {
   favoriteItems: [],
 };
 
+/**
+ * Use Navigation Preferences.
+ */
 export function useNavigationPreferences() {
   const [preferences, setPreferences] =
     useState<NavigationPreferences>(defaultPreferences);

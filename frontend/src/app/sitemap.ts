@@ -1,16 +1,33 @@
 import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env["NEXT_PUBLIC_APP_URL"] || "http://localhost:3000";
-
-  const routes = ["", "/login", "/dashboard", "/profile"];
-
+  const baseUrl = process.env["NEXT_PUBLIC_APP_URL"] || "https://shelfspace.app";
   const now = new Date();
 
-  return routes.map((route) => ({
-    url: `${baseUrl}${route}`,
-    lastModified: now,
-    changeFrequency: "daily",
-    priority: route === "" ? 1 : 0.7,
-  }));
+  return [
+    {
+      url: baseUrl,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 1.0,
+    },
+    {
+      url: `${baseUrl}/sign-up`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/discover`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/forums`,
+      lastModified: now,
+      changeFrequency: "daily",
+      priority: 0.7,
+    },
+  ];
 }

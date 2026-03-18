@@ -8,6 +8,13 @@ interface UseLibraryFiltersProps {
   initialFilters?: Partial<LibraryFilters>;
 }
 
+/**
+ * Use Library Filters.
+ * @param {
+  books,
+  initialFilters = {},
+} - { books, initial Filters = {}, } value.
+ */
 export function useLibraryFilters({
   books,
   initialFilters = {},

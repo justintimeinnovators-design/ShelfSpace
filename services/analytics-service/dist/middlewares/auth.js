@@ -1,0 +1,55 @@
+import axios from "axios";
+const USER_SERVICE_URL = process.env.USER_SERVICE_URL || "http://localhost:3001";
+/**
+ * Is Authenticated.
+ * @param req - req value.
+ * @param res - res value.
+ * @param next - next value.
+ */
+export async function isAuthenticated(req, res, next) {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return res.status(401).json({
+            error: "Unauthorized",
+            message: "A valid Bearer token is required for authentication",
+        });
+    }
+    try {
+        const response = await axios.post(`${USER_SERVICE_URL}/api/auth/verify`, {}, {
+            headers: {
+                Authorization: authHeader,
+            },
+        });
+        if (response.status === 200 && response.data.userId) {
+            req.userId = response.data.userId;
+            next();
+        }
+        else {
+            return res.status(401).json({
+                error: "Forbidden",
+                message: "Your Authentication token is invalid or has expired",
+            });
+        }
+    }
+    catch (error) {
+        if (axios.isAxiosError(error)) {
+            if (error.response) {
+                const status = error.response.status;
+                if (status === 401 || status === 403) {
+                    return res.status(401).json({
+                        error: "Forbidden",
+                        message: "Your Authentication token is invalid or has expired",
+                    });
+                }
+                return res.status(status).json(error.response.data || { error: "Authentication failed" });
+            }
+            return res.status(503).json({
+                error: "User service unavailable",
+            });
+        }
+        console.error("Authentication Error: ", error);
+        return res.status(500).json({
+            error: "Authentication failed",
+        });
+    }
+}

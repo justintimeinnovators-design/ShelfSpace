@@ -19,6 +19,18 @@ interface BookCardProps {
   showSave?: boolean;
 }
 
+/**
+ * Book Card.
+ * @param {
+  book,
+  onSelect,
+  className = "",
+  onSave,
+  isSaved = false,
+  isSaving = false,
+  showSave = true,
+} - { book, on Select, class Name = "", on Save, is Saved = false, is Saving = false, show Save = true, } value.
+ */
 export const BookCard: React.FC<BookCardProps> = ({
   book,
   onSelect,
@@ -39,6 +51,9 @@ export const BookCard: React.FC<BookCardProps> = ({
   const [newListName, setNewListName] = useState("");
   const [isCreatingList, setIsCreatingList] = useState(false);
 
+/**
+ * Handle Click.
+ */
   const handleClick = () => {
     if (onSelect) {
       onSelect(book);
@@ -47,6 +62,10 @@ export const BookCard: React.FC<BookCardProps> = ({
     }
   };
 
+/**
+ * Handle Key Down.
+ * @param event - event value.
+ */
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
@@ -130,6 +149,10 @@ export const BookCard: React.FC<BookCardProps> = ({
 
   const showSaveButton = showSave;
 
+/**
+ * Get Status Color.
+ * @param status - status value.
+ */
   const getStatusColor = (status: string) => {
     switch (status) {
       case "read":

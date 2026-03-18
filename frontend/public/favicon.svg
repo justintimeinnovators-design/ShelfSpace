@@ -1,0 +1,60 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="60%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#ea580c"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="0" y1="0" x2="0" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#7c2d12" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Rounded square background -->
+  <rect width="512" height="512" rx="112" ry="112" fill="url(#bg)" filter="url(#shadow)"/>
+
+  <!-- Shine overlay -->
+  <rect width="512" height="512" rx="112" ry="112" fill="url(#shine)"/>
+
+  <!-- Open book — left page -->
+  <path
+    d="M 100 168
+       C 100 168 176 180 256 210
+       L 256 370
+       C 176 342 100 330 100 330
+       Z"
+    fill="white"
+    opacity="0.97"
+  />
+
+  <!-- Left page lines -->
+  <line x1="128" y1="228" x2="236" y2="248" stroke="#f97316" stroke-width="9" stroke-linecap="round" opacity="0.5"/>
+  <line x1="128" y1="262" x2="236" y2="280" stroke="#f97316" stroke-width="9" stroke-linecap="round" opacity="0.5"/>
+  <line x1="128" y1="296" x2="236" y2="312" stroke="#f97316" stroke-width="9" stroke-linecap="round" opacity="0.5"/>
+
+  <!-- Open book — right page -->
+  <path
+    d="M 412 168
+       C 412 168 336 180 256 210
+       L 256 370
+       C 336 342 412 330 412 330
+       Z"
+    fill="white"
+    opacity="0.97"
+  />
+
+  <!-- Right page lines -->
+  <line x1="384" y1="228" x2="276" y2="248" stroke="#f97316" stroke-width="9" stroke-linecap="round" opacity="0.5"/>
+  <line x1="384" y1="262" x2="276" y2="280" stroke="#f97316" stroke-width="9" stroke-linecap="round" opacity="0.5"/>
+  <line x1="384" y1="296" x2="276" y2="312" stroke="#f97316" stroke-width="9" stroke-linecap="round" opacity="0.5"/>
+
+  <!-- Spine crease -->
+  <line x1="256" y1="208" x2="256" y2="372" stroke="#e8e0d8" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+
+  <!-- Subtle bookmark ribbon on right -->
+  <path d="M 390 168 L 390 230 L 374 215 L 358 230 L 358 168 Z" fill="#fde68a" opacity="0.85"/>
+</svg>

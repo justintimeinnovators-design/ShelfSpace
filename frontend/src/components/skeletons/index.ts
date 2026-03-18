@@ -1,4 +1,3 @@
-// Export all skeleton components for easy importing
 export {
   Skeleton,
   CardSkeleton,
@@ -6,11 +5,14 @@ export {
   StatsCardSkeleton,
   TableRowSkeleton,
   ListItemSkeleton,
+  GroupCardSkeleton,
+  PageLoader,
   DashboardSkeleton,
   LibrarySkeleton,
+  DiscoverSkeleton,
+  ForumsSkeleton,
   ChatSkeleton,
   SettingsSkeleton,
   ProfileSkeleton,
-  GroupCardSkeleton,
-  PageLoader,
+  BookDetailSkeleton,
 } from "./SkeletonComponents";

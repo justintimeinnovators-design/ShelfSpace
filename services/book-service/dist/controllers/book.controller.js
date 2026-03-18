@@ -1,19 +1,13 @@
 import Book from "../models/book.js";
 import mongoose from "mongoose";
 import { randomUUID } from "crypto";
-import axios from "axios";
-const ANALYTICS_SERVICE_URL = process.env.ANALYTICS_SERVICE_URL?.trim() || "";
+import { publishAnalyticsEvents } from "../kafka/producer.js";
 async function emitAnalyticsEvent(req, payload) {
-    if (!ANALYTICS_SERVICE_URL)
-        return;
-    const authHeader = req.headers.authorization;
-    if (!authHeader)
-        return;
     try {
-        await axios.post(`${ANALYTICS_SERVICE_URL}/api/analytics/events`, { events: [payload] }, { headers: { Authorization: authHeader } });
+        await publishAnalyticsEvents([{ userId: req.user?.id, ...payload }]);
     }
     catch {
-        console.warn("Failed to emit analytics event");
+        console.warn("Failed to emit analytics event to Kafka");
     }
 }
 /**
@@ -25,6 +19,11 @@ function escapeRegex(text) {
     return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 //
+/**
+ * Create Book.
+ * @param req - req value.
+ * @param res - res value.
+ */
 export const createBook = async (req, res) => {
     try {
         const payload = { ...req.body };
@@ -50,6 +49,11 @@ export const createBook = async (req, res) => {
         res.status(500).json({ message: "Error creating book", error });
     }
 };
+/**
+ * Get All Books.
+ * @param req - req value.
+ * @param res - res value.
+ */
 export const getAllBooks = async (req, res) => {
     try {
         // --- 1. DESTRUCTURE QUERY PARAMETERS ---
@@ -138,6 +142,11 @@ export const getAllBooks = async (req, res) => {
         res.status(500).json({ success: false, error: "Server Error" });
     }
 };
+/**
+ * Get Book By Id.
+ * @param req - req value.
+ * @param res - res value.
+ */
 export const getBookById = async (req, res) => {
     try {
         const { bookId } = req.params;
@@ -166,6 +175,11 @@ export const getBookById = async (req, res) => {
         res.status(500).json({ message: "Error getting book", error });
     }
 };
+/**
+ * Update Book.
+ * @param req - req value.
+ * @param res - res value.
+ */
 export const updateBook = async (req, res) => {
     try {
         const book = await Book.findByIdAndUpdate(req.params.id, req.body, {
@@ -192,6 +206,11 @@ export const updateBook = async (req, res) => {
         res.status(500).json({ message: "Error updating book", error });
     }
 };
+/**
+ * Delete Book.
+ * @param req - req value.
+ * @param res - res value.
+ */
 export const deleteBook = async (req, res) => {
     try {
         const book = await Book.findByIdAndDelete(req.params.id);
@@ -214,6 +233,11 @@ export const deleteBook = async (req, res) => {
         res.status(500).json({ message: "Error deleting book", error });
     }
 };
+/**
+ * Search Books.
+ * @param req - req value.
+ * @param res - res value.
+ */
 export const searchBooks = async (req, res) => {
     try {
         const query = req.query.q;
@@ -269,6 +293,11 @@ export const searchBooks = async (req, res) => {
         res.status(500).json({ message: "Error searching books", error });
     }
 };
+/**
+ * Get Genres.
+ * @param req - req value.
+ * @param res - res value.
+ */
 export const getGenres = async (req, res) => {
     try {
         const genres = await Book.distinct("genres");
@@ -278,6 +307,11 @@ export const getGenres = async (req, res) => {
         res.status(500).json({ message: "Error getting genres", error });
     }
 };
+/**
+ * Get Authors.
+ * @param req - req value.
+ * @param res - res value.
+ */
 export const getAuthors = async (req, res) => {
     try {
         const authors = await Book.distinct("authors.name");
@@ -287,6 +321,11 @@ export const getAuthors = async (req, res) => {
         res.status(500).json({ message: "Error getting authors", error });
     }
 };
+/**
+ * Get Languages.
+ * @param req - req value.
+ * @param res - res value.
+ */
 export const getLanguages = async (req, res) => {
     try {
         const languages = await Book.distinct("language_code");

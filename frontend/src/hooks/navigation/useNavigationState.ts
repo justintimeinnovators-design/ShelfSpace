@@ -15,6 +15,9 @@ const initialState: Omit<NavigationState, "isLoading" | "error"> = {
   preferences: initialPreferences,
 };
 
+/**
+ * Use Navigation State.
+ */
 export function useNavigationState() {
   const [state, setState] =
     useState<Omit<NavigationState, "isLoading" | "error">>(initialState);

@@ -1,24 +1,15 @@
 import type { Request } from "express";
-import axios from "axios";
-
-const ANALYTICS_SERVICE_URL =
-  process.env.ANALYTICS_SERVICE_URL?.trim() || "";
+import { publishAnalyticsEvents } from "../kafka/producer.js";
 
 export async function emitAnalyticsEvents(
   req: Request,
   events: Array<Record<string, any>>,
   authHeaderOverride?: string
 ) {
-  if (!ANALYTICS_SERVICE_URL || events.length === 0) return;
-  const authHeader = authHeaderOverride || req.headers.authorization;
-  if (!authHeader) return;
+  if (events.length === 0) return;
   try {
-    await axios.post(
-      `${ANALYTICS_SERVICE_URL}/api/analytics/events`,
-      { events },
-      { headers: { Authorization: authHeader } }
-    );
+    await publishAnalyticsEvents(events);
   } catch (error) {
-    console.warn("Failed to emit analytics events");
+    console.warn("Failed to emit analytics events to Kafka:", error);
   }
 }

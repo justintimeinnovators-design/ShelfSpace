@@ -18,6 +18,23 @@ interface InteractiveButtonProps {
   fullWidth?: boolean;
 }
 
+/**
+ * Interactive Button.
+ * @param {
+  children,
+  onClick,
+  variant = "primary",
+  size = "md",
+  disabled = false,
+  loading = false,
+  icon: Icon,
+  iconPosition = "left",
+  className = "",
+  ripple: _ripple = false,
+  glow = false,
+  fullWidth = false
+} - { children, on Click, variant = "primary", size = "md", disabled = false, loading = false, icon: Icon, icon Position = "left", class Name = "", ripple: ripple = false, glow = false, full Width = false } value.
+ */
 export function InteractiveButton({
   children,
   onClick,
@@ -60,10 +77,7 @@ export function InteractiveButton({
       className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${widthClasses} ${glowClasses} ${className}`}
     >
       {loading && (
-        <svg className="animate-spin -ml-1 mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24">
-          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-        </svg>
+        <div className="-ml-1 mr-2 h-4 w-4 bg-current opacity-30 rounded animate-pulse" />
       )}
       
       {Icon && iconPosition === "left" && !loading && (
@@ -80,6 +94,15 @@ export function InteractiveButton({
 }
 
 // Simple floating action button without animations
+/**
+ * Floating Action Button.
+ * @param {
+  icon: Icon,
+  onClick,
+  position = "bottom-right",
+  className = ""
+} - { icon: Icon, on Click, position = "bottom right", class Name = "" } value.
+ */
 export function FloatingActionButton({
   icon: Icon,
   onClick,
@@ -109,6 +132,15 @@ export function FloatingActionButton({
 }
 
 // Simple toggle button without animations
+/**
+ * Toggle Button.
+ * @param {
+  isActive,
+  onClick,
+  children,
+  className = ""
+} - { is Active, on Click, children, class Name = "" } value.
+ */
 export function ToggleButton({
   isActive,
   onClick,

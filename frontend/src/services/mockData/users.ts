@@ -82,10 +82,19 @@ export const mockUsers: MockUser[] = [
 ];
 
 // Helper functions
+/**
+ * Get User By Id.
+ * @param id - id value.
+ * @returns MockUser | undefined.
+ */
 export function getUserById(id: ID): MockUser | undefined {
   return mockUsers.find((user) => user.id === id);
 }
 
+/**
+ * Get Current User.
+ * @returns MockUser.
+ */
 export function getCurrentUser(): MockUser {
   const user = mockUsers[0];
   if (!user) {

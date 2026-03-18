@@ -9,6 +9,15 @@ interface EnhancedLoadingProps {
   className?: string;
 }
 
+/**
+ * Enhanced Loading.
+ * @param {
+  size = "md",
+  variant = "spinner",
+  text,
+  className = ""
+} - { size = "md", variant = "spinner", text, class Name = "" } value.
+ */
 export function EnhancedLoading({
   size = "md",
   variant = "spinner",
@@ -29,10 +38,16 @@ export function EnhancedLoading({
     xl: "text-lg"
   };
 
+/**
+ * Render Spinner.
+ */
   const renderSpinner = () => (
-    <div className={`${sizeClasses[size]} border-2 border-gray-300 border-t-indigo-dye-600 rounded-full animate-spin`} />
+    <div className={`${sizeClasses[size]} bg-amber-100 dark:bg-slate-700 rounded-lg animate-pulse`} />
   );
 
+/**
+ * Render Dots.
+ */
   const renderDots = () => (
     <div className="flex space-x-1">
       {[0, 1, 2].map((i) => (
@@ -45,16 +60,25 @@ export function EnhancedLoading({
     </div>
   );
 
+/**
+ * Render Pulse.
+ */
   const renderPulse = () => (
     <div className={`${sizeClasses[size]} bg-indigo-dye-600 rounded-full animate-pulse`} />
   );
 
+/**
+ * Render Book.
+ */
   const renderBook = () => (
     <div className={`${sizeClasses[size]} flex items-center justify-center`}>
       <div className="text-indigo-dye-600 animate-pulse"><BookOpen className="h-8 w-8" /></div>
     </div>
   );
 
+/**
+ * Render Skeleton.
+ */
   const renderSkeleton = () => (
     <div className="space-y-2">
       <div className="h-4 bg-gray-200 rounded animate-pulse" />
@@ -63,6 +87,9 @@ export function EnhancedLoading({
     </div>
   );
 
+/**
+ * Render Variant.
+ */
   const renderVariant = () => {
     switch (variant) {
       case "dots":
@@ -90,6 +117,10 @@ export function EnhancedLoading({
   );
 }
 
+/**
+ * Page Loading.
+ * @param { text - { text value.
+ */
 export function PageLoading({ text = "Loading..." }: { text?: string }) {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
@@ -98,10 +129,18 @@ export function PageLoading({ text = "Loading..." }: { text?: string }) {
   );
 }
 
+/**
+ * Inline Loading.
+ * @param { text, size - { text, size value.
+ */
 export function InlineLoading({ text, size = "sm" }: { text?: string; size?: "sm" | "md" | "lg" }) {
   return <EnhancedLoading variant="spinner" size={size} {...(text && { text })} />;
 }
 
+/**
+ * Button Loading.
+ * @param { size - { size value.
+ */
 export function ButtonLoading({ size = "sm" }: { size?: "sm" | "md" | "lg" }) {
   return <EnhancedLoading variant="spinner" size={size} />;
 }

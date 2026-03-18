@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 const FEEDBACK_WEBHOOK_URL = process.env["FEEDBACK_WEBHOOK_URL"];
 
+/**
+ * POST.
+ * @param request - request value.
+ */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();

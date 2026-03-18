@@ -8,6 +8,12 @@ const DEFAULT_GOALS = {
   targetRating: 4.5,
 };
 
+/**
+ * Create Default Document.
+ * @param userId - user Id value.
+ * @param nowIso - now Iso value.
+ * @returns AnalyticsDocument.
+ */
 function createDefaultDocument(userId: string, nowIso: string): AnalyticsDocument {
   return {
     userId,
@@ -28,11 +34,46 @@ function createDefaultDocument(userId: string, nowIso: string): AnalyticsDocumen
     ratings: { "1": 0, "2": 0, "3": 0, "4": 0, "5": 0 },
     activity: [],
     goals: { ...DEFAULT_GOALS },
+    lastActiveDate: null,
     createdAt: nowIso,
     updatedAt: nowIso,
-  };
+  } as any;
 }
 
+/**
+ * Update Streak.
+ * Increments currentStreak when the user has activity on consecutive days.
+ */
+function updateStreak(doc: any, timestamp: string) {
+  const today = timestamp.slice(0, 10);
+  const last = doc.lastActiveDate;
+
+  if (!last) {
+    doc.lastActiveDate = today;
+    doc.stats.currentStreak = 1;
+    doc.stats.longestStreak = Math.max(1, doc.stats.longestStreak);
+    return;
+  }
+  if (last === today) return;
+
+  const d = new Date(today);
+  d.setDate(d.getDate() - 1);
+  const yesterday = d.toISOString().slice(0, 10);
+
+  if (last === yesterday) {
+    doc.stats.currentStreak += 1;
+    doc.stats.longestStreak = Math.max(doc.stats.currentStreak, doc.stats.longestStreak);
+  } else {
+    doc.stats.currentStreak = 1;
+  }
+  doc.lastActiveDate = today;
+}
+
+/**
+ * Format Month.
+ * @param timestamp - timestamp value.
+ * @returns string.
+ */
 function formatMonth(timestamp: string): string {
   const date = new Date(timestamp);
   const year = date.getFullYear();
@@ -40,10 +81,24 @@ function formatMonth(timestamp: string): string {
   return `${year}-${month}`;
 }
 
+/**
+ * Add Activity.
+ * @param doc - doc value.
+ * @param item - item value.
+ */
 function addActivity(doc: AnalyticsDocument, item: ActivityItem) {
-  doc.activity = [item, ...doc.activity].slice(0, 50);
+  // Ensure unique id even if the same event fires multiple times in a session
+  const existingCount = doc.activity.filter((a) => a.id.startsWith(item.id)).length;
+  const uniqueItem = existingCount > 0 ? { ...item, id: `${item.id}-${existingCount}` } : item;
+  doc.activity = [uniqueItem, ...doc.activity].slice(0, 50);
 }
 
+/**
+ * Update Monthly.
+ * @param doc - doc value.
+ * @param timestamp - timestamp value.
+ * @param updates - updates value.
+ */
 function updateMonthly(doc: AnalyticsDocument, timestamp: string, updates: { books?: number; pages?: number; minutes?: number }) {
   const key = formatMonth(timestamp);
   const current = doc.monthly[key] || { books: 0, pages: 0, minutes: 0 };
@@ -54,6 +109,11 @@ function updateMonthly(doc: AnalyticsDocument, timestamp: string, updates: { boo
   };
 }
 
+/**
+ * Increment Genre Counts.
+ * @param doc - doc value.
+ * @param genres - genres value.
+ */
 function incrementGenreCounts(doc: AnalyticsDocument, genres?: string[]) {
   if (!genres || genres.length === 0) return;
   genres.forEach((genre) => {
@@ -62,6 +122,12 @@ function incrementGenreCounts(doc: AnalyticsDocument, genres?: string[]) {
   });
 }
 
+/**
+ * Apply Status Delta.
+ * @param doc - doc value.
+ * @param status - status value.
+ * @param delta - delta value.
+ */
 function applyStatusDelta(doc: AnalyticsDocument, status?: string, delta = 1) {
   if (!status) return;
   if (status === "read" || status === "completed") {
@@ -73,6 +139,11 @@ function applyStatusDelta(doc: AnalyticsDocument, status?: string, delta = 1) {
   }
 }
 
+/**
+ * Project Event.
+ * @param analyticsCollection - analytics Collection value.
+ * @param event - event value.
+ */
 export async function projectEvent(
   analyticsCollection: Collection<AnalyticsDocument>,
   event: AnalyticsEvent
@@ -83,6 +154,8 @@ export async function projectEvent(
 
   const existing = await analyticsCollection.findOne({ userId: event.userId });
   const doc = existing || createDefaultDocument(event.userId, nowIso);
+
+  updateStreak(doc, timestamp);
 
   switch (event.type) {
     case "BOOK_ADDED": {

@@ -11,6 +11,9 @@ const BATCH_SIZE = 500; // The number of documents to insert in a single batch
 
 const RESUME_FROM_BOOK_ID = 57101;
 
+/**
+ * Upload Data.
+ */
 const uploadData = async () => {
   try {
     if (!process.env.MONGO_URI) {

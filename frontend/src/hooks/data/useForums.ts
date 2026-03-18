@@ -1,14 +1,26 @@
+/**
+ * Forums data hooks.
+ *
+ * Provides list/detail forum state with optimistic local updates where safe,
+ * and explicit refresh flows after membership-changing operations.
+ */
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
 import { ForumService, type ForumDTO, type CreateForumInput, type UpdateForumInput } from "@/lib/forum-service";
 
+/**
+ * Fetches and manages the forum collection for forums landing pages.
+ *
+ * @returns Forum collection state plus CRUD/membership actions.
+ */
 export function useForums() {
   const [forums, setForums] = useState<ForumDTO[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchForums = useCallback(async () => {
+    // One canonical fetch path keeps loading/error behavior consistent.
     setLoading(true);
     setError(null);
     try {
@@ -26,6 +38,7 @@ export function useForums() {
   }, [fetchForums]);
 
   const createForum = useCallback(async (input: CreateForumInput) => {
+    // Prepend to list so newly created forum is visible immediately.
     const created = await ForumService.create(input);
     setForums((prev) => [created, ...prev]);
     return created;
@@ -43,6 +56,7 @@ export function useForums() {
   }, []);
 
   const joinForum = useCallback(async (id: string) => {
+    // Re-fetch to pick up membership-derived aggregates (counts/roles).
     await ForumService.join(id);
     await fetchForums();
   }, [fetchForums]);
@@ -65,6 +79,12 @@ export function useForums() {
   };
 }
 
+/**
+ * Fetches and manages one forum detail record.
+ *
+ * @param forumId Forum identifier from route.
+ * @returns Forum detail state and forum-specific membership helpers.
+ */
 export function useForum(forumId: string) {
   const [forum, setForum] = useState<ForumDTO | null>(null);
   const [loading, setLoading] = useState(false);
@@ -98,6 +118,7 @@ export function useForum(forumId: string) {
   }, [forumId, fetchForum]);
 
   const isMember = useCallback((userId: string) => {
+    // Membership check reads from currently loaded forum membership snapshot.
     return forum?.memberships?.some((m) => m.userId === userId) || false;
   }, [forum]);
 

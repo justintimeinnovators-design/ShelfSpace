@@ -1,15 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, Shield, RefreshCw, AlertTriangle } from "lucide-react";
+import { Shield, RefreshCw, AlertTriangle } from "lucide-react";
 import { useUserManagement } from "@/hooks/data/useAdmin";
 import { UserStatus } from "@/lib/admin-service";
 
+/**
+ * User Management.
+ */
 export function UserManagement() {
   const [userId, setUserId] = useState("");
   const [status, setStatus] = useState<UserStatus | "">("");
   const { loading, error, updateUserStatus, resetUserPreferences } = useUserManagement();
 
+/**
+ * Handle Status Update.
+ */
   const handleStatusUpdate = async () => {
     if (!userId || !status) {
       alert("Please enter a user ID and select a status");
@@ -28,6 +34,9 @@ export function UserManagement() {
     }
   };
 
+/**
+ * Handle Reset Prefs.
+ */
   const handleResetPrefs = async () => {
     if (!userId) {
       alert("Please enter a user ID");
@@ -95,7 +104,7 @@ export function UserManagement() {
             disabled={loading || !userId || !status}
             className="w-full px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Shield className="h-4 w-4" />}
+            {loading ? <div className="h-4 w-4 bg-white/40 rounded animate-pulse" /> : <Shield className="h-4 w-4" />}
             Update Status
           </button>
         </div>
@@ -115,7 +124,7 @@ export function UserManagement() {
           disabled={loading || !userId}
           className="w-full px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
         >
-          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}
+          {loading ? <div className="h-4 w-4 bg-white/40 rounded animate-pulse" /> : <RefreshCw className="h-4 w-4" />}
           Reset Preferences
         </button>
       </div>

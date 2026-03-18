@@ -42,6 +42,10 @@ export interface UseNavigationReturn {
   getNavigationItems: () => NavigationItemData[];
 }
 
+/**
+ * Use Navigation.
+ * @returns UseNavigationReturn.
+ */
 export function useNavigation(): UseNavigationReturn {
   const pathname = usePathname();
   const router = useRouter();

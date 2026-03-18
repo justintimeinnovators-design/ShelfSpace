@@ -19,6 +19,11 @@ if ((!ACCESS_TOKEN || !USER_ID) && (!ACCESS_TOKENS || !USER_IDS)) {
   process.exit(1);
 }
 
+/**
+ * Get Status From List Name.
+ * @param name - name value.
+ * @returns string | undefined.
+ */
 function getStatusFromListName(name: string): string | undefined {
   const listName = name.toLowerCase();
   if (listName.includes("finished") || listName.includes("read") || listName.includes("completed")) {
@@ -33,6 +38,10 @@ function getStatusFromListName(name: string): string | undefined {
   return undefined;
 }
 
+/**
+ * Fetch Book.
+ * @param bookId - book Id value.
+ */
 async function fetchBook(bookId: string) {
   try {
     const response = await axios.get(`${BOOK_SERVICE_URL}/api/books/${bookId}`, { timeout: 5000 });
@@ -42,6 +51,10 @@ async function fetchBook(bookId: string) {
   }
 }
 
+/**
+ * Get User Auth Pairs.
+ * @returns Array<{ userId: string; accessToken: string }>.
+ */
 function getUserAuthPairs(): Array<{ userId: string; accessToken: string }> {
   if (USER_IDS && ACCESS_TOKENS) {
     const ids = USER_IDS.split(",").map((id) => id.trim()).filter(Boolean);
@@ -54,6 +67,10 @@ function getUserAuthPairs(): Array<{ userId: string; accessToken: string }> {
   return [{ userId: USER_ID as string, accessToken: ACCESS_TOKEN as string }];
 }
 
+/**
+ * Fetch User Reviews.
+ * @param userId - user Id value.
+ */
 async function fetchUserReviews(userId: string) {
   try {
     const response = await axios.get(`${REVIEW_SERVICE_URL}/reviews/user/${userId}`, {
@@ -66,6 +83,11 @@ async function fetchUserReviews(userId: string) {
   }
 }
 
+/**
+ * Backfill For User.
+ * @param userId - user Id value.
+ * @param accessToken - access Token value.
+ */
 async function backfillForUser(userId: string, accessToken: string) {
   const authHeader = { Authorization: `Bearer ${accessToken}` };
   const listsResponse = await axios.get(`${USER_LIBRARY_SERVICE_URL}/reading-lists`, {
@@ -162,6 +184,9 @@ async function backfillForUser(userId: string, accessToken: string) {
   }
 }
 
+/**
+ * Main.
+ */
 async function main() {
   const pairs = getUserAuthPairs();
   for (const { userId, accessToken } of pairs) {

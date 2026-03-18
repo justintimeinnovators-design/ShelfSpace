@@ -1,6 +1,12 @@
 import type { Request, Response, NextFunction } from "express";
 import prisma from "../prisma.js";
 
+/**
+ * Is Admin.
+ * @param req - req value.
+ * @param res - res value.
+ * @param next - next value.
+ */
 export const isAdmin = async (
   req: Request,
   res: Response,

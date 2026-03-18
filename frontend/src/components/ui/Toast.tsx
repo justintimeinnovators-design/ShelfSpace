@@ -25,6 +25,9 @@ interface ToastContextType {
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
+/**
+ * Use Toast.
+ */
 export function useToast() {
   const context = useContext(ToastContext);
   if (!context) {
@@ -33,6 +36,9 @@ export function useToast() {
   return context;
 }
 
+/**
+ * Use Toast Notifications.
+ */
 export function useToastNotifications() {
   const { addToast } = useToast();
 
@@ -55,6 +61,10 @@ export function useToastNotifications() {
   };
 }
 
+/**
+ * Toast Provider.
+ * @param { children } - { children } value.
+ */
 export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
@@ -88,6 +98,10 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
+/**
+ * Toast Container.
+ * @param { toasts, onRemove } - { toasts, on Remove } value.
+ */
 function ToastContainer({ toasts, onRemove }: { toasts: Toast[]; onRemove: (id: string) => void }) {
   if (toasts.length === 0) return null;
 
@@ -100,7 +114,14 @@ function ToastContainer({ toasts, onRemove }: { toasts: Toast[]; onRemove: (id: 
   );
 }
 
+/**
+ * Toast.
+ * @param { toast, onRemove } - { toast, on Remove } value.
+ */
 function Toast({ toast, onRemove }: { toast: Toast; onRemove: (id: string) => void }) {
+/**
+ * Get Icon.
+ */
   const getIcon = () => {
     switch (toast.type) {
       case "success":
@@ -116,6 +137,9 @@ function Toast({ toast, onRemove }: { toast: Toast; onRemove: (id: string) => vo
     }
   };
 
+/**
+ * Get Background Color.
+ */
   const getBackgroundColor = () => {
     switch (toast.type) {
       case "success":

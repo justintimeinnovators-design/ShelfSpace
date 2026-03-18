@@ -8,6 +8,10 @@ import { ReviewService } from "@/lib/review-service";
 import { ForumService } from "@/lib/forum-service";
 import { libraryService } from "@/services/libraryService";
 
+/**
+ * Result Box.
+ * @param { value } - { value } value.
+ */
 function ResultBox({ value }: { value: any }) {
   if (value === null || value === undefined) return null;
   return (
@@ -17,6 +21,9 @@ function ResultBox({ value }: { value: any }) {
   );
 }
 
+/**
+ * Services Console.
+ */
 export function ServicesConsole() {
   const { data: session } = useSession();
   const token = session?.accessToken || "";

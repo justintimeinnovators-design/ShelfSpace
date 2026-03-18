@@ -12,12 +12,14 @@ import {
   CheckCircle,
   XCircle,
   RefreshCw,
-  Loader2,
 } from "lucide-react";
 import { AdminService, ModerationLog, ModerationAction, ValidationStatus, UserStatus } from "@/lib/admin-service";
 
 type TabType = "logs" | "books" | "users";
 
+/**
+ * Admin Panel.
+ */
 export function AdminPanel() {
   const { data: session } = useSession();
   const router = useRouter();
@@ -33,6 +35,9 @@ export function AdminPanel() {
     }
   }, [activeTab]);
 
+/**
+ * Load Moderation Logs.
+ */
   const loadModerationLogs = async () => {
     try {
       setIsLoading(true);
@@ -47,6 +52,11 @@ export function AdminPanel() {
     }
   };
 
+/**
+ * Handle Book Validation.
+ * @param bookId - book Id value.
+ * @param status - status value.
+ */
   const handleBookValidation = async (bookId: string, status: ValidationStatus) => {
     try {
       setIsLoading(true);
@@ -62,6 +72,11 @@ export function AdminPanel() {
     }
   };
 
+/**
+ * Handle User Status Update.
+ * @param userId - user Id value.
+ * @param status - status value.
+ */
   const handleUserStatusUpdate = async (userId: string, status: UserStatus) => {
     if (!confirm(`Are you sure you want to ${status.toLowerCase()} this user?`)) {
       return;
@@ -79,6 +94,10 @@ export function AdminPanel() {
     }
   };
 
+/**
+ * Handle Reset Preferences.
+ * @param userId - user Id value.
+ */
   const handleResetPreferences = async (userId: string) => {
     if (!confirm("Are you sure you want to reset this user's preferences?")) {
       return;
@@ -200,6 +219,14 @@ export function AdminPanel() {
 }
 
 // Moderation Logs Tab Component
+/**
+ * Moderation Logs Tab.
+ * @param {
+  logs,
+  isLoading,
+  onRefresh,
+} - { logs, is Loading, on Refresh, } value.
+ */
 function ModerationLogsTab({
   logs,
   isLoading,
@@ -209,6 +236,10 @@ function ModerationLogsTab({
   isLoading: boolean;
   onRefresh: () => void;
 }) {
+/**
+ * Get Action Icon.
+ * @param action - action value.
+ */
   const getActionIcon = (action: ModerationAction) => {
     switch (action) {
       case "DELETE_REVIEW":
@@ -233,14 +264,21 @@ function ModerationLogsTab({
           disabled={isLoading}
           className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors disabled:opacity-50"
         >
-          <RefreshCw className={`h-4 w-4 ${isLoading ? "animate-spin" : ""}`} />
+          <RefreshCw className="h-4 w-4" />
           Refresh
         </button>
       </div>
 
       {isLoading ? (
-        <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
+        <div className="py-12 space-y-3">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="flex gap-4 animate-pulse">
+              <div className="h-4 bg-amber-100 dark:bg-slate-700 rounded w-1/4" />
+              <div className="h-4 bg-amber-100 dark:bg-slate-700 rounded w-1/5" />
+              <div className="h-4 bg-amber-100 dark:bg-slate-700 rounded w-1/5" />
+              <div className="h-4 bg-amber-100 dark:bg-slate-700 rounded flex-1" />
+            </div>
+          ))}
         </div>
       ) : logs.length === 0 ? (
         <div className="text-center py-12">
@@ -285,6 +323,13 @@ function ModerationLogsTab({
 }
 
 // Book Validation Tab Component
+/**
+ * Book Validation Tab.
+ * @param {
+  onValidate,
+  isLoading,
+} - { on Validate, is Loading, } value.
+ */
 function BookValidationTab({
   onValidate,
   isLoading,
@@ -295,6 +340,9 @@ function BookValidationTab({
   const [bookId, setBookId] = useState("");
   const [validationStatus, setValidationStatus] = useState<ValidationStatus | null>(null);
 
+/**
+ * Handle Validate.
+ */
   const handleValidate = () => {
     if (!bookId || !validationStatus) {
       alert("Please enter a book ID and select a status");
@@ -335,7 +383,7 @@ function BookValidationTab({
           disabled={isLoading || !bookId || !validationStatus}
           className="px-6 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors disabled:opacity-50"
         >
-          {isLoading ? <Loader2 className="h-4 w-4 animate-spin inline" /> : "Validate Book"}
+          {isLoading ? <span className="inline-block h-4 w-16 bg-white/40 rounded animate-pulse align-middle" /> : "Validate Book"}
         </button>
       </div>
     </div>
@@ -343,6 +391,14 @@ function BookValidationTab({
 }
 
 // User Management Tab Component
+/**
+ * User Management Tab.
+ * @param {
+  onStatusUpdate,
+  onResetPreferences,
+  isLoading,
+} - { on Status Update, on Reset Preferences, is Loading, } value.
+ */
 function UserManagementTab({
   onStatusUpdate,
   onResetPreferences,
@@ -355,6 +411,9 @@ function UserManagementTab({
   const [userId, setUserId] = useState("");
   const [status, setStatus] = useState<UserStatus | "">("");
 
+/**
+ * Handle Status Update.
+ */
   const handleStatusUpdate = () => {
     if (!userId || !status) {
       alert("Please enter a user ID and select a status");
@@ -363,6 +422,9 @@ function UserManagementTab({
     onStatusUpdate(userId, status as UserStatus);
   };
 
+/**
+ * Handle Reset Prefs.
+ */
   const handleResetPrefs = () => {
     if (!userId) {
       alert("Please enter a user ID");
@@ -408,7 +470,7 @@ function UserManagementTab({
               disabled={isLoading || !userId || !status}
               className="px-6 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors disabled:opacity-50"
             >
-              {isLoading ? <Loader2 className="h-4 w-4 animate-spin inline" /> : "Update Status"}
+              {isLoading ? <span className="inline-block h-4 w-20 bg-white/40 rounded animate-pulse align-middle" /> : "Update Status"}
             </button>
           </div>
         </div>
@@ -420,7 +482,7 @@ function UserManagementTab({
             disabled={isLoading || !userId}
             className="px-6 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors disabled:opacity-50"
           >
-            {isLoading ? <Loader2 className="h-4 w-4 animate-spin inline" /> : "Reset Preferences"}
+            {isLoading ? <span className="inline-block h-4 w-24 bg-white/40 rounded animate-pulse align-middle" /> : "Reset Preferences"}
           </button>
         </div>
       </div>

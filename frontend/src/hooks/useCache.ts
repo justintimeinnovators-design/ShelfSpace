@@ -3,6 +3,12 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
 // Simple cache hook
+/**
+ * Use Cache.
+ * @param key - key value.
+ * @param fetcher - fetcher value.
+ * @param ttl - ttl value.
+ */
 export function useCache<T>(
   key: string,
   fetcher: () => Promise<T>,
@@ -68,6 +74,12 @@ interface CacheOptions {
   ttl?: number;
 }
 
+/**
+ * Use Advanced Cache.
+ * @param key - key value.
+ * @param fetcher - fetcher value.
+ * @param options - options value.
+ */
 export function useAdvancedCache<T>(
   key: string,
   fetcher: () => Promise<T>,
@@ -138,6 +150,9 @@ export function useAdvancedCache<T>(
 }
 
 // Cache manager hook
+/**
+ * Use Cache Manager.
+ */
 export function useCacheManager() {
   const cacheRef = useRef<
     Map<string, { data: any; timestamp: number; ttl: number }>
@@ -228,6 +243,12 @@ export function useCacheManager() {
 }
 
 // SWR-like hook
+/**
+ * Use SWR.
+ * @param _key - key value.
+ * @param fetcher - fetcher value.
+ * @param options - options value.
+ */
 export function useSWR<T>(
   _key: string,
   fetcher: () => Promise<T>,
@@ -284,6 +305,9 @@ export function useSWR<T>(
   useEffect(() => {
     if (!revalidateOnFocus) return;
 
+/**
+ * Handle Focus.
+ */
     const handleFocus = () => mutate();
     window.addEventListener("focus", handleFocus);
     return () => window.removeEventListener("focus", handleFocus);
@@ -293,6 +317,9 @@ export function useSWR<T>(
   useEffect(() => {
     if (!revalidateOnReconnect) return;
 
+/**
+ * Handle Online.
+ */
     const handleOnline = () => mutate();
     window.addEventListener("online", handleOnline);
     return () => window.removeEventListener("online", handleOnline);

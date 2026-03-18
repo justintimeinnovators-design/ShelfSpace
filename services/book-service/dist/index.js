@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
@@ -5,8 +6,6 @@ import helmet from "helmet";
 import { randomUUID } from "crypto";
 import mongoose from "mongoose";
 import bookRoutes from "./routes/book.routes.js";
-import dotenv from "dotenv";
-dotenv.config();
 // Avoid automatic index builds in environments where the DB indexes
 // are managed manually (Atlas) and may not match schema definitions.
 mongoose.set("autoIndex", false);
@@ -102,3 +101,10 @@ app.use("/api/books", bookRoutes);
 app.listen(PORT, () => {
     console.log(`Book service running at http://localhost:${PORT}`);
 });
+import { disconnectProducer } from "./kafka/producer.js";
+const shutdown = async () => {
+    await disconnectProducer();
+    process.exit(0);
+};
+process.on("SIGTERM", shutdown);
+process.on("SIGINT", shutdown);

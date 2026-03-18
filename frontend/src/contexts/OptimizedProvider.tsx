@@ -9,6 +9,9 @@ interface OptimizedContextValue<T> {
   version: number;
 }
 
+/**
+ * Create Optimized Context.
+ */
 export function createOptimizedContext<T>() {
   return createContext<OptimizedContextValue<T> | null>(null);
 }
@@ -20,6 +23,15 @@ interface OptimizedProviderProps<T> {
   isEqual?: (prev: T, next: T) => boolean;
 }
 
+/**
+ * Optimized Provider.
+ * @param {
+  children,
+  value,
+  context,
+  isEqual: _isEqual = (prev, next) => prev === next,
+} - { children, value, context, is Equal: is Equal = (prev, next) => prev === next, } value.
+ */
 export function OptimizedProvider<T>({
   children,
   value,
@@ -45,6 +57,11 @@ export function OptimizedProvider<T>({
 }
 
 // Hook factory for optimized contexts
+/**
+ * Create Optimized Hook.
+ * @param context - context value.
+ * @param contextName - context Name value.
+ */
 export function createOptimizedHook<T>(
   context: React.Context<OptimizedContextValue<T> | null>,
   contextName: string
@@ -61,6 +78,11 @@ export function createOptimizedHook<T>(
 }
 
 // Selector hook for fine-grained subscriptions
+/**
+ * Create Selector Hook.
+ * @param context - context value.
+ * @param contextName - context Name value.
+ */
 export function createSelectorHook<T>(
   context: React.Context<OptimizedContextValue<T> | null>,
   contextName: string

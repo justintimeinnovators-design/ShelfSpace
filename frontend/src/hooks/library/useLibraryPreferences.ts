@@ -21,6 +21,9 @@ const DEFAULT_PREFERENCES: LibraryPreferences = {
   },
 };
 
+/**
+ * Use Library Preferences.
+ */
 export function useLibraryPreferences() {
   const [preferences, setPreferences] =
     useState<LibraryPreferences>(DEFAULT_PREFERENCES);

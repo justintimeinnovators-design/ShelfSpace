@@ -12,6 +12,11 @@ export interface CarouselData {
 }
 
 // Helper to create complete Book objects with required fields
+/**
+ * Create Book.
+ * @param partial - partial value.
+ * @returns Book.
+ */
 const createBook = (partial: Omit<Book, 'progress' | 'createdAt' | 'updatedAt' | 'addedAt'>): Book => ({
   ...partial,
   progress: 0,

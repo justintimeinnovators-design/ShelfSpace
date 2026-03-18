@@ -279,6 +279,16 @@ interface BookNavigationItemProps {
   theme: "light" | "dark";
 }
 
+/**
+ * Book Navigation Item.
+ * @param {
+  item,
+  isActive,
+  isCollapsed,
+  onItemClick,
+  theme,
+} - { item, is Active, is Collapsed, on Item Click, theme, } value.
+ */
 function BookNavigationItem({
   item,
   isActive,
@@ -286,6 +296,10 @@ function BookNavigationItem({
   onItemClick,
   theme,
 }: BookNavigationItemProps) {
+/**
+ * Get Icon.
+ * @param name - name value.
+ */
   const getIcon = (name: string) => {
     switch (name.toLowerCase()) {
       case "dashboard":
@@ -305,6 +319,10 @@ function BookNavigationItem({
     }
   };
 
+/**
+ * Get Emoji.
+ * @param name - name value.
+ */
   const getEmoji = (name: string) => {
     switch (name.toLowerCase()) {
       case "dashboard":

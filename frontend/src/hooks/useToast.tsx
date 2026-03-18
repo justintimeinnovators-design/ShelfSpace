@@ -12,6 +12,9 @@ interface ToastOptions {
 
 let toastContainer: HTMLDivElement | null = null;
 
+/**
+ * Get Toast Container.
+ */
 const getToastContainer = () => {
   if (!toastContainer) {
     toastContainer = document.createElement("div");
@@ -22,6 +25,9 @@ const getToastContainer = () => {
   return toastContainer;
 };
 
+/**
+ * Use Toast.
+ */
 export const useToast = () => {
   const showToast = useCallback((options: ToastOptions) => {
     const container = getToastContainer();
@@ -32,6 +38,9 @@ export const useToast = () => {
 
     const root = createRoot(toastElement);
 
+/**
+ * Handle Close.
+ */
     const handleClose = () => {
       root.unmount();
       toastElement.remove();

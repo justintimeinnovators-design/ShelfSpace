@@ -4,6 +4,11 @@ import { authOptions } from "@/lib/auth";
 
 const USER_SERVICE_URL = process.env["USER_SERVICE_URL"] || "http://localhost:3001/api";
 
+/**
+ * GET.
+ * @param _req - req value.
+ * @param { params } - { params } value.
+ */
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ userId: string }> }

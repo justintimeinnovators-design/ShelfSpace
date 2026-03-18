@@ -1,3 +1,9 @@
+/**
+ * User-service API wrapper.
+ *
+ * This module centralizes user/profile/preferences endpoints and keeps calling
+ * components independent of raw request details (paths, headers, base URL logic).
+ */
 import axios from "axios";
 import { getErrorMessage } from "./api-utils";
 
@@ -45,13 +51,22 @@ export interface UserStats {
   longestStreak: number;
 }
 
+/**
+ * Auth Headers.
+ * @param token - token value.
+ */
 function authHeaders(token?: string) {
+  // Small helper avoids repeating bearer-token header wiring in each endpoint call.
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
 export const userApi = {
+  /**
+   * Validates whether the provided auth token is still accepted by user service.
+   */
   async verify(token: string) {
     try {
+      // Verification endpoint is used by auth flows to validate issued session tokens.
       const { data } = await axios.post(`${USER_API_BASE}/auth/verify`, null, {
         headers: authHeaders(token),
       });
@@ -61,6 +76,9 @@ export const userApi = {
     }
   },
 
+  /**
+   * Fetches current authenticated user's profile.
+   */
   async getMe(token: string): Promise<UserProfile> {
     try {
       const { data } = await axios.get(`${USER_API_BASE}/me`, {
@@ -72,6 +90,9 @@ export const userApi = {
     }
   },
 
+  /**
+   * Applies partial profile updates for the current user.
+   */
   async updateMe(token: string, input: Partial<UserProfile>) {
     try {
       const { data } = await axios.patch(`${USER_API_BASE}/me`, input, {
@@ -83,6 +104,9 @@ export const userApi = {
     }
   },
 
+  /**
+   * Fetches current user's preference record.
+   */
   async getPreferences(token: string): Promise<UserPreferences> {
     try {
       const { data } = await axios.get(`${USER_API_BASE}/me/preferences`, {
@@ -94,8 +118,12 @@ export const userApi = {
     }
   },
 
+  /**
+   * Applies partial preference updates.
+   */
   async updatePreferences(token: string, input: Partial<UserPreferences>) {
     try {
+      // JSON header is explicit to avoid middleware ambiguity across services.
       const { data } = await axios.put(`${USER_API_BASE}/me/preferences`, input, {
         headers: { "Content-Type": "application/json", ...authHeaders(token) },
       });
@@ -105,6 +133,9 @@ export const userApi = {
     }
   },
 
+  /**
+   * Fetches aggregate reading/user statistics.
+   */
   async getStats(token: string): Promise<UserStats> {
     try {
       const { data } = await axios.get(`${USER_API_BASE}/me/stats`, {
@@ -116,8 +147,12 @@ export const userApi = {
     }
   },
 
+  /**
+   * Retrieves an impersonation/testing token for a specific user id.
+   */
   async getTokenForUser(userId: string) {
     try {
+      // Token endpoint lives outside `/api`, so we normalize base URL before appending path.
       const { data } = await axios.get(`${USER_API_BASE.replace(/\/api$/, "")}/api/token/${userId}`);
       return data;
     } catch (error) {
@@ -125,6 +160,9 @@ export const userApi = {
     }
   },
 
+  /**
+   * Admin endpoint to update a target user's status.
+   */
   async updateUserStatus(token: string, userId: string, status: UserProfile["status"]) {
     try {
       const { data } = await axios.put(
@@ -138,6 +176,9 @@ export const userApi = {
     }
   },
 
+  /**
+   * Admin endpoint to reset a target user's preferences to defaults.
+   */
   async resetUserPreferences(token: string, userId: string) {
     try {
       const { data } = await axios.put(

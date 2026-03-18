@@ -22,6 +22,11 @@ interface CurrentlyReadingBook {
 }
 
 // Transform Book from library to CurrentlyReadingBook format
+/**
+ * Transform Book.
+ * @param book - book value.
+ * @returns CurrentlyReadingBook.
+ */
 function transformBook(book: Book): CurrentlyReadingBook {
   const progress = book.readingProgress || book.progress || 0;
   const pages = book.pages || 0;
@@ -42,6 +47,9 @@ function transformBook(book: Book): CurrentlyReadingBook {
   };
 }
 
+/**
+ * Currently Reading.
+ */
 export function CurrentlyReading() {
   const { data: readingLists, isLoading, error } = useReadingLists({ includeBooks: true });
 

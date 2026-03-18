@@ -1,3 +1,9 @@
+/**
+ * Forums index/landing feature.
+ *
+ * Provides search/filter/sort/view controls and forum discovery actions.
+ * Keeps backend DTO mapping encapsulated in this layer.
+ */
 "use client";
 
 import React from "react";
@@ -9,6 +15,7 @@ import { Forum } from "@/types/forums";
 import { useForums } from "@/hooks/data/useForums";
 import { type ForumDTO } from "@/lib/forum-service";
 import { useDebounce } from "@/hooks/useDebounce";
+import { toForumSlug } from "@/lib/slug";
 import {
   Users,
   Search,
@@ -28,7 +35,9 @@ type ViewMode = "grid" | "list";
 type SortBy = "name" | "memberCount" | "threadCount" | "createdAt";
 type SortOrder = "asc" | "desc";
 
-// Transform backend ForumDTO to frontend Forum type
+/**
+ * Maps backend forum DTO into frontend forum view model.
+ */
 function transformForum(dto: ForumDTO, currentUserId?: string): Forum {
   const isJoined = currentUserId ? dto.memberships.some((m) => m.userId === currentUserId) : false;
   return {
@@ -46,6 +55,9 @@ function transformForum(dto: ForumDTO, currentUserId?: string): Forum {
   };
 }
 
+/**
+ * Forums exploration screen with discovery and membership actions.
+ */
 export function ForumsFeature() {
   const router = useRouter();
   const { data: session } = useSession();
@@ -62,7 +74,7 @@ export function ForumsFeature() {
 
   const { forums: forumsDTO, loading, error, createForum, joinForum, leaveForum } = useForums();
 
-  // Transform backend forums to frontend format
+  // Normalize backend shape once, then perform all view computations on normalized list.
   const allForums = useMemo(() => {
     return forumsDTO.map((dto) => transformForum(dto, session?.user?.id));
   }, [forumsDTO, session?.user?.id]);
@@ -73,6 +85,7 @@ export function ForumsFeature() {
   }, [allForums]);
 
   const filteredAndSortedForums = useMemo(() => {
+    // Apply text and tag filters before sort for predictable UX.
     const normalizedSearch = debouncedSearch.toLowerCase();
     let filtered = allForums.filter((forum: Forum) =>
       forum.name.toLowerCase().includes(normalizedSearch) ||
@@ -123,6 +136,7 @@ export function ForumsFeature() {
   }, [allForums, debouncedSearch, selectedTag, sortBy, sortOrder, showJoinedOnly]);
 
   const popularForums = useMemo(() => {
+    // "Popular" is currently membership-count based and intentionally conservative.
     return allForums
       .filter((forum: Forum) => forum.memberCount >= 1000)
       .sort((a: Forum, b: Forum) => b.memberCount - a.memberCount)
@@ -153,8 +167,16 @@ export function ForumsFeature() {
     [leaveForum]
   );
 
+  /**
+   * Navigates to the selected forum detail route.
+   */
   const handleViewForum = (forumId: string) => {
-    router.push(`/forums/${forumId}`);
+    const forum = allForums.find((f) => f.id === forumId);
+    if (forum) {
+      router.push(`/forums/${toForumSlug(forum)}`);
+    } else {
+      router.push(`/forums/${forumId}`);
+    }
   };
 
   const handleCreateForum = useCallback(async () => {
@@ -485,6 +507,10 @@ interface ForumCardProps {
   onView: (forumId: string) => void;
 }
 
+/**
+ * Forum Card.
+ * @param { forum, onJoin, onLeave, onView } - { forum, on Join, on Leave, on View } value.
+ */
 const ForumCard: React.FC<ForumCardProps> = ({ forum, onJoin, onLeave, onView }) => {
   return (
     <div className="bg-white/90 dark:bg-slate-800/95 backdrop-blur-sm rounded-xl shadow-lg border border-amber-200 dark:border-slate-700 p-6 hover:shadow-xl transition-all duration-200">
@@ -574,6 +600,10 @@ const ForumCard: React.FC<ForumCardProps> = ({ forum, onJoin, onLeave, onView })
 };
 
 // Forum List Item Component
+/**
+ * Forum List Item.
+ * @param { forum, onJoin, onLeave, onView } - { forum, on Join, on Leave, on View } value.
+ */
 const ForumListItem: React.FC<ForumCardProps> = ({ forum, onJoin, onLeave, onView }) => {
   return (
     <div className="bg-white/90 dark:bg-slate-800/95 backdrop-blur-sm rounded-lg border border-amber-200 dark:border-slate-700 p-4 hover:shadow-lg transition-all duration-200">

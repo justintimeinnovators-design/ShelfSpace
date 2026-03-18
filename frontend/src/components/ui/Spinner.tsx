@@ -8,6 +8,10 @@ interface SpinnerProps {
   className?: string;
 }
 
+/**
+ * Spinner.
+ * @param { size - { size value.
+ */
 export const Spinner: React.FC<SpinnerProps> = ({ size = "md", className }) => {
   const sizeClasses = {
     sm: "h-4 w-4",
@@ -18,7 +22,7 @@ export const Spinner: React.FC<SpinnerProps> = ({ size = "md", className }) => {
   return (
     <div
       className={cn(
-        "animate-spin rounded-full border-2 border-gray-300 border-t-indigo-dye-600",
+        "animate-pulse bg-amber-100 dark:bg-slate-700 rounded-lg",
         sizeClasses[size],
         className
       )}

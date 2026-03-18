@@ -12,6 +12,18 @@ interface AnimatedCardProps {
   variant?: "default" | "elevated" | "glass" | "gradient";
 }
 
+/**
+ * Animated Card.
+ * @param {
+  children,
+  className = "",
+  delay: _delay = 0,
+  direction: _direction = "up",
+  hover: _hover = true,
+  glow: _glow = false,
+  variant: _variant = "default"
+} - { children, class Name = "", delay: delay = 0, direction: direction = "up", hover: hover = true, glow: glow = false, variant: variant = "default" } value.
+ */
 export function AnimatedCard({
   children,
   className = "",
@@ -41,14 +53,26 @@ export function AnimatedCard({
 }
 
 // Simple container components without animations (non-conflicting names)
+/**
+ * Stagger Item.
+ * @param { children, className - { children, class Name value.
+ */
 export function StaggerItem({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return <div className={className}>{children}</div>;
 }
 
+/**
+ * Floating Element.
+ * @param { children, className - { children, class Name value.
+ */
 export function FloatingElement({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return <div className={className}>{children}</div>;
 }
 
+/**
+ * Pulse Element.
+ * @param { children, className - { children, class Name value.
+ */
 export function PulseElement({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return <div className={className}>{children}</div>;
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Search, X, Loader2 } from "lucide-react";
+import { Search, X } from "lucide-react";
 import { useDebouncedCallback } from "@/hooks/useDebounce";
 
 interface SearchInputProps {
@@ -17,6 +17,21 @@ interface SearchInputProps {
   variant?: "default" | "outline" | "filled";
 }
 
+/**
+ * Search Input.
+ * @param {
+  placeholder = "Search...",
+  onSearch,
+  onClear,
+  debounceMs = 300,
+  loading = false,
+  suggestions = [],
+  onSuggestionSelect,
+  className = "",
+  size = "md",
+  variant = "default"
+} - { placeholder = "Search...", on Search, on Clear, debounce Ms = 300, loading = false, suggestions = [], on Suggestion Select, class Name = "", size = "md", variant = "default" } value.
+ */
 export function SearchInput({
   placeholder = "Search...",
   onSearch,
@@ -39,6 +54,10 @@ export function SearchInput({
   const debouncedSearch = useDebouncedCallback(onSearch, debounceMs);
 
   // Handle input change
+/**
+ * Handle Input Change.
+ * @param e - e value.
+ */
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setQuery(value);
@@ -52,6 +71,9 @@ export function SearchInput({
   };
 
   // Handle clear
+/**
+ * Handle Clear.
+ */
   const handleClear = () => {
     setQuery("");
     setShowSuggestions(false);
@@ -60,6 +82,10 @@ export function SearchInput({
   };
 
   // Handle suggestion select
+/**
+ * Handle Suggestion Select.
+ * @param suggestion - suggestion value.
+ */
   const handleSuggestionSelect = (suggestion: string) => {
     setQuery(suggestion);
     setShowSuggestions(false);
@@ -68,6 +94,10 @@ export function SearchInput({
   };
 
   // Handle keyboard navigation
+/**
+ * Handle Key Down.
+ * @param e - e value.
+ */
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Escape") {
       setShowSuggestions(false);
@@ -77,6 +107,10 @@ export function SearchInput({
 
   // Close suggestions when clicking outside
   useEffect(() => {
+/**
+ * Handle Click Outside.
+ * @param event - event value.
+ */
     const handleClickOutside = (event: MouseEvent) => {
       if (
         suggestionsRef.current &&
@@ -110,7 +144,7 @@ export function SearchInput({
       <div className="relative">
         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
           {loading ? (
-            <Loader2 className="h-4 w-4 text-gray-400 animate-spin" />
+            <div className="h-4 w-4 bg-gray-200 dark:bg-slate-600 rounded animate-pulse" />
           ) : (
             <Search className="h-4 w-4 text-gray-400" />
           )}
@@ -184,6 +218,14 @@ interface AdvancedSearchProps {
   className?: string;
 }
 
+/**
+ * Advanced Search.
+ * @param {
+  onSearch,
+  filters = [],
+  className = ""
+} - { on Search, filters = [], class Name = "" } value.
+ */
 export function AdvancedSearch({
   onSearch,
   filters = [],
@@ -200,17 +242,29 @@ export function AdvancedSearch({
     300
   );
 
+/**
+ * Handle Query Change.
+ * @param value - value value.
+ */
   const handleQueryChange = (value: string) => {
     setQuery(value);
     debouncedSearch(value, filterValues);
   };
 
+/**
+ * Handle Filter Change.
+ * @param key - key value.
+ * @param value - value value.
+ */
   const handleFilterChange = (key: string, value: any) => {
     const newFilters = { ...filterValues, [key]: value };
     setFilterValues(newFilters);
     debouncedSearch(query, newFilters);
   };
 
+/**
+ * Clear Filters.
+ */
   const clearFilters = () => {
     setFilterValues({});
     debouncedSearch(query, {});

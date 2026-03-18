@@ -46,6 +46,10 @@ const Avatar = forwardRef<HTMLDivElement, AvatarProps>(
   ) => {
     const [imageError, setImageError] = useState(false);
 
+/**
+ * Get Initials.
+ * @param name - name value.
+ */
     const getInitials = (name: string) => {
       return name
         .split(" ")

@@ -1,27 +1,19 @@
 import express from "express";
 import prisma from "../prisma.js";
 import { isAuthenticated, isGroupMember } from "../middlewares/auth.ts";
-import axios from "axios";
+import { publishAnalyticsEvents } from "../kafka/producer.js";
 
 const router = express.Router();
-const ANALYTICS_SERVICE_URL =
-  process.env.ANALYTICS_SERVICE_URL?.trim() || "";
 
 async function emitAnalyticsEvents(
   req: express.Request,
   events: Array<Record<string, any>>
 ) {
-  if (!ANALYTICS_SERVICE_URL || events.length === 0) return;
-  const authHeader = req.headers.authorization;
-  if (!authHeader) return;
+  if (events.length === 0) return;
   try {
-    await axios.post(
-      `${ANALYTICS_SERVICE_URL}/api/analytics/events`,
-      { events },
-      { headers: { Authorization: authHeader } }
-    );
+    await publishAnalyticsEvents(events);
   } catch (error) {
-    console.warn("Failed to emit analytics events");
+    console.warn("Failed to emit analytics events to Kafka:", error);
   }
 }
 

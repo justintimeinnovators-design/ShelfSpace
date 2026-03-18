@@ -3,6 +3,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { ReviewService, type ReviewDTO } from "@/lib/review-service";
 
+/**
+ * Use User Reviews.
+ * @param userId - user Id value.
+ */
 export function useUserReviews(userId: string) {
   const [reviews, setReviews] = useState<ReviewDTO[]>([]);
   const [loading, setLoading] = useState(false);

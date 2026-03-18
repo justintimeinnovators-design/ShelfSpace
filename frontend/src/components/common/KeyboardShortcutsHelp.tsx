@@ -12,6 +12,14 @@ interface KeyboardShortcutsHelpProps {
   onClose: () => void;
 }
 
+/**
+ * Keyboard Shortcuts Help.
+ * @param {
+  shortcuts,
+  isOpen,
+  onClose,
+} - { shortcuts, is Open, on Close, } value.
+ */
 export function KeyboardShortcutsHelp({
   shortcuts,
   isOpen,
@@ -37,6 +45,11 @@ export function KeyboardShortcutsHelp({
     return undefined;
   }, [isOpen, previousFocus]);
 
+/**
+ * Format Shortcut.
+ * @param shortcut - shortcut value.
+ * @returns string.
+ */
   const formatShortcut = (shortcut: KeyboardShortcut): string => {
     const keys: string[] = [];
 

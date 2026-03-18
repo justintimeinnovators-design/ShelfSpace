@@ -10,6 +10,13 @@ interface ViewModeToggleProps {
   onViewModeChange: (mode: ViewMode) => void;
 }
 
+/**
+ * View Mode Toggle.
+ * @param {
+  viewMode,
+  onViewModeChange,
+} - { view Mode, on View Mode Change, } value.
+ */
 export const ViewModeToggle: React.FC<ViewModeToggleProps> = ({
   viewMode,
   onViewModeChange,

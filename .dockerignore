@@ -1,0 +1,11 @@
+.git
+node_modules
+coverage
+*.log
+.env
+.env.*
+frontend/.next
+frontend/node_modules
+services/*/node_modules
+services/*/dist
+services/*/coverage

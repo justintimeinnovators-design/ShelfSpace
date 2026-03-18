@@ -10,30 +10,26 @@ import {
   updatePostSchema,
   reactionSchema,
 } from "../schemas.js";
-import axios from "axios";
+import { publishAnalyticsEvents } from "../kafka/producer.js";
 
 const router = express.Router();
-const ANALYTICS_SERVICE_URL =
-  process.env.ANALYTICS_SERVICE_URL?.trim() || "";
 
 async function emitAnalyticsEvents(
   req: Request,
   events: Array<Record<string, any>>
 ) {
-  if (!ANALYTICS_SERVICE_URL || events.length === 0) return;
-  const authHeader = req.headers.authorization;
-  if (!authHeader) return;
+  if (events.length === 0) return;
   try {
-    await axios.post(
-      `${ANALYTICS_SERVICE_URL}/api/analytics/events`,
-      { events },
-      { headers: { Authorization: authHeader } }
-    );
+    await publishAnalyticsEvents(events);
   } catch (error) {
-    console.warn("Failed to emit analytics events");
+    console.warn("Failed to emit analytics events to Kafka:", error);
   }
 }
 
+/**
+ * Get Forum Or404.
+ * @param forumId - forum Id value.
+ */
 async function getForumOr404(forumId: string) {
   const forum = await prisma.forum.findUnique({
     where: { id: forumId },
@@ -41,6 +37,11 @@ async function getForumOr404(forumId: string) {
   return forum;
 }
 
+/**
+ * Require Membership.
+ * @param forumId - forum Id value.
+ * @param userId - user Id value.
+ */
 async function requireMembership(forumId: string, userId: string) {
   return prisma.forumMembership.findUnique({
     where: {
@@ -52,6 +53,10 @@ async function requireMembership(forumId: string, userId: string) {
   });
 }
 
+/**
+ * Parse Limit Offset.
+ * @param req - req value.
+ */
 function parseLimitOffset(req: Request) {
   const limit = Math.min(parseInt(String(req.query.limit || "20"), 10) || 20, 100);
   const offset = Math.max(parseInt(String(req.query.offset || "0"), 10) || 0, 0);

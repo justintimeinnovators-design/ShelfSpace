@@ -1,3 +1,9 @@
+/**
+ * Book service client wrapper.
+ *
+ * Converts backend book payloads into the frontend `Book` model and exposes
+ * typed query helpers for list/detail/search/filter metadata endpoints.
+ */
 import { createApiClient } from "./api";
 import { getErrorMessage } from "./api-utils";
 
@@ -71,7 +77,12 @@ interface PaginatedBooksResponse {
   books: BackendBook[];
 }
 
-// Transform backend book to frontend book format
+/**
+ * Transforms backend book payload into frontend book shape.
+ *
+ * @param backendBook Raw backend DTO.
+ * @returns Normalized frontend `Book` model.
+ */
 function transformBook(backendBook: BackendBook): Book {
   const coverUrlRaw = backendBook.image_url || "";
   const coverUrl = coverUrlRaw.startsWith("http://")
@@ -139,7 +150,12 @@ class BookServiceClient {
     process.env["NEXT_PUBLIC_BOOK_SERVICE_URL"] || "http://localhost:3004"
   );
 
-  // Get all books with pagination and filters
+/**
+ * Fetches paginated books with optional filters.
+ *
+ * @param params Paging/filter/search options.
+ * @returns Normalized books and pagination metadata.
+ */
   async getBooks(params: {
     page?: number;
     limit?: number;
@@ -170,7 +186,9 @@ class BookServiceClient {
     }
   }
 
-  // Get a single book by ID
+/**
+ * Fetches one book by identifier.
+ */
   async getBookById(bookId: string): Promise<Book> {
     try {
       const response = await this.bookApi.get<BackendBook>(`/api/books/${bookId}`);
@@ -185,7 +203,9 @@ class BookServiceClient {
     }
   }
 
-  // Search books
+/**
+ * Searches books by free-text query.
+ */
   async searchBooks(query: string, page: number = 1): Promise<{ data: Book[]; pagination: any }> {
     try {
       const response = await this.bookApi.get<PaginatedBooksResponse>("/api/books/search", {
@@ -212,7 +232,9 @@ class BookServiceClient {
     }
   }
 
-  // Get all genres
+/**
+ * Fetches all available book genres.
+ */
   async getGenres(): Promise<string[]> {
     try {
       const response = await this.bookApi.get<string[]>("/api/books/genres");
@@ -224,7 +246,9 @@ class BookServiceClient {
     }
   }
 
-  // Get all authors
+/**
+ * Fetches all available author names.
+ */
   async getAuthors(): Promise<string[]> {
     try {
       const response = await this.bookApi.get<string[]>("/api/books/authors");
@@ -236,7 +260,9 @@ class BookServiceClient {
     }
   }
 
-  // Get all languages
+/**
+ * Fetches all available language codes/names.
+ */
   async getLanguages(): Promise<string[]> {
     try {
       const response = await this.bookApi.get<string[]>("/api/books/languages");

@@ -9,15 +9,30 @@ interface ReadingListItemProps {
   onSelect: (listId: string) => void;
 }
 
+/**
+ * Reading List Item.
+ * @param {
+  list,
+  isSelected,
+  onSelect,
+} - { list, is Selected, on Select, } value.
+ */
 export const ReadingListItem: React.FC<ReadingListItemProps> = ({
   list,
   isSelected,
   onSelect,
 }) => {
+/**
+ * Handle Click.
+ */
   const handleClick = () => {
     onSelect(list.id);
   };
 
+/**
+ * Handle Key Down.
+ * @param event - event value.
+ */
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();

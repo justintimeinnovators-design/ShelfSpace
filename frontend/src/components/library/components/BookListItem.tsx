@@ -15,6 +15,16 @@ interface BookListItemProps {
   isSaving?: boolean;
 }
 
+/**
+ * Book List Item.
+ * @param {
+  book,
+  onSelect,
+  onSave,
+  isSaved = false,
+  isSaving = false,
+} - { book, on Select, on Save, is Saved = false, is Saving = false, } value.
+ */
 export const BookListItem: React.FC<BookListItemProps> = ({
   book,
   onSelect,
@@ -24,6 +34,9 @@ export const BookListItem: React.FC<BookListItemProps> = ({
 }) => {
   const router = useRouter();
 
+/**
+ * Handle Click.
+ */
   const handleClick = () => {
     if (onSelect) {
       onSelect(book);
@@ -32,6 +45,10 @@ export const BookListItem: React.FC<BookListItemProps> = ({
     }
   };
 
+/**
+ * Handle Key Down.
+ * @param event - event value.
+ */
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
@@ -39,6 +56,10 @@ export const BookListItem: React.FC<BookListItemProps> = ({
     }
   };
 
+/**
+ * Get Status Color.
+ * @param status - status value.
+ */
   const getStatusColor = (status: string) => {
     switch (status) {
       case "read":

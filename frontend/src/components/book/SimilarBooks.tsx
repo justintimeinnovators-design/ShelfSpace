@@ -7,6 +7,10 @@ interface SimilarBooksProps {
   similarBooks: SimilarBookItem[];
 }
 
+/**
+ * Similar Books.
+ * @param { similarBooks } - { similar Books } value.
+ */
 export default function SimilarBooks({ similarBooks }: SimilarBooksProps) {
   return (
     <div className="card p-6 mb-6">

@@ -19,6 +19,10 @@ export interface UseBookCardProps {
   onClick?: ((book: Book) => void) | undefined;
 }
 
+/**
+ * Use Book Card.
+ * @param { book, actions, onClick } - { book, actions, on Click } value.
+ */
 export function useBookCard({ book, actions, onClick }: UseBookCardProps) {
   const router = useRouter();
 

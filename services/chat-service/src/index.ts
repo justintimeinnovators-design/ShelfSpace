@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
@@ -99,3 +100,13 @@ initializeSocket(httpServer).catch((error) => {
 httpServer.listen(PORT, () => {
   console.log(`Chat service running at http://localhost:${PORT}`);
 });
+
+import { disconnectProducer } from "./kafka/producer.js";
+
+const shutdown = async () => {
+  await disconnectProducer();
+  process.exit(0);
+};
+
+process.on("SIGTERM", shutdown);
+process.on("SIGINT", shutdown);

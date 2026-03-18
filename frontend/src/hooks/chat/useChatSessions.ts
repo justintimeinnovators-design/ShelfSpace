@@ -4,6 +4,9 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { chatService, ChatSession, ChatMessage } from "@/lib/chat-service";
 
+/**
+ * Use Chat Sessions.
+ */
 export function useChatSessions() {
   const { data: session } = useSession();
   const [sessions, setSessions] = useState<ChatSession[]>([]);
@@ -37,6 +40,9 @@ export function useChatSessions() {
   /**
    * Load all sessions for the user
    */
+/**
+ * Load Sessions.
+ */
   const loadSessions = async () => {
     if (!session?.accessToken) {
       console.warn("[useChatSessions] No access token available. User may need to re-login.");
@@ -61,6 +67,10 @@ export function useChatSessions() {
   /**
    * Load messages for a specific session
    */
+/**
+ * Load Session Messages.
+ * @param sessionId - session Id value.
+ */
   const loadSessionMessages = async (sessionId: string) => {
     if (!session?.accessToken) return;
 
@@ -87,6 +97,10 @@ export function useChatSessions() {
   /**
    * Create a new chat session
    */
+/**
+ * Create New Session.
+ * @param title - title value.
+ */
   const createNewSession = async (title?: string) => {
     if (!session?.accessToken) return null;
 
@@ -109,6 +123,10 @@ export function useChatSessions() {
   /**
    * Send a message in the current session
    */
+/**
+ * Send Message.
+ * @param content - content value.
+ */
   const sendMessage = async (content?: string) => {
     const messageText = content || inputMessage;
     if (!messageText.trim() || !session?.accessToken) return;
@@ -172,6 +190,10 @@ export function useChatSessions() {
   /**
    * Switch to a different session
    */
+/**
+ * Switch Session.
+ * @param sessionId - session Id value.
+ */
   const switchSession = async (sessionId: string) => {
     const session = sessions.find((s) => s.id === sessionId);
     if (session) {
@@ -183,6 +205,10 @@ export function useChatSessions() {
   /**
    * Delete a session
    */
+/**
+ * Delete Session.
+ * @param sessionId - session Id value.
+ */
   const deleteSession = async (sessionId: string) => {
     if (!session?.accessToken) return;
 
@@ -204,6 +230,10 @@ export function useChatSessions() {
   /**
    * Pin/unpin a session
    */
+/**
+ * Toggle Pin.
+ * @param sessionId - session Id value.
+ */
   const togglePin = async (sessionId: string) => {
     if (!session?.accessToken) return;
 
@@ -229,6 +259,11 @@ export function useChatSessions() {
   /**
    * Rename a session
    */
+/**
+ * Rename Session.
+ * @param sessionId - session Id value.
+ * @param newTitle - new Title value.
+ */
   const renameSession = async (sessionId: string, newTitle: string) => {
     if (!session?.accessToken) return;
 
@@ -253,6 +288,9 @@ export function useChatSessions() {
   /**
    * Clear current session (start fresh)
    */
+/**
+ * Clear Current Session.
+ */
   const clearCurrentSession = () => {
     setCurrentSession(null);
     setMessages([]);

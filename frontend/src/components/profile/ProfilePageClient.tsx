@@ -10,6 +10,7 @@ import { ForumService, ForumDTO } from "@/lib/forum-service";
 import { ReviewService, ReviewDTO } from "@/lib/review-service";
 import { libraryService } from "@/services/libraryService";
 import { bookService } from "@/lib/book-service";
+import { toListSlug } from "@/lib/slug";
 import { Book } from "@/types/book";
 import { ReadingList } from "@/types/library";
 import {
@@ -36,6 +37,10 @@ interface ProfilePageClientProps {
   userId?: string;
 }
 
+/**
+ * Profile Page Client.
+ * @param { userId } - { user Id } value.
+ */
 export function ProfilePageClient({ userId }: ProfilePageClientProps) {
   const { data: session } = useSession();
   const router = useRouter();
@@ -58,6 +63,9 @@ export function ProfilePageClient({ userId }: ProfilePageClientProps) {
   useEffect(() => {
     let isMounted = true;
 
+/**
+ * Load Profile.
+ */
     const loadProfile = async () => {
       if (!targetUserId) return;
       setLoading(true);
@@ -140,6 +148,9 @@ export function ProfilePageClient({ userId }: ProfilePageClientProps) {
 
   useEffect(() => {
     let isMounted = true;
+/**
+ * Load Review Books.
+ */
     const loadReviewBooks = async () => {
       if (!reviews.length) return;
       const uniqueIds = Array.from(new Set(reviews.map((r) => r.bookId))).slice(0, 10);
@@ -198,7 +209,7 @@ export function ProfilePageClient({ userId }: ProfilePageClientProps) {
       <div className="absolute inset-0 bg-gradient-to-br from-amber-50/80 via-orange-50/80 to-red-50/80 dark:from-slate-950/80 dark:via-slate-900/80 dark:to-slate-800/80" />
       <div className="relative container mx-auto px-4 py-12">
         <button
-          onClick={() => router.back()}
+          onClick={() => router.push("/dashboard")}
           className="inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/80 dark:bg-slate-800/80 border border-amber-200/70 dark:border-slate-700 text-amber-700 dark:text-amber-200 text-sm mb-6"
         >
           Back
@@ -324,7 +335,7 @@ export function ProfilePageClient({ userId }: ProfilePageClientProps) {
                   {readingLists.map((list) => (
                     <Link
                       key={list.id}
-                      href={`/profile/${usernameSlug}/lists/${list.id}`}
+                      href={`/profile/${usernameSlug}/lists/${toListSlug(list)}`}
                       className="py-3 flex items-start justify-between gap-4 hover:bg-amber-50/60 dark:hover:bg-slate-700/50 rounded-xl px-3 -mx-3 transition-colors"
                     >
                       <div>

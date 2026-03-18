@@ -1,3 +1,17 @@
+/**
+ * Library domain service.
+ *
+ * Purpose:
+ * - Encapsulate all library-related API calls and data transformations.
+ * - Keep UI components free from transport concerns (URLs, payload shape, error mapping).
+ * - Provide a stable, typed surface for library operations.
+ *
+ * Error model:
+ * - Validation/client issues map to `ValidationError`.
+ * - Missing entities map to `NotFoundError`.
+ * - Conflict scenarios map to `ConflictError`.
+ * - Other request failures map to `ServiceError`.
+ */
 import { Book, BookInput } from "@/types/book";
 import { ReadingList as BaseReadingList, ReadingListInput } from "../../types/library";
 import { ID } from "@/types/common";
@@ -37,9 +51,10 @@ const libraryApi = createApiClient(LIBRARY_SERVICE_BASE_URL);
 const READING_LISTS_PATH = "/reading-lists";
 
 /**
- * LibraryService handles all library-related data operations
- * Provides a clean interface for components to interact with library data
- * Includes proper error handling, validation, and data transformation
+ * Stateful service wrapper for library operations.
+ *
+ * Most methods return `ServiceResponse<T>` wrappers so calling layers can rely on
+ * consistent response metadata (`success`, `timestamp`) regardless of endpoint.
  */
 export class LibraryService {
   private baseUrl: string;
@@ -49,18 +64,27 @@ export class LibraryService {
   }
 
   /**
-   * Get all reading lists for the current user
+   * Fetches all reading lists for the active user.
+   *
+   * @param params Query options (including optional in-memory book expansion).
+   * @returns Reading lists, optionally with resolved `books[]`.
+   * @throws ServiceError When list retrieval fails.
    */
   async getReadingLists(
     params: GetReadingListsParams = {}
   ): Promise<ServiceResponse<ReadingList[]>> {
     try {
+      // Keep query construction explicit to avoid malformed path strings.
       const url = `${READING_LISTS_PATH}${params.includeBooks ? "?includeBooks=true" : ""}`;
       const response = await libraryApi.get<ReadingList[]>(url);
 
       // Optionally include books in the response
       if (params.includeBooks && response.data) {
         try {
+/**
+ * Fetch List Books.
+ * @param list - list value.
+ */
           const fetchListBooks = async (list: ReadingList) => {
             const books = await Promise.all(
               list.bookIds.map((id) => bookService.getBookById(String(id)))
@@ -68,6 +92,7 @@ export class LibraryService {
             return books;
           };
           const listBooks = await Promise.all(response.data.map(fetchListBooks));
+          // Attach resolved books back to each list while preserving list order.
           response.data.forEach((list, index) => {
             list.books = listBooks[index] || [];
           });
@@ -95,7 +120,12 @@ export class LibraryService {
   }
 
   /**
-   * Get a single reading list by ID
+   * Fetches one reading list by id.
+   *
+   * @param id Reading list id.
+   * @param includeBooks Whether to resolve `bookIds` into concrete book objects.
+   * @throws NotFoundError When the list does not exist.
+   * @throws ServiceError On transport/backend errors.
    */
   async getReadingList(
     id: ID,
@@ -135,7 +165,12 @@ export class LibraryService {
   }
 
   /**
-   * Get books with optional filtering and pagination
+   * Fetches books with optional list scoping, searching, and filter/sort post-processing.
+   *
+   * Notes:
+   * - If `listId` is provided, list membership filtering is applied.
+   * - Search can be delegated to backend search endpoint.
+   * - Additional filters can be applied client-side for consistency across endpoints.
    */
   async getBooks(
     params: GetBooksParams = {}
@@ -145,13 +180,13 @@ export class LibraryService {
 
       // If filtering by listId, get books from reading list first
       if (params.listId) {
+        // List-filter flow: resolve list IDs first, then intersect with books payload.
         const listsResponse = await this.getReadingLists({ includeBooks: false });
         const targetList = listsResponse.data.find(
           (list) => list.id === params.listId
         );
         if (targetList && targetList.bookIds.length > 0) {
-          // Fetch books by IDs from reading list
-          // Note: We'll need to fetch all and filter, or add a batch endpoint
+          // Current API lacks a dedicated batch-by-ids endpoint, so we fetch then filter.
           booksResponse = await bookService.getBooks({
             page: params.page || 1,
             limit: params.limit || 20,
@@ -178,7 +213,7 @@ export class LibraryService {
           };
         }
       } else if (params.filter?.search) {
-        // Use search endpoint if search query provided
+        // Search endpoint usually yields better relevance than client-side search.
         booksResponse = await bookService.searchBooks(
           params.filter.search,
           params.page || 1
@@ -191,7 +226,7 @@ export class LibraryService {
           sortBy: params.filter?.sortOrder === "desc" ? "desc" : "asc",
         };
         
-        // Only add optional properties if they have values
+        // Keep optional request fields sparse to avoid accidental backend filters.
         if (params.filter?.author) {
           getBooksParams.author = params.filter.author;
         }
@@ -203,6 +238,7 @@ export class LibraryService {
       }
 
       // Apply additional client-side filters if needed
+      // Client-side filters are a final normalization layer for UX consistency.
       let filteredBooks = booksResponse.data;
       if (params.filter) {
         filteredBooks = this.applyBookFilters(filteredBooks, params.filter);
@@ -225,7 +261,10 @@ export class LibraryService {
   }
 
   /**
-   * Get a single book by ID
+   * Fetches a single book by id.
+   *
+   * @param id Book identifier.
+   * @throws NotFoundError When book is missing.
    */
   async getBook(id: ID): Promise<ServiceResponse<Book>> {
     try {
@@ -250,7 +289,10 @@ export class LibraryService {
   }
 
   /**
-   * Create a new book
+   * Creates a new book entity.
+   *
+   * @param bookInput Frontend book payload.
+   * @returns Normalized frontend book object created from backend response.
    */
   async createBook(bookInput: BookInput): Promise<ServiceResponse<Book>> {
     try {
@@ -258,6 +300,7 @@ export class LibraryService {
       this.validateBookInput(bookInput);
 
       // Transform to backend format
+      // Normalize frontend field names to backend schema contract.
       const backendBook = {
         title: bookInput.title,
         authors: [{ name: bookInput.author }],
@@ -274,6 +317,7 @@ export class LibraryService {
       const book = response.data;
 
       // Transform back to frontend format
+      // Preserve frontend-facing shape so components never consume raw backend objects.
       const frontendBook: Book = {
         id: book.book_id || book._id,
         title: bookInput.title,
@@ -313,7 +357,10 @@ export class LibraryService {
   }
 
   /**
-   * Update an existing book
+   * Updates an existing book.
+   *
+   * @param params Book id plus partial updates.
+   * @returns Latest backend book state after update.
    */
   async updateBook(params: UpdateBookParams): Promise<ServiceResponse<Book>> {
     try {
@@ -367,7 +414,9 @@ export class LibraryService {
   }
 
   /**
-   * Delete a book
+   * Deletes a book.
+   *
+   * @param id Book id.
    */
   async deleteBook(id: ID): Promise<ServiceResponse<void>> {
     try {
@@ -395,7 +444,10 @@ export class LibraryService {
   }
 
   /**
-   * Create a new reading list
+   * Creates a reading list.
+   *
+   * @param params Reading list input payload.
+   * @throws ConflictError If a duplicate list name exists.
    */
   async createReadingList(
     params: CreateReadingListParams
@@ -428,7 +480,9 @@ export class LibraryService {
   }
 
   /**
-   * Update an existing reading list
+   * Updates a reading list.
+   *
+   * @param params Reading list id + partial update payload.
    */
   async updateReadingList(
     params: UpdateReadingListParams
@@ -469,7 +523,9 @@ export class LibraryService {
   }
 
   /**
-   * Delete a reading list
+   * Deletes a reading list.
+   *
+   * @param params Delete payload containing list id.
    */
   async deleteReadingList(
     params: DeleteReadingListParams
@@ -499,13 +555,15 @@ export class LibraryService {
   }
 
   /**
-   * Move books between reading lists
+   * Moves books from one list to another.
+   *
+   * @param params Move payload with source/target list context and book ids.
    */
   async moveBooks(params: MoveBooksParams): Promise<ServiceResponse<void>> {
     try {
       // Extract source list ID from params (assuming it's in the URL path)
       // The API expects: POST /reading-lists/:id/move-books
-      // We need to know which list to move FROM - this should be in params
+      // Fallback to targetListId keeps backward compatibility with older caller shape.
       const sourceListId = (params as any).sourceListId || params.targetListId;
       
       await libraryApi.post(`${READING_LISTS_PATH}/${sourceListId}/move-books`, {
@@ -535,7 +593,10 @@ export class LibraryService {
   }
 
   /**
-   * Add books to a reading list
+   * Adds books to an existing reading list.
+   *
+   * @param id Target list id.
+   * @param bookIds Book ids to append.
    */
   async addBooksToReadingList(id: ID, bookIds: string[]): Promise<ServiceResponse<ReadingList>> {
     try {
@@ -558,7 +619,10 @@ export class LibraryService {
   }
 
   /**
-   * Remove books from a reading list
+   * Removes books from a reading list.
+   *
+   * @param id Target list id.
+   * @param bookIds Book ids to remove.
    */
   async removeBooksFromReadingList(id: ID, bookIds: string[]): Promise<ServiceResponse<void>> {
     try {
@@ -579,7 +643,7 @@ export class LibraryService {
   }
 
   /**
-   * Initialize default reading lists
+   * Triggers backend initialization of default lists for a user.
    */
   async initializeDefaults(): Promise<ServiceResponse<any>> {
     try {
@@ -601,6 +665,9 @@ export class LibraryService {
 
   // Private helper methods
 
+  /**
+   * Validates minimal book input constraints used by create/update flows.
+   */
   private validateBookInput(input: Partial<BookInput>): void {
     const errors: string[] = [];
     if (!input.title || input.title.trim().length === 0) {
@@ -614,6 +681,9 @@ export class LibraryService {
     }
   }
 
+  /**
+   * Validates reading list payload constraints before request dispatch.
+   */
   private validateReadingListInput(input: Partial<ReadingListInput>): void {
     const errors: string[] = [];
     if (input.name && input.name.trim().length === 0) {
@@ -627,7 +697,15 @@ export class LibraryService {
     }
   }
 
+  /**
+   * Applies in-memory search/filter/sort to a book collection.
+   *
+   * @param books Source book list.
+   * @param filter Filter/sort descriptor.
+   * @returns Transformed list matching requested constraints.
+   */
   private applyBookFilters(books: Book[], filter: any): Book[] {
+    // Filtering/sorting happens in-memory to support cross-service composite views.
     let filtered = books;
 
     if (filter.search) {

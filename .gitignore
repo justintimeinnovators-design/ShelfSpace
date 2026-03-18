@@ -1,6 +1,9 @@
 # Node.js Dependencies
 node_modules/
 **/node_modules/
+articles/
+mermaid/
+.claude
 
 # Python Dependencies & Bytecode
 __pycache__/
@@ -35,6 +38,7 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+docs/
 
 # Logs
 npm-debug.log*
@@ -45,7 +49,8 @@ pip-log.txt
 # Build Artif
 
 # ml-experimentation
-ml-lab/
+ml-lab/*
+!ml-lab/README.md
 ml-lab/notebooks
 *.ipynb
 # ml-lab/.venv/

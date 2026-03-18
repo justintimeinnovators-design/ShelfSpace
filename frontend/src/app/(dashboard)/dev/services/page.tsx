@@ -5,6 +5,9 @@ export const metadata = {
   description: "Developer console for backend service routes.",
 };
 
+/**
+ * Services Console Page.
+ */
 export default function ServicesConsolePage() {
   return <ServicesConsole />;
 }

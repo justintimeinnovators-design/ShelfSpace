@@ -11,6 +11,9 @@ interface PerformanceMetrics {
   timeToInteractive: number;
 }
 
+/**
+ * Performance Monitor.
+ */
 export function PerformanceMonitor() {
   const [metrics, setMetrics] = useState<PerformanceMetrics | null>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -19,6 +22,9 @@ export function PerformanceMonitor() {
     // Only show in development
     if (process.env.NODE_ENV !== 'development') return;
 
+/**
+ * Measure Performance.
+ */
     const measurePerformance = () => {
       if (typeof window === 'undefined' || !('performance' in window)) return;
 
@@ -97,6 +103,10 @@ export function PerformanceMonitor() {
     }
 
     // Show/hide with keyboard shortcut
+/**
+ * Handle Key Press.
+ * @param e - e value.
+ */
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.shiftKey && e.key === 'P') {
         setIsVisible(prev => !prev);
@@ -113,6 +123,11 @@ export function PerformanceMonitor() {
 
   if (!isVisible || !metrics) return null;
 
+/**
+ * Get Score Color.
+ * @param value - value value.
+ * @param thresholds - thresholds value.
+ */
   const getScoreColor = (value: number, thresholds: { good: number; needsImprovement: number }) => {
     if (value <= thresholds.good) return 'text-green-600';
     if (value <= thresholds.needsImprovement) return 'text-yellow-600';
@@ -186,9 +201,15 @@ export function PerformanceMonitor() {
 }
 
 // Performance optimization hook
+/**
+ * Use Performance Optimization.
+ */
 export function usePerformanceOptimization() {
   useEffect(() => {
     // Preload critical resources
+/**
+ * Preload Critical Resources.
+ */
     const preloadCriticalResources = () => {
       const criticalImages = [
         '/icons/icon-192x192.png',
@@ -205,6 +226,9 @@ export function usePerformanceOptimization() {
     };
 
     // Optimize images
+/**
+ * Optimize Images.
+ */
     const optimizeImages = () => {
       const images = document.querySelectorAll('img[data-src]');
       const imageObserver = new IntersectionObserver((entries) => {
@@ -222,6 +246,9 @@ export function usePerformanceOptimization() {
     };
 
     // Lazy load non-critical components
+/**
+ * Lazy Load Components.
+ */
     const lazyLoadComponents = () => {
       const lazyElements = document.querySelectorAll('[data-lazy]');
       const lazyObserver = new IntersectionObserver((entries) => {

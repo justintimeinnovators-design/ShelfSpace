@@ -1,111 +1,64 @@
 "use client";
 
 import Link from "next/link";
-import { Home, ArrowLeft, BookOpen, Search } from "lucide-react";
+import { BookOpen, Library, Compass, MessageSquare, Users } from "lucide-react";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-dye-50 via-gray-50 to-verdigris-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative overflow-hidden">
-      {/* Decorative background elements */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-safety-orange-500 rounded-full opacity-5 blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-indigo-dye-500 rounded-full opacity-5 blur-3xl translate-y-1/2 -translate-x-1/2"></div>
-
-      <div className="max-w-2xl w-full mx-auto text-center px-4 relative z-10">
-        {/* Icon */}
-        <div className="mb-8 flex justify-center">
-          <div className="relative">
-            <div className="absolute inset-0 bg-indigo-dye-500 rounded-full blur-xl opacity-20 animate-pulse"></div>
-            <div className="relative bg-white dark:bg-gray-800 p-6 rounded-full shadow-xl border-4 border-indigo-dye-100 dark:border-indigo-dye-900">
-              <BookOpen className="w-16 h-16 text-indigo-dye-600 dark:text-indigo-dye-400" />
-            </div>
-          </div>
+    <div className="relative min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(251,191,36,0.2),transparent_45%),radial-gradient(circle_at_bottom_right,rgba(249,115,22,0.15),transparent_50%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(148,163,184,0.2),transparent_45%),radial-gradient(circle_at_bottom_right,rgba(71,85,105,0.25),transparent_50%)]">
+      <div className="absolute inset-0 bg-gradient-to-br from-amber-50/80 via-orange-50/80 to-red-50/80 dark:from-slate-950/80 dark:via-slate-900/80 dark:to-slate-800/80" />
+      <div className="relative container mx-auto px-4 py-24 flex flex-col items-center text-center">
+        <div className="inline-flex items-center justify-center w-28 h-28 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full shadow-xl mb-10">
+          <BookOpen className="h-14 w-14 text-white" />
         </div>
 
-        {/* 404 Text */}
-        <div className="mb-8">
-          <h1 className="text-9xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-dye-600 to-verdigris-600 dark:from-indigo-dye-400 dark:to-verdigris-400 mb-4">
-            404
-          </h1>
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-3">
-            Page Not Found
-          </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-md mx-auto">
-            Looks like this page took a detour. Let&apos;s get you back on
-            track.
-          </p>
-        </div>
+        <p className="text-xs uppercase tracking-[0.3em] text-amber-700/80 dark:text-amber-300/80 font-semibold mb-4">
+          Error 404
+        </p>
+        <h1 className="text-6xl md:text-7xl font-serif font-semibold text-gray-900 dark:text-slate-100 mb-4">
+          Page Not Found
+        </h1>
+        <p className="text-base md:text-xl text-gray-600 dark:text-slate-300 max-w-lg mb-10">
+          This page has gone missing from the shelf. It may have been moved or never existed.
+        </p>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+        <div className="flex flex-col sm:flex-row gap-3 mb-14">
           <Link
             href="/dashboard"
-            className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-indigo-dye-600 hover:bg-indigo-dye-700 text-white font-semibold rounded-xl shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-4 focus:ring-indigo-dye-500/50"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-amber-500 hover:bg-amber-600 text-white font-medium text-sm transition-colors"
           >
-            <Home className="w-5 h-5" />
             Go to Dashboard
           </Link>
-
           <button
             onClick={() => window.history.back()}
-            className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 font-semibold rounded-xl shadow-lg border-2 border-gray-200 dark:border-gray-700 transition-all duration-200 hover:shadow-xl hover:scale-105 focus:outline-none focus:ring-4 focus:ring-gray-500/50"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-white/90 dark:bg-slate-800/90 border border-amber-200/70 dark:border-slate-700 text-gray-700 dark:text-slate-200 font-medium text-sm hover:bg-amber-50 dark:hover:bg-slate-700 transition-colors"
           >
-            <ArrowLeft className="w-5 h-5" />
             Go Back
           </button>
         </div>
 
-        {/* Quick Links */}
-        <div className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-gray-200 dark:border-gray-700 p-6 shadow-lg">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Search className="w-5 h-5 text-gray-600 dark:text-gray-400" />
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Popular Pages
-            </h3>
-          </div>
-          <div className="flex flex-wrap gap-3 justify-center">
-            <Link
-              href="/library"
-              className="px-4 py-2 bg-white dark:bg-gray-700 hover:bg-indigo-dye-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-lg border border-gray-200 dark:border-gray-600 transition-colors duration-200 text-sm font-medium"
-            >
-              Library
-            </Link>
-            <Link
-              href="/discover"
-              className="px-4 py-2 bg-white dark:bg-gray-700 hover:bg-indigo-dye-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-lg border border-gray-200 dark:border-gray-600 transition-colors duration-200 text-sm font-medium"
-            >
-              Discover
-            </Link>
-            <Link
-              href="/chat"
-              className="px-4 py-2 bg-white dark:bg-gray-700 hover:bg-indigo-dye-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-lg border border-gray-200 dark:border-gray-600 transition-colors duration-200 text-sm font-medium"
-            >
-              AI Chat
-            </Link>
-            <Link
-              href="/forums"
-              className="px-4 py-2 bg-white dark:bg-gray-700 hover:bg-indigo-dye-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-lg border border-gray-200 dark:border-gray-600 transition-colors duration-200 text-sm font-medium"
-            >
-              Forums
-            </Link>
-            <Link
-              href="/settings"
-              className="px-4 py-2 bg-white dark:bg-gray-700 hover:bg-indigo-dye-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 rounded-lg border border-gray-200 dark:border-gray-600 transition-colors duration-200 text-sm font-medium"
-            >
-              Settings
-            </Link>
+        <div className="bg-white/90 dark:bg-slate-800/95 backdrop-blur-sm rounded-3xl border border-amber-200/70 dark:border-slate-700 shadow-xl p-8 w-full max-w-lg">
+          <p className="text-xs uppercase tracking-[0.2em] text-amber-700/80 dark:text-amber-300/80 font-semibold mb-6">
+            Popular Pages
+          </p>
+          <div className="flex flex-wrap justify-center gap-3">
+            {[
+              { href: "/library", label: "Library", Icon: Library },
+              { href: "/discover", label: "Discover", Icon: Compass },
+              { href: "/chat", label: "AI Chat", Icon: MessageSquare },
+              { href: "/forums", label: "Forums", Icon: Users },
+            ].map(({ href, label, Icon }) => (
+              <Link
+                key={href}
+                href={href}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-50/80 dark:bg-slate-700/60 border border-amber-200/60 dark:border-slate-600 text-sm font-medium text-gray-700 dark:text-slate-200 hover:bg-amber-100 dark:hover:bg-slate-700 transition-colors"
+              >
+                <Icon className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                {label}
+              </Link>
+            ))}
           </div>
         </div>
-
-        {/* Help Text */}
-        <p className="mt-8 text-sm text-gray-500 dark:text-gray-400">
-          Need help? Contact our{" "}
-          <a
-            href="#"
-            className="text-indigo-dye-600 dark:text-indigo-dye-400 hover:underline font-medium"
-          >
-            support team
-          </a>
-        </p>
       </div>
     </div>
   );

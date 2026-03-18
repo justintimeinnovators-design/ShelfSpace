@@ -10,6 +10,9 @@ interface AccessibilitySettings {
   screenReader: boolean;
 }
 
+/**
+ * Accessibility Enhancer.
+ */
 export function AccessibilityEnhancer() {
   const [settings, setSettings] = useState<AccessibilitySettings>({
     highContrast: false,
@@ -43,10 +46,18 @@ export function AccessibilityEnhancer() {
     );
     const contrastMediaQuery = window.matchMedia("(prefers-contrast: high)");
 
+/**
+ * Handle Motion Change.
+ * @param e - e value.
+ */
     const handleMotionChange = (e: MediaQueryListEvent) => {
       setSettings((prev) => ({ ...prev, reducedMotion: e.matches }));
     };
 
+/**
+ * Handle Contrast Change.
+ * @param e - e value.
+ */
     const handleContrastChange = (e: MediaQueryListEvent) => {
       setSettings((prev) => ({ ...prev, highContrast: e.matches }));
     };
@@ -103,6 +114,10 @@ export function AccessibilityEnhancer() {
     // Only run in browser environment
     if (typeof window === "undefined") return;
 
+/**
+ * Handle Key Down.
+ * @param e - e value.
+ */
     const handleKeyDown = (e: KeyboardEvent) => {
       // Skip to main content
       if (e.key === "Tab" && e.shiftKey && e.ctrlKey) {
@@ -145,6 +160,10 @@ export function AccessibilityEnhancer() {
     // Only run in browser environment
     if (typeof window === "undefined") return;
 
+/**
+ * Handle Focus Trap.
+ * @param e - e value.
+ */
     const handleFocusTrap = (e: KeyboardEvent) => {
       if (e.key === "Tab") {
         const modal = document.querySelector(
@@ -179,6 +198,10 @@ export function AccessibilityEnhancer() {
   }, []);
 
   // Screen reader announcements
+/**
+ * Announce To Screen Reader.
+ * @param message - message value.
+ */
   const announceToScreenReader = (message: string) => {
     const announcement = document.createElement("div");
     announcement.setAttribute("aria-live", "polite");
@@ -208,6 +231,9 @@ export function AccessibilityEnhancer() {
 }
 
 // Skip links component
+/**
+ * Skip Links.
+ */
 export function SkipLinks() {
   return (
     <div className="skip-links">
@@ -228,6 +254,9 @@ export function SkipLinks() {
 }
 
 // Focus indicator component
+/**
+ * Focus Indicator.
+ */
 export function FocusIndicator() {
   useEffect(() => {
     // Only run in browser environment
@@ -303,6 +332,9 @@ export function FocusIndicator() {
 }
 
 // ARIA live region for dynamic content
+/**
+ * Aria Live Region.
+ */
 export function AriaLiveRegion() {
   return (
     <div
@@ -322,6 +354,13 @@ interface AccessibilityPanelProps {
   onClose: () => void;
 }
 
+/**
+ * Accessibility Panel.
+ * @param {
+  isOpen,
+  onClose,
+} - { is Open, on Close, } value.
+ */
 export function AccessibilityPanel({
   isOpen,
   onClose,
@@ -341,6 +380,11 @@ export function AccessibilityPanel({
     // Settings not persisted
   }, [isOpen]);
 
+/**
+ * Update Setting.
+ * @param key - key value.
+ * @param value - value value.
+ */
   const updateSetting = (key: keyof AccessibilitySettings, value: boolean) => {
     const newSettings = { ...settings, [key]: value };
     setSettings(newSettings);

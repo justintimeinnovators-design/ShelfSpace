@@ -1,3 +1,9 @@
+/**
+ * Review service API wrapper.
+ *
+ * Centralizes book/user review endpoints and maps failures to `ReviewServiceError`
+ * so calling hooks/components can handle review-specific failures consistently.
+ */
 import { createApiClient } from "./api";
 import { getErrorMessage } from "./api-utils";
 import { AxiosError } from "axios";
@@ -38,6 +44,9 @@ export const ReviewService = {
     process.env["NEXT_PUBLIC_REVIEW_SERVICE_URL"] || "http://localhost:3002"
   ),
 
+  /**
+   * Lists reviews for a book.
+   */
   async listByBook(bookId: string, opts?: { limit?: number; offset?: number }): Promise<ReviewDTO[]> {
     try {
       const params: Record<string, any> = {};
@@ -52,6 +61,9 @@ export const ReviewService = {
     }
   },
 
+  /**
+   * Lists reviews authored by a user.
+   */
   async listByUser(userId: string, opts?: { limit?: number; offset?: number }): Promise<ReviewDTO[]> {
     try {
       const params: Record<string, any> = {};
@@ -66,6 +78,9 @@ export const ReviewService = {
     }
   },
 
+  /**
+   * Fetches one review by id.
+   */
   async getById(id: string): Promise<ReviewDTO> {
     try {
       const { data } = await ReviewService.client.get(`/api/reviews/${id}`);
@@ -77,6 +92,9 @@ export const ReviewService = {
     }
   },
 
+  /**
+   * Creates a new review.
+   */
   async create(input: CreateReviewInput): Promise<ReviewDTO> {
     try {
       const { data } = await ReviewService.client.post(`/api/reviews`, input);
@@ -88,6 +106,9 @@ export const ReviewService = {
     }
   },
 
+  /**
+   * Updates an existing review.
+   */
   async update(id: string, input: UpdateReviewInput): Promise<ReviewDTO> {
     try {
       const { data } = await ReviewService.client.put(`/api/reviews/${id}`, input);
@@ -99,6 +120,9 @@ export const ReviewService = {
     }
   },
 
+  /**
+   * Deletes a review.
+   */
   async remove(id: string): Promise<void> {
     try {
       await ReviewService.client.delete(`/api/reviews/${id}`);

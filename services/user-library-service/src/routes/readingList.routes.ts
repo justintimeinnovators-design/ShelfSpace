@@ -8,14 +8,17 @@ import {
 import { isAuthenticated } from "../middlewares/auth.js";
 import { z } from "zod";
 import axios from "axios";
+import { publishAnalyticsEvents } from "../kafka/producer.js";
 
 const router = express.Router();
 const BOOK_SERVICE_URL =
   process.env.BOOK_SERVICE_URL?.trim() || "http://localhost:3004";
-const ANALYTICS_SERVICE_URL =
-  process.env.ANALYTICS_SERVICE_URL?.trim() || "";
 const VALIDATE_BOOK_IDS = process.env.VALIDATE_BOOK_IDS === "true";
 
+/**
+ * Validate Book Ids.
+ * @param bookIds - book Ids value.
+ */
 async function validateBookIds(bookIds: string[]) {
   if (!VALIDATE_BOOK_IDS || bookIds.length === 0) {
     return;
@@ -40,6 +43,11 @@ async function validateBookIds(bookIds: string[]) {
   }
 }
 
+/**
+ * Get Status From List Name.
+ * @param name - name value.
+ * @returns string | undefined.
+ */
 function getStatusFromListName(name: string): string | undefined {
   const listName = name.toLowerCase();
   if (listName.includes("finished") || listName.includes("read") || listName.includes("completed")) {
@@ -54,6 +62,10 @@ function getStatusFromListName(name: string): string | undefined {
   return undefined;
 }
 
+/**
+ * Fetch Book Details.
+ * @param bookIds - book Ids value.
+ */
 async function fetchBookDetails(bookIds: string[]) {
   if (bookIds.length === 0) return new Map<string, any>();
   const results = await Promise.all(
@@ -76,17 +88,12 @@ async function emitAnalyticsEvents(
   req: Request,
   events: Array<Record<string, any>>
 ) {
-  if (!ANALYTICS_SERVICE_URL || events.length === 0) return;
-  const authHeader = req.headers.authorization;
-  if (!authHeader) return;
+  if (events.length === 0) return;
   try {
-    await axios.post(
-      `${ANALYTICS_SERVICE_URL}/api/analytics/events`,
-      { events },
-      { headers: { Authorization: authHeader } }
-    );
+    const eventsWithUserId = events.map((e) => ({ userId: req.userId, ...e }));
+    await publishAnalyticsEvents(eventsWithUserId);
   } catch (error) {
-    console.warn("Failed to emit analytics events");
+    console.warn("Failed to emit analytics events to Kafka:", error);
   }
 }
 

@@ -12,6 +12,11 @@ export interface SizeConfig {
   spacing: string;
 }
 
+/**
+ * Use Book Card Size.
+ * @param size - size value.
+ * @returns SizeConfig.
+ */
 export function useBookCardSize(size: BookCardSize = "medium"): SizeConfig {
   return useMemo(() => {
     const sizeConfigs: Record<BookCardSize, SizeConfig> = {

@@ -17,6 +17,9 @@ import "./report.css";
 //   weight: ["400", "500", "600", "700"],
 // });
 
+/**
+ * Report Page.
+ */
 export default async function ReportPage() {
   const reportPath = path.resolve(
     process.cwd(),

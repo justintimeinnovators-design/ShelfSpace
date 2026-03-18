@@ -106,16 +106,26 @@ class UserServiceClient {
   }
 
   // Set authentication token
+/**
+ * Set Token.
+ * @param token - token value.
+ */
   setToken(token: string) {
     this.token = token;
   }
 
   // Clear authentication token
+/**
+ * Clear Token.
+ */
   clearToken() {
     this.token = null;
   }
 
   // Get headers with auth token
+/**
+ * Get Headers.
+ */
   private getHeaders() {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -129,6 +139,11 @@ class UserServiceClient {
   }
 
   // Create or find user (handles both new and existing users)
+/**
+ * Create User.
+ * @param userData - user Data value.
+ * @returns Promise<CreateUserResponse>.
+ */
   async createUser(userData: CreateUserRequest): Promise<CreateUserResponse> {
     try {
       console.log("UserService: Creating/finding user...");
@@ -162,6 +177,10 @@ class UserServiceClient {
   }
 
   // Get current user profile
+/**
+ * Get Current User.
+ * @returns Promise<User>.
+ */
   async getCurrentUser(): Promise<User> {
     try {
       const response = await serverApi.get(
@@ -176,6 +195,11 @@ class UserServiceClient {
   }
 
   // Update current user profile
+/**
+ * Update User.
+ * @param userData - user Data value.
+ * @returns Promise<User>.
+ */
   async updateUser(userData: UpdateUserRequest): Promise<User> {
     try {
       const response = await serverApi.patch(
@@ -191,6 +215,10 @@ class UserServiceClient {
   }
 
   // Get user preferences
+/**
+ * Get Preferences.
+ * @returns Promise<UserPreferences>.
+ */
   async getPreferences(): Promise<UserPreferences> {
     try {
       const response = await serverApi.get(
@@ -205,6 +233,11 @@ class UserServiceClient {
   }
 
   // Update user preferences
+/**
+ * Update Preferences.
+ * @param preferences - preferences value.
+ * @returns Promise<UserPreferences>.
+ */
   async updatePreferences(preferences: UpdatePreferencesRequest): Promise<UserPreferences> {
     try {
       const response = await serverApi.put(
@@ -220,6 +253,10 @@ class UserServiceClient {
   }
 
   // Get user stats
+/**
+ * Get Stats.
+ * @returns Promise<UserStats>.
+ */
   async getStats(): Promise<UserStats> {
     try {
       const response = await serverApi.get(
@@ -234,6 +271,11 @@ class UserServiceClient {
   }
 
   // Get user by ID (for public profiles)
+/**
+ * Get User By Id.
+ * @param userId - user Id value.
+ * @returns Promise<{ token: string }>.
+ */
   async getUserById(userId: string): Promise<{ token: string }> {
     try {
       const response = await serverApi.get(

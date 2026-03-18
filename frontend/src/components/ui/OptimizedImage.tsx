@@ -20,6 +20,25 @@ interface OptimizedImageProps {
   fallback?: React.ReactNode;
 }
 
+/**
+ * Optimized Image.
+ * @param {
+  src,
+  alt,
+  width,
+  height,
+  className = "",
+  priority = false,
+  placeholder = "empty",
+  blurDataURL,
+  sizes = "100vw",
+  quality = 75,
+  loading = "lazy",
+  onLoad,
+  onError,
+  fallback
+} - { src, alt, width, height, class Name = "", priority = false, placeholder = "empty", blur Data URL, sizes = "100vw", quality = 75, loading = "lazy", on Load, on Error, fallback } value.
+ */
 export function OptimizedImage({
   src,
   alt,
@@ -69,6 +88,12 @@ export function OptimizedImage({
   }, [priority, loading]);
 
   // Generate optimized image URL
+/**
+ * Get Optimized Src.
+ * @param originalSrc - original Src value.
+ * @param _width - width value.
+ * @param _quality - quality value.
+ */
   const getOptimizedSrc = (originalSrc: string, _width?: number, _quality?: number) => {
     // If it's a local image, return as-is
     if (originalSrc.startsWith('/') || originalSrc.startsWith('./')) {
@@ -80,11 +105,17 @@ export function OptimizedImage({
     return originalSrc;
   };
 
+/**
+ * Handle Load.
+ */
   const handleLoad = () => {
     setIsLoaded(true);
     onLoad?.();
   };
 
+/**
+ * Handle Error.
+ */
   const handleError = () => {
     setHasError(true);
     onError?.();
@@ -110,7 +141,7 @@ export function OptimizedImage({
               className="w-full h-full object-cover filter blur-sm scale-110"
             />
           ) : (
-            <div className="w-8 h-8 border-2 border-gray-300 border-t-amber-600 rounded-full animate-spin" />
+            <div className="w-full h-full bg-amber-100 dark:bg-slate-700 animate-pulse rounded" />
           )}
         </div>
       )}
@@ -158,6 +189,10 @@ interface ImageGalleryProps {
   className?: string;
 }
 
+/**
+ * Image Gallery.
+ * @param { images, className - { images, class Name value.
+ */
 export function ImageGallery({ images, className = "" }: ImageGalleryProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -217,6 +252,15 @@ interface ResponsiveImageProps {
   }>;
 }
 
+/**
+ * Responsive Image.
+ * @param {
+  src,
+  alt,
+  className = "",
+  breakpoints = []
+} - { src, alt, class Name = "", breakpoints = [] } value.
+ */
 export function ResponsiveImage({
   src,
   alt,
@@ -226,6 +270,9 @@ export function ResponsiveImage({
   const [currentSrc, setCurrentSrc] = useState(src);
 
   useEffect(() => {
+/**
+ * Update Src.
+ */
     const updateSrc = () => {
       const matchingBreakpoint = breakpoints.find(bp => 
         window.matchMedia(bp.media).matches
@@ -241,6 +288,9 @@ export function ResponsiveImage({
     updateSrc();
     
     const mediaQueries = breakpoints.map(bp => window.matchMedia(bp.media));
+/**
+ * Handle Change.
+ */
     const handleChange = () => updateSrc();
     
     mediaQueries.forEach(mq => mq.addEventListener('change', handleChange));

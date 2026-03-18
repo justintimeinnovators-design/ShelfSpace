@@ -4,6 +4,11 @@ import { userService } from "@/lib/user-service";
 
 const USER_SERVICE_TOKEN_MAX_AGE_SECONDS = 6 * 60 * 60;
 
+/**
+ * Get Jwt Expiry Ms.
+ * @param token - token value.
+ * @returns number | null.
+ */
 function getJwtExpiryMs(token: string): number | null {
   const parts = token.split(".");
   if (parts.length < 2 || !parts[1]) return null;
@@ -46,6 +51,10 @@ export const authOptions: AuthOptions = {
     maxAge: USER_SERVICE_TOKEN_MAX_AGE_SECONDS,
   },
   callbacks: {
+/**
+ * Sign In.
+ * @param { user, account } - { user, account } value.
+ */
     async signIn({ user, account }) {
       console.log("\n\n=== SIGNIN CALLBACK TRIGGERED ===");
       console.log("User email:", user.email);
@@ -95,6 +104,10 @@ export const authOptions: AuthOptions = {
       }
     },
 
+/**
+ * Jwt.
+ * @param { token, user, account, trigger, session } - { token, user, account, trigger, session } value.
+ */
     async jwt({ token, user, account, trigger, session }) {
       console.log("\n=== JWT CALLBACK START ===");
       console.log("Trigger:", trigger);
@@ -210,6 +223,10 @@ export const authOptions: AuthOptions = {
       return token;
     },
 
+/**
+ * Session.
+ * @param { session, token } - { session, token } value.
+ */
     async session({ session, token }) {
       console.log("\n=== SESSION CALLBACK START ===");
       console.log("Token userId:", token['userId']);
@@ -247,6 +264,10 @@ export const authOptions: AuthOptions = {
       return session;
     },
 
+/**
+ * Redirect.
+ * @param { url, baseUrl } - { url, base Url } value.
+ */
     async redirect({ url, baseUrl }) {
       console.log("\n=== REDIRECT CALLBACK ===");
       console.log("URL:", url);
@@ -269,14 +290,21 @@ export const authOptions: AuthOptions = {
     },
   },
   pages: {
-    signIn: "/login",
-    error: "/login", // Redirect to login on error
+    signIn: "/sign-up",
+    error: "/sign-up",
   },
   events: {
+/**
+ * Sign In.
+ * @param message - message value.
+ */
     async signIn(message) {
       console.log("\n[EVENT] === SIGNIN EVENT ===");
       console.log("User signed in:", message.user.email);
     },
+/**
+ * Sign Out.
+ */
     async signOut() {
       console.log("\n[EVENT] === SIGNOUT EVENT ===");
       console.log("User signed out");

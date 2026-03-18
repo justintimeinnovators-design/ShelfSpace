@@ -4,16 +4,28 @@ const REDIS_URL = process.env.REDIS_URL || process.env.UPSTASH_REDIS_URL || 'red
 
 let redis: Redis.Redis | null = null;
 
+/**
+ * Get Redis Client.
+ * @returns Redis.Redis.
+ */
 export function getRedisClient(): Redis.Redis {
   if (!redis) {
     const isUpstash = REDIS_URL.startsWith('rediss://');
     
     redis = new Redis.default(REDIS_URL, {
       maxRetriesPerRequest: 3,
+/**
+ * Retry Strategy.
+ * @param times - times value.
+ */
       retryStrategy(times: number) {
         const delay = Math.min(times * 50, 2000);
         return delay;
       },
+/**
+ * Reconnect On Error.
+ * @param err - err value.
+ */
       reconnectOnError(err: Error) {
         const targetError = 'READONLY';
         if (err.message.includes(targetError)) {
@@ -51,6 +63,11 @@ export interface ChatMessage {
 const CHAT_KEY_PREFIX = 'chat:';
 const CHAT_TTL = 86400; // 24 hours in seconds
 
+/**
+ * Get Chat Messages.
+ * @param sessionId - session Id value.
+ * @returns Promise<ChatMessage[]>.
+ */
 export async function getChatMessages(sessionId: string): Promise<ChatMessage[]> {
   try {
     const client = getRedisClient();
@@ -68,6 +85,12 @@ export async function getChatMessages(sessionId: string): Promise<ChatMessage[]>
   }
 }
 
+/**
+ * Set Chat Messages.
+ * @param sessionId - session Id value.
+ * @param messages - messages value.
+ * @returns Promise<boolean>.
+ */
 export async function setChatMessages(sessionId: string, messages: ChatMessage[]): Promise<boolean> {
   try {
     const client = getRedisClient();
@@ -82,6 +105,12 @@ export async function setChatMessages(sessionId: string, messages: ChatMessage[]
   }
 }
 
+/**
+ * Append Chat Message.
+ * @param sessionId - session Id value.
+ * @param message - message value.
+ * @returns Promise<boolean>.
+ */
 export async function appendChatMessage(sessionId: string, message: ChatMessage): Promise<boolean> {
   try {
     const messages = await getChatMessages(sessionId);
@@ -93,6 +122,11 @@ export async function appendChatMessage(sessionId: string, message: ChatMessage)
   }
 }
 
+/**
+ * Delete Chat Messages.
+ * @param sessionId - session Id value.
+ * @returns Promise<boolean>.
+ */
 export async function deleteChatMessages(sessionId: string): Promise<boolean> {
   try {
     const client = getRedisClient();
@@ -105,6 +139,11 @@ export async function deleteChatMessages(sessionId: string): Promise<boolean> {
   }
 }
 
+/**
+ * Refresh Chat TTL.
+ * @param sessionId - session Id value.
+ * @returns Promise<boolean>.
+ */
 export async function refreshChatTTL(sessionId: string): Promise<boolean> {
   try {
     const client = getRedisClient();

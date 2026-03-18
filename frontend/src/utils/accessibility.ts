@@ -7,6 +7,10 @@ export const focusManagement = {
     const firstElement = focusableElements[0];
     const lastElement = focusableElements[focusableElements.length - 1];
 
+/**
+ * Handle Key Down.
+ * @param event - event value.
+ */
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Tab") {
         if (event.shiftKey) {

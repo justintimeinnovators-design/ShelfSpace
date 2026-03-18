@@ -25,6 +25,11 @@ interface CacheEntry<T> {
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 const cache = new Map<string, CacheEntry<any>>();
 
+/**
+ * Get Cached Data.
+ * @param key - key value.
+ * @returns T | null.
+ */
 function getCachedData<T>(key: string): T | null {
   const entry = cache.get(key);
   if (entry && Date.now() < entry.expiresAt) {
@@ -36,6 +41,11 @@ function getCachedData<T>(key: string): T | null {
   return null;
 }
 
+/**
+ * Set Cached Data.
+ * @param key - key value.
+ * @param data - data value.
+ */
 function setCachedData<T>(key: string, data: T): void {
   const now = Date.now();
   cache.set(key, {
@@ -45,6 +55,9 @@ function setCachedData<T>(key: string, data: T): void {
   });
 }
 
+/**
+ * Use Dashboard Data.
+ */
 export function useDashboardData() {
   const [currentlyReading, setCurrentlyReading] = useState<Book[]>([]);
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);

@@ -30,6 +30,10 @@ interface BookDetailFeatureProps {
   bookId: string;
 }
 
+/**
+ * Book Detail Feature.
+ * @param { bookId } - { book Id } value.
+ */
 export function BookDetailFeature({ bookId }: BookDetailFeatureProps) {
   const router = useRouter();
   const { data: session } = useSession();
@@ -118,10 +122,16 @@ export function BookDetailFeature({ bookId }: BookDetailFeatureProps) {
     setIsSaveModalOpen(true);
   }, [book, ensureDefaultList, session?.accessToken, toast]);
 
+/**
+ * Handle Bookmark.
+ */
   const handleBookmark = () => {
     openSaveModal();
   };
 
+/**
+ * Handle Share.
+ */
   const handleShare = () => {
     if (!book) return;
     if (navigator.share) {
@@ -219,6 +229,9 @@ export function BookDetailFeature({ bookId }: BookDetailFeatureProps) {
     );
   }
 
+/**
+ * On Create Review.
+ */
   const onCreateReview = async () => {
     if (newReviewText.trim().length < 10) {
       alert("Review text must be at least 10 characters long");
@@ -236,6 +249,10 @@ export function BookDetailFeature({ bookId }: BookDetailFeatureProps) {
     setNewRating(5);
   };
 
+/**
+ * Start Edit Review.
+ * @param reviewId - review Id value.
+ */
   const startEditReview = (reviewId: string) => {
     const review = reviews.find((r) => r.id === reviewId);
     if (!review) return;
@@ -245,6 +262,9 @@ export function BookDetailFeature({ bookId }: BookDetailFeatureProps) {
     setEditRating(review.rating || 5);
   };
 
+/**
+ * Cancel Edit Review.
+ */
   const cancelEditReview = () => {
     setEditingReviewId(null);
     setEditReviewText("");
@@ -252,6 +272,9 @@ export function BookDetailFeature({ bookId }: BookDetailFeatureProps) {
     setEditRating(5);
   };
 
+/**
+ * On Update Review.
+ */
   const onUpdateReview = async () => {
     if (!editingReviewId) return;
     if (editReviewText.trim().length < 10) {
@@ -267,6 +290,10 @@ export function BookDetailFeature({ bookId }: BookDetailFeatureProps) {
     cancelEditReview();
   };
 
+/**
+ * On Delete Review.
+ * @param reviewId - review Id value.
+ */
   const onDeleteReview = async (reviewId: string) => {
     const confirmed = window.confirm("Delete this review? This cannot be undone.");
     if (!confirmed) return;
@@ -841,6 +868,10 @@ export function BookDetailFeature({ bookId }: BookDetailFeatureProps) {
 }
 
 // Wrapped version with error boundary for use in pages
+/**
+ * Book Detail Feature With Boundary.
+ * @param { bookId } - { book Id } value.
+ */
 export function BookDetailFeatureWithBoundary({ bookId }: { bookId: string }) {
   return <BookDetailFeature bookId={bookId} />;
 }

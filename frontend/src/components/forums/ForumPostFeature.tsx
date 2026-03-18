@@ -6,15 +6,17 @@ import { useSession } from "next-auth/react";
 import { ArrowLeft, MessageCircle, ThumbsUp } from "lucide-react";
 import { useForumPosts } from "@/hooks/data/useForumPosts";
 import { type ForumPostDTO } from "@/lib/forum-service";
+import { ThreadDetailSkeleton } from "@/components/skeletons/SkeletonComponents";
 import apiClient from "@/lib/api";
 import Link from "next/link";
 
 interface ForumPostFeatureProps {
   forumId: string;
   threadId: string;
+  forumSlug: string;
 }
 
-export function ForumPostFeature({ forumId, threadId }: ForumPostFeatureProps) {
+export function ForumPostFeature({ forumId, threadId, forumSlug }: ForumPostFeatureProps) {
   const router = useRouter();
   const { data: session } = useSession();
   const { thread, posts, loading, error, createPost, updatePost, deletePost, addReaction, removeReaction } =
@@ -106,18 +108,7 @@ export function ForumPostFeature({ forumId, threadId }: ForumPostFeatureProps) {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800 flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full shadow-lg mb-6 animate-pulse">
-            <MessageCircle className="h-10 w-10 text-white" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-2">
-            Loading Discussion...
-          </h2>
-        </div>
-      </div>
-    );
+    return <ThreadDetailSkeleton />;
   }
 
   if (error || !thread) {
@@ -134,7 +125,7 @@ export function ForumPostFeature({ forumId, threadId }: ForumPostFeatureProps) {
             {error || "The discussion you're looking for doesn't exist."}
           </p>
           <button
-            onClick={() => router.back()}
+            onClick={() => router.push(`/forums/${forumSlug}`)}
             className="inline-flex items-center px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -149,7 +140,7 @@ export function ForumPostFeature({ forumId, threadId }: ForumPostFeatureProps) {
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800 relative z-10">
       <div className="relative container mx-auto px-4 py-8 z-20 max-w-4xl">
         <button
-          onClick={() => router.push(`/forums/${forumId}`)}
+          onClick={() => router.push(`/forums/${forumSlug}`)}
           className="inline-flex items-center text-amber-800 dark:text-amber-200 hover:text-amber-600 dark:hover:text-amber-50 transition-colors mb-6"
         >
           <ArrowLeft className="h-5 w-5 mr-2" />

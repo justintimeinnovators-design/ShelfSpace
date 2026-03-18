@@ -13,6 +13,14 @@ interface UseLibraryActionsProps {
   onError?: (error: Error) => void;
 }
 
+/**
+ * Use Library Actions.
+ * @param {
+  onBookUpdate: _onBookUpdate,
+  onListUpdate: _onListUpdate,
+  onError: _onError,
+} - { on Book Update: on Book Update, on List Update: on List Update, on Error: on Error, } value.
+ */
 export function useLibraryActions({
   onBookUpdate: _onBookUpdate,
   onListUpdate: _onListUpdate,

@@ -3,12 +3,20 @@ import { getCollections } from "../db.js";
 
 const router = Router();
 
+/**
+ * Get Favorite Genre.
+ * @param genres - genres value.
+ */
 function getFavoriteGenre(genres: Record<string, number>) {
   const entries = Object.entries(genres || {});
   if (entries.length === 0) return "N/A";
   return entries.sort(([, a], [, b]) => b - a)[0]?.[0] || "N/A";
 }
 
+/**
+ * Get Monthly Series.
+ * @param monthly - monthly value.
+ */
 function getMonthlySeries(
   monthly: Record<string, { books: number; pages: number; minutes: number }>
 ) {

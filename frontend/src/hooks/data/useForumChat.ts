@@ -18,6 +18,10 @@ interface UseForumChatOptions {
   fetchHistory?: boolean;
 }
 
+/**
+ * Use Forum Chat.
+ * @param { forumId, autoJoin - { forum Id, auto Join value.
+ */
 export function useForumChat({ forumId, autoJoin = true, fetchHistory = true }: UseForumChatOptions) {
   const { data: session } = useSession();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -36,6 +40,9 @@ export function useForumChat({ forumId, autoJoin = true, fetchHistory = true }: 
 
     let mounted = true;
 
+/**
+ * Setup Chat.
+ */
     const setupChat = async () => {
       try {
         setIsLoading(true);

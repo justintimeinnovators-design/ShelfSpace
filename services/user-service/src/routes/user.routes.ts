@@ -372,6 +372,21 @@ router.get(
   }
 );
 
+router.delete(
+  "/me",
+  async (req: Request, res: Response) => {
+    try {
+      await prisma.user.delete({ where: { id: req.userId } });
+      await cache.del(cache.cacheKeys.user(req.userId!));
+      await cache.del(cache.cacheKeys.userPreferences(req.userId!));
+      res.status(204).send();
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  }
+);
+
 // Admin routes
 router.put(
   "/users/:userId/status",

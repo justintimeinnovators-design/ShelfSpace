@@ -3,6 +3,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { ForumService, type ForumMembershipDTO } from "@/lib/forum-service";
 
+/**
+ * Use Forum Membership.
+ * @param forumId - forum Id value.
+ * @param userId - user Id value.
+ */
 export function useForumMembership(forumId: string, userId: string) {
   const [isMember, setIsMember] = useState<boolean | null>(null);
   const [members, setMembers] = useState<ForumMembershipDTO[]>([]);

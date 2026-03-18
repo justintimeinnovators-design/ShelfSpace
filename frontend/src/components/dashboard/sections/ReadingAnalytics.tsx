@@ -10,6 +10,9 @@ import {
 import { TrendingUp, BookOpen, Clock, Star } from 'lucide-react';
 import { useReadingAnalyticsData } from '@/hooks/data/useAnalytics';
 
+/**
+ * Reading Analytics.
+ */
 export function ReadingAnalytics() {
   const { data } = useReadingAnalyticsData();
   const analytics = data || {

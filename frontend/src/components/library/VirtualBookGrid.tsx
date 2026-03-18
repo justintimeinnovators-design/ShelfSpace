@@ -11,6 +11,16 @@ interface VirtualBookGridProps {
   className?: string;
 }
 
+/**
+ * Virtual Book Grid.
+ * @param {
+  books,
+  itemHeight: _itemHeight,
+  itemsPerRow: _itemsPerRow,
+  overscan: _overscan,
+  className = "",
+} - { books, item Height: item Height, items Per Row: items Per Row, overscan: overscan, class Name = "", } value.
+ */
 export const VirtualBookGrid: React.FC<VirtualBookGridProps> = ({
   books,
   itemHeight: _itemHeight,

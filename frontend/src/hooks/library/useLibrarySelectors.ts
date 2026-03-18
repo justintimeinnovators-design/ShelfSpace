@@ -9,6 +9,14 @@ interface UseLibrarySelectorsProps {
   books: Book[];
 }
 
+/**
+ * Use Library Selectors.
+ * @param {
+  readingLists,
+  selectedListId,
+  books,
+} - { reading Lists, selected List Id, books, } value.
+ */
 export function useLibrarySelectors({
   readingLists,
   selectedListId,

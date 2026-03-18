@@ -1,3 +1,11 @@
+/**
+ * Library feature page component.
+ *
+ * Responsibilities:
+ * - Render list-centric library overview.
+ * - Coordinate creation of new reading lists.
+ * - Bridge authenticated user identity into profile/list links.
+ */
 "use client";
 
 import { Suspense, useState } from "react";
@@ -8,6 +16,49 @@ import { LibraryLoadingSkeleton } from "@/components/common/LoadingStates";
 import { LibraryErrorFallback } from "@/components/common/ErrorFallbacks/LibraryErrorFallback";
 import { useLibraryState } from "@/hooks/library/useLibraryState";
 import { BookOpen, Plus, Library } from "lucide-react";
+import { toListSlug } from "@/lib/slug";
+
+/** Renders up to 4 stacked/fanned book covers for a reading list card. */
+function CoverCollage({ books }: { books: any[] }) {
+  const covers = books
+    .map((b: any) => b.coverImage || b.cover || b.image_url || "")
+    .filter(Boolean)
+    .slice(0, 4);
+
+  if (covers.length === 0) {
+    return (
+      <div className="w-full h-36 mb-5 rounded-2xl bg-gradient-to-br from-amber-100 to-orange-200 dark:from-slate-700 dark:to-slate-600 flex items-center justify-center">
+        <BookOpen className="h-10 w-10 text-amber-400 dark:text-slate-400 opacity-60" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative w-full h-36 mb-5 rounded-2xl overflow-hidden bg-gradient-to-br from-amber-50 to-orange-100 dark:from-slate-800 dark:to-slate-700">
+      <div className="absolute inset-0 flex items-end justify-center gap-1.5 pb-3 px-4">
+        {covers.map((src, i) => {
+          const offsets = ["-rotate-6 translate-y-2", "-rotate-2 translate-y-1", "rotate-2 translate-y-1", "rotate-6 translate-y-2"];
+          const zIndexes = ["z-10", "z-20", "z-20", "z-10"];
+          return (
+            <div
+              key={i}
+              className={`relative flex-shrink-0 w-16 h-24 rounded-md shadow-lg overflow-hidden transform transition-transform group-hover:scale-105 ${offsets[i] ?? ""} ${zIndexes[i] ?? ""}`}
+            >
+              <img
+                src={src}
+                alt=""
+                className="w-full h-full object-cover"
+                loading="lazy"
+              />
+            </div>
+          );
+        })}
+      </div>
+      {/* Soft vignette at bottom */}
+      <div className="absolute bottom-0 inset-x-0 h-8 bg-gradient-to-t from-white/40 dark:from-slate-800/40 to-transparent pointer-events-none" />
+    </div>
+  );
+}
 
 /**
  * Props for the LibraryFeature component
@@ -18,30 +69,9 @@ interface LibraryFeatureProps {
 }
 
 /**
- * LibraryFeature Component
+ * Main library screen renderer.
  *
- * Main orchestrator component for the library feature. Manages the overall
- * library state, keyboard navigation, and coordinates between sidebar and
- * main content areas.
- *
- * Features:
- * - Reading list management and selection
- * - Book filtering, searching, and sorting
- * - Grid and list view modes
- * - Keyboard navigation support
- * - Error boundaries and loading states
- * - Responsive layout
- *
- * @example
- * ```tsx
- * // Basic usage
- * <LibraryFeature />
- *
- * // With URL search parameters
- * <LibraryFeature searchParams={{ list: "2", view: "list", search: "fiction" }} />
- * ```
- *
- * @param searchParams - URL search parameters for initializing state
+ * @param searchParams Optional URL params to seed library state.
  */
 export function LibraryFeature({ searchParams }: LibraryFeatureProps) {
   const { data: session } = useSession();
@@ -66,6 +96,9 @@ export function LibraryFeature({ searchParams }: LibraryFeatureProps) {
     return <LibraryLoadingSkeleton />;
   }
 
+  /**
+   * Creates a new reading list from current input state.
+   */
   const handleCreate = async () => {
     const trimmed = newListName.trim();
     if (!trimmed) return;
@@ -133,10 +166,11 @@ export function LibraryFeature({ searchParams }: LibraryFeatureProps) {
             {readingLists.map((list: any) => (
               <Link
                 key={list.id}
-                href={`/profile/${usernameSlug}/lists/${list.id}`}
+                href={`/profile/${usernameSlug}/lists/${toListSlug(list)}?from=library`}
                 className="group bg-white/90 dark:bg-slate-800/95 backdrop-blur-sm rounded-3xl shadow-xl border border-amber-200/70 dark:border-slate-700 p-6 hover:-translate-y-1 transition-transform"
               >
-                <div className="flex items-center justify-between mb-4">
+                <CoverCollage books={list.books || []} />
+                <div className="flex items-center justify-between mb-3">
                   <span className="text-xs uppercase tracking-[0.2em] text-amber-700/80 dark:text-amber-300/80 font-semibold">
                     Reading List
                   </span>
@@ -148,7 +182,7 @@ export function LibraryFeature({ searchParams }: LibraryFeatureProps) {
                   {list.name}
                 </h2>
                 {list.description && (
-                  <p className="text-sm text-gray-600 dark:text-slate-300 line-clamp-3">
+                  <p className="text-sm text-gray-600 dark:text-slate-300 line-clamp-2">
                     {list.description}
                   </p>
                 )}
@@ -165,7 +199,11 @@ export function LibraryFeature({ searchParams }: LibraryFeatureProps) {
   );
 }
 
-// Wrapped version with error boundary for use in pages
+/**
+ * Error/Loading boundary wrapper for route-level usage.
+ *
+ * @param searchParams Optional URL params.
+ */
 export function LibraryFeatureWithBoundary({
   searchParams,
 }: LibraryFeatureProps) {

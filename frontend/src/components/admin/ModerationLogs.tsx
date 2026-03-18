@@ -1,12 +1,19 @@
 "use client";
 
-import { FileText, RefreshCw, Loader2, XCircle, AlertCircle, CheckCircle } from "lucide-react";
+import { FileText, RefreshCw, XCircle, AlertCircle, CheckCircle } from "lucide-react";
 import { useModerationLogs } from "@/hooks/data/useAdmin";
 import { ModerationAction } from "@/lib/admin-service";
 
+/**
+ * Moderation Logs.
+ */
 export function ModerationLogs() {
   const { logs, loading, error, fetchLogs } = useModerationLogs({ autoFetch: true });
 
+/**
+ * Get Action Icon.
+ * @param action - action value.
+ */
   const getActionIcon = (action: ModerationAction) => {
     switch (action) {
       case "DELETE_REVIEW":
@@ -31,7 +38,7 @@ export function ModerationLogs() {
           disabled={loading}
           className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors disabled:opacity-50"
         >
-          <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+          <RefreshCw className="h-4 w-4" />
           Refresh
         </button>
       </div>
@@ -43,8 +50,15 @@ export function ModerationLogs() {
       )}
 
       {loading ? (
-        <div className="flex items-center justify-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin text-amber-500" />
+        <div className="py-12 space-y-3">
+          {[...Array(5)].map((_, i) => (
+            <div key={i} className="flex gap-4 animate-pulse">
+              <div className="h-4 bg-amber-100 dark:bg-slate-700 rounded w-1/4" />
+              <div className="h-4 bg-amber-100 dark:bg-slate-700 rounded w-1/5" />
+              <div className="h-4 bg-amber-100 dark:bg-slate-700 rounded w-1/5" />
+              <div className="h-4 bg-amber-100 dark:bg-slate-700 rounded flex-1" />
+            </div>
+          ))}
         </div>
       ) : logs.length === 0 ? (
         <div className="text-center py-12">

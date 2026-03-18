@@ -257,6 +257,10 @@ export const stateDebug = {
   ): [T, (value: T | ((prev: T) => T)) => void] => {
     const [value, setValue] = React.useState(initialValue);
 
+/**
+ * Debug Set Value.
+ * @param newValue - new Value value.
+ */
     const debugSetValue = (newValue: T | ((prev: T) => T)) => {
       if (!isDevelopment) {
         setValue(newValue);
@@ -283,6 +287,12 @@ export const stateDebug = {
     initialState: S,
     reducerName: string
   ): [S, (action: A) => void] => {
+/**
+ * Debug Reducer.
+ * @param state - state value.
+ * @param action - action value.
+ * @returns S.
+ */
     const debugReducer = (state: S, action: A): S => {
       if (!isDevelopment) return reducer(state, action);
 

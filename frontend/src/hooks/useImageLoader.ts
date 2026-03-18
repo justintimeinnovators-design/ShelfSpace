@@ -15,6 +15,15 @@ interface UseImageLoaderReturn {
   retry: () => void;
 }
 
+/**
+ * Use Image Loader.
+ * @param {
+  src,
+  fallbackSrc = "/book-covers/default.jpg",
+  preload = false,
+} - { src, fallback Src = "/book covers/default.jpg", preload = false, } value.
+ * @returns UseImageLoaderReturn.
+ */
 export function useImageLoader({
   src,
   fallbackSrc = "/book-covers/default.jpg",

@@ -3,6 +3,12 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
 // Basic debounce hook
+/**
+ * Use Debounce.
+ * @param value - value value.
+ * @param delay - delay value.
+ * @returns T.
+ */
 export function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
 
@@ -20,6 +26,12 @@ export function useDebounce<T>(value: T, delay: number): T {
 }
 
 // Debounced callback hook
+/**
+ * Use Debounced Callback.
+ * @param callback - callback value.
+ * @param delay - delay value.
+ * @returns T.
+ */
 export function useDebouncedCallback<T extends (...args: any[]) => any>(
   callback: T,
   delay: number
@@ -51,6 +63,12 @@ export function useDebouncedCallback<T extends (...args: any[]) => any>(
 }
 
 // Debounced state hook
+/**
+ * Use Debounced State.
+ * @param initialValue - initial Value value.
+ * @param delay - delay value.
+ * @returns [T, T, (value: T) => void].
+ */
 export function useDebouncedState<T>(
   initialValue: T,
   delay: number
@@ -78,6 +96,13 @@ interface DebounceOptions {
   maxWait?: number;
 }
 
+/**
+ * Use Advanced Debounce.
+ * @param callback - callback value.
+ * @param delay - delay value.
+ * @param options - options value.
+ * @returns T.
+ */
 export function useAdvancedDebounce<T extends (...args: any[]) => any>(
   callback: T,
   delay: number,
@@ -151,6 +176,12 @@ export function useAdvancedDebounce<T extends (...args: any[]) => any>(
 }
 
 // Throttle hook
+/**
+ * Use Throttle.
+ * @param callback - callback value.
+ * @param delay - delay value.
+ * @returns T.
+ */
 export function useThrottle<T extends (...args: any[]) => any>(
   callback: T,
   delay: number
@@ -189,6 +220,12 @@ export function useThrottle<T extends (...args: any[]) => any>(
 }
 
 // Search debounce hook
+/**
+ * Use Search Debounce.
+ * @param searchTerm - search Term value.
+ * @param delay - delay value.
+ * @returns string.
+ */
 export function useSearchDebounce(
   searchTerm: string,
   delay: number = 300
@@ -209,6 +246,11 @@ export function useSearchDebounce(
 }
 
 // Resize debounce hook
+/**
+ * Use Resize Debounce.
+ * @param callback - callback value.
+ * @param delay - delay value.
+ */
 export function useResizeDebounce(
   callback: (width: number, height: number) => void,
   delay: number = 250
@@ -216,6 +258,9 @@ export function useResizeDebounce(
   const timeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
 
   useEffect(() => {
+/**
+ * Handle Resize.
+ */
     const handleResize = () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);

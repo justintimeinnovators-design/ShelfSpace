@@ -6,6 +6,14 @@ import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { ErrorFallbackProps } from "@/components/common/ErrorBoundary";
 
+/**
+ * Library Error Fallback.
+ * @param {
+  error: _error,
+  retry,
+  errorId,
+} - { error: error, retry, error Id, } value.
+ */
 export const LibraryErrorFallback: React.FC<ErrorFallbackProps> = ({
   error: _error,
   retry,

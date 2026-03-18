@@ -7,6 +7,10 @@ interface AuthProviderProps {
   children: React.ReactNode;
 }
 
+/**
+ * Auth Provider.
+ * @param { children } - { children } value.
+ */
 export default function AuthProvider({ children }: AuthProviderProps) {
   return <SessionProvider>{children}</SessionProvider>;
 }

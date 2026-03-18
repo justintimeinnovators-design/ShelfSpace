@@ -122,6 +122,10 @@ export function setupGroupChatHandlers(
     return () => {};
   }
 
+/**
+ * Message Handler.
+ * @param message - message value.
+ */
   const messageHandler = (message: ChatMessage) => {
     if (message.groupId === groupId) {
       // Transform timestamp if needed
@@ -140,6 +144,10 @@ export function setupGroupChatHandlers(
     }
   };
 
+/**
+ * Error Handler.
+ * @param error - error value.
+ */
   const errorHandler = (error: { message?: string }) => {
     handlers.onError?.(error.message || "An error occurred");
   };

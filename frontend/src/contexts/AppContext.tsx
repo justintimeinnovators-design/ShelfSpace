@@ -1,4 +1,15 @@
-// src/contexts/AppContext.tsx
+/**
+ * Global application state context.
+ *
+ * Responsibilities:
+ * - Store cross-feature state (auth, theme, app preferences, loading/error flags).
+ * - Keep local app state synchronized with NextAuth session state.
+ * - Expose a stable action interface to descendants.
+ *
+ * Design notes:
+ * - State transitions are reducer-driven for predictability.
+ * - Side effects (session sync, DOM theme updates, sign-out) are isolated in effects/actions.
+ */
 "use client";
 
 import {
@@ -41,8 +52,15 @@ type AppActionType =
   | { type: "SET_ERROR"; payload: string | null }
   | { type: "RESET_STATE" };
 
-// Reducer
+/**
+ * Pure reducer for all app-level state transitions.
+ *
+ * @param state Current app state snapshot.
+ * @param action Transition descriptor.
+ * @returns Next app state derived from the provided action.
+ */
 function appReducer(state: AppState, action: AppActionType): AppState {
+  // Keep reducer pure so state transitions are predictable and testable.
   switch (action.type) {
     case "SET_USER":
       return {
@@ -100,7 +118,14 @@ interface AppProviderProps {
   initialUser?: unknown;
 }
 
+/**
+ * React provider that exposes global app state and actions.
+ *
+ * @param children Descendant tree that consumes app state.
+ * @param initialUser Optional server-hydrated user payload.
+ */
 export function AppProvider({ children, initialUser }: AppProviderProps) {
+  // Boot state can be hydrated with a server-provided user to avoid auth flicker.
   const [state, dispatch] = useReducer(appReducer, {
     ...initialState,
     user: initialUser || null,
@@ -118,7 +143,7 @@ export function AppProvider({ children, initialUser }: AppProviderProps) {
       // Only run in browser environment
       if (typeof window === "undefined") return;
 
-      // Apply theme to document
+      // Theme is applied via the root `dark` class so all tailwind `dark:` variants react.
       const root = document.documentElement;
       if (theme === "dark") {
         root.classList.add("dark");
@@ -152,6 +177,7 @@ export function AppProvider({ children, initialUser }: AppProviderProps) {
     ),
 
     signOut: useCallback(async () => {
+      // Mark loading first so UI can disable actions during sign-out.
       dispatch({ type: "SET_LOADING", payload: true });
 
       try {
@@ -160,7 +186,7 @@ export function AppProvider({ children, initialUser }: AppProviderProps) {
 
         // No storage to clear
 
-        // Sign out from NextAuth
+        // NextAuth signOut handles token/session cleanup and route transition.
         await signOut({ callbackUrl: "/login" });
       } catch (error) {
         console.error("Error during sign out:", error);
@@ -187,8 +213,9 @@ export function AppProvider({ children, initialUser }: AppProviderProps) {
     }, []),
   };
 
-  // Sync user from NextAuth session
+  // Mirror NextAuth session into app context so feature modules read one source of truth.
   useEffect(() => {
+    // Wait until session state is resolved; otherwise we could overwrite user too early.
     if (status === "loading") return;
 
     if (session?.user && session.accessToken) {
@@ -199,6 +226,7 @@ export function AppProvider({ children, initialUser }: AppProviderProps) {
       dispatch({ type: "SET_USER", payload: session.userData || session.user });
       dispatch({ type: "SET_AUTHENTICATED", payload: true });
     } else {
+      // Ensure stale auth state is cleared if session disappears.
       // Clear user if not authenticated
       dispatch({ type: "SET_USER", payload: null });
       dispatch({ type: "SET_AUTHENTICATED", payload: false });
@@ -206,6 +234,7 @@ export function AppProvider({ children, initialUser }: AppProviderProps) {
   }, [session, status]);
 
   useEffect(() => {
+    // Guard against repeated token-expiry sign-outs from repeated renders.
     if (status !== "authenticated") return;
     if (session?.error !== "TokenExpired") return;
     if (hasSignedOutRef.current) return;
@@ -221,7 +250,7 @@ export function AppProvider({ children, initialUser }: AppProviderProps) {
     // No saved preferences to load
   }, []); // Remove actions dependency
 
-  // Listen for system theme changes
+  // Keep DOM theme in sync when the app is in "system" mode.
   useEffect(() => {
     // Only run in browser environment
     if (typeof window === "undefined") return;
@@ -255,7 +284,11 @@ export function AppProvider({ children, initialUser }: AppProviderProps) {
   );
 }
 
-// Hook to use the context
+/**
+ * Hook to consume global app context.
+ *
+ * @throws Error when used outside `AppProvider`.
+ */
 export function useApp() {
   const context = useContext(AppContext);
   if (!context) {

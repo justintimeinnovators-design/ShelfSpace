@@ -7,7 +7,6 @@ import {
   Send,
   Users,
   AlertCircle,
-  Loader2,
   ChevronUp,
 } from "lucide-react";
 
@@ -16,6 +15,10 @@ interface ForumChatFeatureProps {
   forumName?: string;
 }
 
+/**
+ * Forum Chat Feature.
+ * @param { forumId, forumName - { forum Id, forum Name value.
+ */
 export function ForumChatFeature({ forumId, forumName = "Forum" }: ForumChatFeatureProps) {
   const { data: session } = useSession();
   const [inputMessage, setInputMessage] = useState("");
@@ -41,6 +44,9 @@ export function ForumChatFeature({ forumId, forumName = "Forum" }: ForumChatFeat
     const container = messagesContainerRef.current;
     if (!container) return;
 
+/**
+ * Handle Scroll.
+ */
     const handleScroll = () => {
       const { scrollTop, scrollHeight, clientHeight } = container;
       const isAtBottom = scrollHeight - scrollTop - clientHeight < 100;
@@ -51,6 +57,9 @@ export function ForumChatFeature({ forumId, forumName = "Forum" }: ForumChatFeat
     return () => container.removeEventListener("scroll", handleScroll);
   }, []);
 
+/**
+ * Handle Send.
+ */
   const handleSend = async () => {
     if (!inputMessage.trim() || !isConnected) return;
 
@@ -63,6 +72,10 @@ export function ForumChatFeature({ forumId, forumName = "Forum" }: ForumChatFeat
     }
   };
 
+/**
+ * Handle Key Down.
+ * @param e - e value.
+ */
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -70,6 +83,9 @@ export function ForumChatFeature({ forumId, forumName = "Forum" }: ForumChatFeat
     }
   };
 
+/**
+ * Scroll To Bottom.
+ */
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     setIsScrolledToBottom(true);
@@ -115,11 +131,16 @@ export function ForumChatFeature({ forumId, forumName = "Forum" }: ForumChatFeat
         className="flex-1 overflow-y-auto p-6 space-y-4 bg-gradient-to-b from-amber-50/30 to-orange-50/30 dark:from-slate-900/50 dark:to-slate-800/50"
       >
         {isLoading && messages.length === 0 ? (
-          <div className="flex items-center justify-center h-full">
-            <div className="text-center">
-              <Loader2 className="h-8 w-8 animate-spin text-amber-500 mx-auto mb-2" />
-              <p className="text-gray-600 dark:text-slate-400">Loading chat...</p>
-            </div>
+          <div className="flex flex-col gap-3 p-2">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className={`flex items-end gap-2 ${i % 2 === 0 ? "justify-start" : "justify-end flex-row-reverse"}`}>
+                <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-slate-700 animate-pulse flex-shrink-0" />
+                <div className={`space-y-1 ${i % 2 === 0 ? "" : "items-end flex flex-col"}`}>
+                  <div className={`h-4 bg-amber-100 dark:bg-slate-700 animate-pulse rounded-xl ${i % 3 === 0 ? "w-48" : i % 3 === 1 ? "w-32" : "w-56"}`} />
+                  <div className={`h-8 bg-amber-50 dark:bg-slate-600 animate-pulse rounded-2xl ${i % 3 === 0 ? "w-40" : i % 3 === 1 ? "w-24" : "w-48"}`} />
+                </div>
+              </div>
+            ))}
           </div>
         ) : messages.length === 0 ? (
           <div className="flex items-center justify-center h-full">
@@ -243,7 +264,7 @@ export function ForumChatFeature({ forumId, forumName = "Forum" }: ForumChatFeat
             aria-label="Send message"
           >
             {isLoading ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
+              <div className="h-5 w-5 rounded bg-white/40 animate-pulse" />
             ) : (
               <Send className="h-5 w-5" />
             )}

@@ -26,12 +26,19 @@ interface Recommendation {
   isBookClubPick?: boolean;
 }
 
+/**
+ * Recommendations Grid.
+ */
 export function RecommendationsGrid() {
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [recommendations] = useState<Recommendation[]>([]);
   const [loading] = useState(false);
   const [error] = useState<string | null>(null);
 
+/**
+ * Toggle Favorite.
+ * @param id - id value.
+ */
   const toggleFavorite = (id: string) => {
     setFavorites(prev => {
       const newSet = new Set(prev);

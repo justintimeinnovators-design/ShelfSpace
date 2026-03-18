@@ -42,12 +42,24 @@ const defaultShortcuts: Shortcut[] = [
   { keys: ["]"], description: "Expand Sidebar", category: "UI" },
 ];
 
+/**
+ * Keyboard Shortcuts Modal.
+ * @param {
+  isOpen,
+  onClose,
+  shortcuts = defaultShortcuts,
+} - { is Open, on Close, shortcuts = default Shortcuts, } value.
+ */
 export const KeyboardShortcutsModal: React.FC<KeyboardShortcutsModalProps> = ({
   isOpen,
   onClose,
   shortcuts = defaultShortcuts,
 }) => {
   useEffect(() => {
+/**
+ * Handle Escape.
+ * @param e - e value.
+ */
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isOpen) {
         onClose();
@@ -166,10 +178,17 @@ export const KeyboardShortcutsModal: React.FC<KeyboardShortcutsModalProps> = ({
 };
 
 // Hook to trigger shortcuts modal
+/**
+ * Use Keyboard Shortcuts.
+ */
 export const useKeyboardShortcuts = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
+/**
+ * Handle Key Press.
+ * @param e - e value.
+ */
     const handleKeyPress = (e: KeyboardEvent) => {
       // Show shortcuts on "?"
       if (e.key === "?" && !e.ctrlKey && !e.metaKey && !e.altKey) {

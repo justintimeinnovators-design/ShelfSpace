@@ -1,3 +1,9 @@
+/**
+ * Dashboard landing feature.
+ *
+ * Combines user setup state, analytics summary data, and presentational sections
+ * into the main personalized dashboard screen.
+ */
 "use client";
 
 import { useState, useEffect } from "react";
@@ -16,8 +22,7 @@ import {
   useToastNotifications,
 } from "@/components/ui";
 import {
-  BookOpen, 
-  Library,
+  BookOpen,
   Plus,
   BarChart3,
   Target,
@@ -39,6 +44,11 @@ export interface DashboardFeatureProps {
   className?: string;
 }
 
+/**
+ * Renders the top-level dashboard experience.
+ *
+ * @param className Optional container className.
+ */
 export function DashboardFeature({ className }: DashboardFeatureProps) {
   const { needsPreferences, isLoading, isNewUser } = useUserSetup();
   const [showPreferences, setShowPreferences] = useState(false);
@@ -48,8 +58,15 @@ export function DashboardFeature({ className }: DashboardFeatureProps) {
 
   // Get user name from session
   const userName = session?.user?.name;
-  const personalizedGreeting = getPersonalizedGreeting(userName);
-  const readingQuote = getReadingQuote();
+
+  // Deferred to avoid SSR/client hydration mismatch — both functions use
+  // Date.now() / Math.random() which differ between server and client renders.
+  const [personalizedGreeting, setPersonalizedGreeting] = useState("Hello, Reader");
+  const [readingQuote, setReadingQuote] = useState("");
+  useEffect(() => {
+    setPersonalizedGreeting(getPersonalizedGreeting(userName));
+    setReadingQuote(getReadingQuote());
+  }, [userName]);
 
   const readingStats = summary || {
     totalBooks: 0,
@@ -64,7 +81,7 @@ export function DashboardFeature({ className }: DashboardFeatureProps) {
     favoriteGenre: "N/A",
   };
 
-  // Show preferences modal for new users or users without preferences
+  // Auto-open preferences onboarding when user setup indicates missing preferences.
   useEffect(() => {
     if (!isLoading && needsPreferences) {
       setShowPreferences(true);
@@ -100,13 +117,13 @@ export function DashboardFeature({ className }: DashboardFeatureProps) {
             <StaggerItem>
               <div className="p-6 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl shadow-lg text-white">
                 <div className="flex items-center justify-between mb-4">
-                  <Library className="h-8 w-8" />
-                  <FloatingElement className="text-2xl opacity-60"><Library className="h-6 w-6" /></FloatingElement>
+                  <BookOpen className="h-8 w-8" />
+                  <FloatingElement className="text-2xl opacity-60"><BookOpen className="h-6 w-6" /></FloatingElement>
                 </div>
                 <div className="text-3xl font-bold mb-1">
-                  <AnimatedCounter value={readingStats.totalBooks} />
+                  <AnimatedCounter value={readingStats.wantToRead} />
                 </div>
-                <div className="text-amber-100">Library Collection</div>
+                <div className="text-amber-100">Want to Read</div>
               </div>
             </StaggerItem>
             

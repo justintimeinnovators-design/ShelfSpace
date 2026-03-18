@@ -1,6 +1,10 @@
 import { BookOpen, ArrowLeft } from "lucide-react";
 import { ErrorFallbackProps } from "@/components/common/ErrorBoundary";
 
+/**
+ * Discover Error Fallback.
+ * @param { error, retry } - { error, retry } value.
+ */
 export function DiscoverErrorFallback({ error, retry }: ErrorFallbackProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800 flex items-center justify-center">

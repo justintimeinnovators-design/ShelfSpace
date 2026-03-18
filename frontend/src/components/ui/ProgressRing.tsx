@@ -14,6 +14,20 @@ interface ProgressRingProps {
   children?: React.ReactNode;
 }
 
+/**
+ * Progress Ring.
+ * @param {
+  progress,
+  size = 120,
+  strokeWidth = 8,
+  color = "#f59e0b",
+  backgroundColor = "#e5e7eb",
+  animated: _animated = true,
+  showPercentage = true,
+  className = "",
+  children
+} - { progress, size = 120, stroke Width = 8, color = "#f59e0b", background Color = "#e5e7eb", animated: animated = true, show Percentage = true, class Name = "", children } value.
+ */
 export function ProgressRing({
   progress,
   size = 120,
@@ -74,6 +88,16 @@ export function ProgressRing({
 }
 
 // Simple progress bar without animations
+/**
+ * Gradient Progress Bar.
+ * @param {
+  progress,
+  height = 8,
+  animated: _animated = true,
+  showPercentage = false,
+  className = ""
+} - { progress, height = 8, animated: animated = true, show Percentage = false, class Name = "" } value.
+ */
 export function GradientProgressBar({
   progress,
   height = 8,

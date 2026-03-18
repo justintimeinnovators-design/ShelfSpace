@@ -14,6 +14,12 @@ declare global {
 const USER_SERVICE_URL =
   process.env.USER_SERVICE_URL?.trim() || "http://localhost:3001";
 
+/**
+ * Authenticate Token.
+ * @param req - req value.
+ * @param res - res value.
+ * @param next - next value.
+ */
 export const authenticateToken = async (
   req: Request,
   res: Response,

@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatedCard, StaggerContainer, StaggerItem, FloatingElement } from '@/components/ui';
-import { Clock, BookOpen, Star, Heart, Users, Trophy, BookMarked, Plus } from 'lucide-react';
+import { Clock, BookOpen, Star, Heart, Users, Trophy, BookMarked } from 'lucide-react';
 import { useActivityTimelineData } from '@/hooks/data/useAnalytics';
 
 interface ActivityItem {
@@ -25,6 +25,11 @@ interface ActivityItem {
   };
 }
 
+/**
+ * Format Time Ago.
+ * @param date - date value.
+ * @returns string.
+ */
 function formatTimeAgo(date: Date): string {
   const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
   const intervals = {
@@ -45,9 +50,12 @@ function formatTimeAgo(date: Date): string {
   return 'just now';
 }
 
+/**
+ * Activity Timeline.
+ */
 export function ActivityTimeline() {
   const { data } = useActivityTimelineData();
-  const activities: ActivityItem[] = (data?.activity || []).map((item: any) => {
+  const activities: ActivityItem[] = (data?.activity || []).slice(0, 3).map((item: any) => {
     const baseActivity = {
       id: item.id,
       type: item.type,
@@ -74,6 +82,10 @@ export function ActivityTimeline() {
     return baseActivity;
   });
 
+/**
+ * Get Activity Icon.
+ * @param type - type value.
+ */
   const getActivityIcon = (type: ActivityItem['type']) => {
     const icons = {
       read: BookOpen,
@@ -86,6 +98,10 @@ export function ActivityTimeline() {
     return icons[type] || Clock;
   };
 
+/**
+ * Get Activity Color.
+ * @param type - type value.
+ */
   const getActivityColor = (type: ActivityItem['type']) => {
     const colors = {
       read: 'text-green-600 dark:text-green-400',
@@ -132,7 +148,7 @@ export function ActivityTimeline() {
             const iconColor = getActivityColor(activity.type);
 
             return (
-              <StaggerItem key={activity.id} className="delay-100">
+              <StaggerItem key={`${activity.id}-${index}`} className="delay-100">
                 <div className="relative flex items-start space-x-4">
                   {/* Timeline dot */}
                   <div className={`relative z-10 flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br ${activity.color} shadow-lg flex items-center justify-center`}>
@@ -217,13 +233,6 @@ export function ActivityTimeline() {
           }))}
         </StaggerContainer>
 
-        {/* Load more button */}
-        <div className="mt-6 text-center">
-          <button className="inline-flex items-center space-x-2 px-4 py-2 text-sm font-medium text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 transition-colors">
-            <Plus className="h-4 w-4" />
-            <span>Load More Activity</span>
-          </button>
-        </div>
       </div>
     </AnimatedCard>
   );

@@ -1,3 +1,9 @@
+/**
+ * Forum service API wrapper.
+ *
+ * Encapsulates all forum/thread/post/membership endpoints and maps transport
+ * failures into `ForumServiceError` for consistent caller handling.
+ */
 import { createApiClient } from "./api";
 import { getErrorMessage } from "./api-utils";
 import { AxiosError } from "axios";
@@ -80,6 +86,9 @@ export const ForumService = {
     process.env["NEXT_PUBLIC_FORUM_SERVICE_URL"] || "http://localhost:3005"
   ),
 
+  /**
+   * Lists forums with optional pagination.
+   */
   async list(opts?: { limit?: number; offset?: number }): Promise<ForumDTO[]> {
     try {
       const params: Record<string, any> = {};
@@ -94,6 +103,9 @@ export const ForumService = {
     }
   },
 
+  /**
+   * Fetches one forum by id.
+   */
   async getById(id: string): Promise<ForumDTO> {
     try {
       const { data } = await ForumService.client.get(`/api/forums/${id}`);
@@ -105,6 +117,9 @@ export const ForumService = {
     }
   },
 
+  /**
+   * Creates a forum.
+   */
   async create(input: CreateForumInput): Promise<ForumDTO> {
     try {
       const { data } = await ForumService.client.post(`/api/forums`, input);
@@ -116,6 +131,9 @@ export const ForumService = {
     }
   },
 
+  /**
+   * Updates forum metadata.
+   */
   async update(id: string, input: UpdateForumInput): Promise<ForumDTO> {
     try {
       const { data } = await ForumService.client.put(`/api/forums/${id}`, input);
@@ -127,6 +145,9 @@ export const ForumService = {
     }
   },
 
+  /**
+   * Deletes a forum.
+   */
   async delete(id: string): Promise<void> {
     try {
       await ForumService.client.delete(`/api/forums/${id}`);
@@ -137,6 +158,9 @@ export const ForumService = {
     }
   },
 
+  /**
+   * Joins the current user to a forum.
+   */
   async join(id: string): Promise<ForumMembershipDTO> {
     try {
       const { data } = await ForumService.client.post(`/api/forums/${id}/join`);
@@ -148,6 +172,9 @@ export const ForumService = {
     }
   },
 
+  /**
+   * Removes current user membership from a forum.
+   */
   async leave(id: string): Promise<void> {
     try {
       await ForumService.client.post(`/api/forums/${id}/leave`);
@@ -158,6 +185,9 @@ export const ForumService = {
     }
   },
 
+  /**
+   * Fetches all forum members.
+   */
   async getMembers(forumId: string): Promise<ForumMembershipDTO[]> {
     try {
       const { data } = await ForumService.client.get(`/api/forums/${forumId}/members`);
@@ -169,6 +199,9 @@ export const ForumService = {
     }
   },
 
+  /**
+   * Verifies whether a user is currently a member of a forum.
+   */
   async verifyMembership(forumId: string, userId: string): Promise<{ isMember: boolean }> {
     try {
       const { data } = await ForumService.client.get(`/api/forums/${forumId}/members/${userId}/verify`);
@@ -180,6 +213,9 @@ export const ForumService = {
     }
   },
 
+  /**
+   * Lists threads for a forum.
+   */
   async listThreads(forumId: string, opts?: { limit?: number; offset?: number }): Promise<ForumThreadDTO[]> {
     try {
       const params: Record<string, any> = {};
@@ -194,6 +230,9 @@ export const ForumService = {
     }
   },
 
+  /**
+   * Fetches one thread by id.
+   */
   async getThread(forumId: string, threadId: string): Promise<ForumThreadDTO> {
     try {
       const { data } = await ForumService.client.get(`/api/forums/${forumId}/threads/${threadId}`);
@@ -205,6 +244,9 @@ export const ForumService = {
     }
   },
 
+  /**
+   * Creates a new thread.
+   */
   async createThread(forumId: string, input: { title: string; content: string }): Promise<ForumThreadDTO> {
     try {
       const { data } = await ForumService.client.post(`/api/forums/${forumId}/threads`, input);
@@ -216,6 +258,9 @@ export const ForumService = {
     }
   },
 
+  /**
+   * Updates an existing thread.
+   */
   async updateThread(
     forumId: string,
     threadId: string,
@@ -231,6 +276,9 @@ export const ForumService = {
     }
   },
 
+  /**
+   * Deletes a thread.
+   */
   async deleteThread(forumId: string, threadId: string): Promise<void> {
     try {
       await ForumService.client.delete(`/api/forums/${forumId}/threads/${threadId}`);
@@ -241,6 +289,9 @@ export const ForumService = {
     }
   },
 
+  /**
+   * Lists posts for a thread.
+   */
   async listPosts(
     forumId: string,
     threadId: string,
@@ -259,6 +310,9 @@ export const ForumService = {
     }
   },
 
+  /**
+   * Creates a post in a thread.
+   */
   async createPost(
     forumId: string,
     threadId: string,
@@ -274,6 +328,9 @@ export const ForumService = {
     }
   },
 
+  /**
+   * Updates a thread post.
+   */
   async updatePost(
     forumId: string,
     threadId: string,
@@ -290,6 +347,9 @@ export const ForumService = {
     }
   },
 
+  /**
+   * Deletes a post from a thread.
+   */
   async deletePost(forumId: string, threadId: string, postId: string): Promise<void> {
     try {
       await ForumService.client.delete(`/api/forums/${forumId}/threads/${threadId}/posts/${postId}`);
@@ -300,6 +360,9 @@ export const ForumService = {
     }
   },
 
+  /**
+   * Adds a reaction to a post.
+   */
   async addReaction(
     forumId: string,
     threadId: string,
@@ -319,6 +382,9 @@ export const ForumService = {
     }
   },
 
+  /**
+   * Removes a reaction from a post.
+   */
   async removeReaction(
     forumId: string,
     threadId: string,

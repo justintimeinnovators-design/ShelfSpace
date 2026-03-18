@@ -1,5 +1,10 @@
 import axios, { AxiosError } from "axios";
 
+/**
+ * Get Error Message.
+ * @param error - error value.
+ * @returns string.
+ */
 export function getErrorMessage(error: unknown): string {
   if (axios.isAxiosError(error)) {
     const axiosError = error as AxiosError<{ error?: string; message?: string }>;

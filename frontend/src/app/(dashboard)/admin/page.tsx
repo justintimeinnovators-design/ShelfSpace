@@ -5,6 +5,9 @@ export const metadata = {
   description: "Administration and moderation panel",
 };
 
+/**
+ * Admin Page.
+ */
 export default function AdminPage() {
   return <AdminDashboard />;
 }

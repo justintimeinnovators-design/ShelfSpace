@@ -12,6 +12,17 @@ interface EnhancedCardProps {
   delay?: number;
 }
 
+/**
+ * Enhanced Card.
+ * @param {
+  children,
+  className = "",
+  onClick,
+  hoverable = true,
+  animated = true,
+  delay = 0,
+} - { children, class Name = "", on Click, hoverable = true, animated = true, delay = 0, } value.
+ */
 export const EnhancedCard: React.FC<EnhancedCardProps> = ({
   children,
   className = "",
@@ -57,6 +68,13 @@ interface CardHeaderProps {
   className?: string;
 }
 
+/**
+ * Card Header.
+ * @param {
+  children,
+  className = "",
+} - { children, class Name = "", } value.
+ */
 export const CardHeader: React.FC<CardHeaderProps> = ({
   children,
   className = "",
@@ -75,6 +93,13 @@ interface CardBodyProps {
   className?: string;
 }
 
+/**
+ * Card Body.
+ * @param {
+  children,
+  className = "",
+} - { children, class Name = "", } value.
+ */
 export const CardBody: React.FC<CardBodyProps> = ({
   children,
   className = "",
@@ -87,6 +112,13 @@ interface CardFooterProps {
   className?: string;
 }
 
+/**
+ * Card Footer.
+ * @param {
+  children,
+  className = "",
+} - { children, class Name = "", } value.
+ */
 export const CardFooter: React.FC<CardFooterProps> = ({
   children,
   className = "",

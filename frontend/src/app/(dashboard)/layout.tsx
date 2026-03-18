@@ -17,6 +17,10 @@ interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
+/**
+ * Dashboard Layout.
+ * @param { children } - { children } value.
+ */
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -32,6 +36,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     // Only run in browser environment
     if (typeof window === "undefined") return;
 
+/**
+ * Handle Key Down.
+ * @param e - e value.
+ */
     const handleKeyDown = (e: KeyboardEvent) => {
       // Ctrl+Shift+P for performance dashboard
       if (e.ctrlKey && e.shiftKey && e.key === "P") {
@@ -50,6 +58,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+/**
+ * Handle Sign Out.
+ */
   const handleSignOut = async () => {
     try {
       // Clear user service token
@@ -68,10 +79,16 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     }
   };
 
+/**
+ * Handle Toggle Collapse.
+ */
   const handleToggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
   };
 
+/**
+ * Handle Mobile Menu Toggle.
+ */
   const handleMobileMenuToggle = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };

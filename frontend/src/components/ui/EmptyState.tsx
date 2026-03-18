@@ -16,6 +16,20 @@ interface EmptyStateProps {
   className?: string;
 }
 
+/**
+ * Empty State.
+ * @param {
+  icon: Icon,
+  title,
+  description,
+  actionLabel,
+  onAction,
+  secondaryActionLabel,
+  onSecondaryAction,
+  illustration,
+  className = "",
+} - { icon: Icon, title, description, action Label, on Action, secondary Action Label, on Secondary Action, illustration, class Name = "", } value.
+ */
 export const EmptyState: React.FC<EmptyStateProps> = ({
   icon: Icon,
   title,
@@ -77,6 +91,12 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 };
 
 // Preset empty states for common scenarios
+/**
+ * Empty Library.
+ * @param {
+  onAddBook,
+} - { on Add Book, } value.
+ */
 export const EmptyLibrary: React.FC<{ onAddBook: () => void }> = ({
   onAddBook,
 }) => {
@@ -94,6 +114,12 @@ export const EmptyLibrary: React.FC<{ onAddBook: () => void }> = ({
   );
 };
 
+/**
+ * Empty Reading List.
+ * @param {
+  onAddBooks,
+} - { on Add Books, } value.
+ */
 export const EmptyReadingList: React.FC<{ onAddBooks: () => void }> = ({
   onAddBooks,
 }) => {
@@ -109,6 +135,12 @@ export const EmptyReadingList: React.FC<{ onAddBooks: () => void }> = ({
   );
 };
 
+/**
+ * Empty Forums.
+ * @param {
+  onCreateGroup,
+} - { on Create Group, } value.
+ */
 export const EmptyForums: React.FC<{ onCreateGroup: () => void }> = ({
   onCreateGroup,
 }) => {
@@ -126,6 +158,10 @@ export const EmptyForums: React.FC<{ onCreateGroup: () => void }> = ({
   );
 };
 
+/**
+ * Empty Search.
+ * @param { query } - { query } value.
+ */
 export const EmptySearch: React.FC<{ query: string }> = ({ query }) => {
   const { Search } = require("lucide-react");
   return (
@@ -139,6 +175,9 @@ export const EmptySearch: React.FC<{ query: string }> = ({ query }) => {
   );
 };
 
+/**
+ * Empty Notifications.
+ */
 export const EmptyNotifications: React.FC = () => {
   const { Bell } = require("lucide-react");
   return (

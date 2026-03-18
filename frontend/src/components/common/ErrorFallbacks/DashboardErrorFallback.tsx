@@ -6,6 +6,13 @@ import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { ErrorFallbackProps } from "@/components/common/ErrorBoundary";
 
+/**
+ * Dashboard Error Fallback.
+ * @param {
+  retry,
+  errorId,
+} - { retry, error Id, } value.
+ */
 export const DashboardErrorFallback: React.FC<ErrorFallbackProps> = ({
   retry,
   errorId,

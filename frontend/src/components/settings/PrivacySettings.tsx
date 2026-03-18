@@ -1,73 +1,27 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  Shield,
-  Eye,
-  Users,
-  BookOpen,
-  CheckCircle,
-} from "lucide-react";
 import apiClient from "@/lib/api";
 import { getErrorMessage } from "@/lib/api-utils";
 
 type PrivacySettingsState = {
-  profile: {
-    showEmail: boolean;
-    showLocation: boolean;
-    showBio: boolean;
-    showReadingGoal: boolean;
-  };
-  reading: {
-    showCurrentlyReading: boolean;
-    showReadingProgress: boolean;
-    showReviews: boolean;
-    showRatings: boolean;
-    showReadingHistory: boolean;
-  };
-  social: {
-    allowMessages: boolean;
-    allowFriendRequests: boolean;
-    showInSearch: boolean;
-    showOnlineStatus: boolean;
-  };
-  data: {
-    allowAnalytics: boolean;
-    allowPersonalization: boolean;
-    allowMarketing: boolean;
-  };
+  profile: { showEmail: boolean; showLocation: boolean; showBio: boolean; showReadingGoal: boolean };
+  reading: { showCurrentlyReading: boolean; showReadingProgress: boolean; showReviews: boolean; showRatings: boolean; showReadingHistory: boolean };
+  social: { allowMessages: boolean; allowFriendRequests: boolean; showInSearch: boolean; showOnlineStatus: boolean };
+  data: { allowAnalytics: boolean; allowPersonalization: boolean; allowMarketing: boolean };
 };
 
-type SettingsBlob = {
-  privacy?: PrivacySettingsState;
-};
+type SettingsBlob = { privacy?: PrivacySettingsState };
 
+/**
+ * Privacy Settings.
+ */
 export function PrivacySettings() {
   const [privacySettings, setPrivacySettings] = useState<PrivacySettingsState>({
-    profile: {
-      showEmail: false,
-      showLocation: true,
-      showBio: true,
-      showReadingGoal: true,
-    },
-    reading: {
-      showCurrentlyReading: true,
-      showReadingProgress: true,
-      showReviews: true,
-      showRatings: true,
-      showReadingHistory: false,
-    },
-    social: {
-      allowMessages: true,
-      allowFriendRequests: true,
-      showInSearch: true,
-      showOnlineStatus: true,
-    },
-    data: {
-      allowAnalytics: true,
-      allowPersonalization: true,
-      allowMarketing: false,
-    },
+    profile: { showEmail: false, showLocation: true, showBio: true, showReadingGoal: true },
+    reading: { showCurrentlyReading: true, showReadingProgress: true, showReviews: true, showRatings: true, showReadingHistory: false },
+    social: { allowMessages: true, allowFriendRequests: true, showInSearch: true, showOnlineStatus: true },
+    data: { allowAnalytics: true, allowPersonalization: true, allowMarketing: false },
   });
   const [serverSettings, setServerSettings] = useState<SettingsBlob>({});
   const [isLoading, setIsLoading] = useState(true);
@@ -83,43 +37,25 @@ export function PrivacySettings() {
       try {
         const { data } = await apiClient.get("/api/user/preferences");
         const settings: SettingsBlob = data?.settings ?? {};
-        if (settings.privacy && isMounted) {
-          setPrivacySettings(settings.privacy);
-        }
-        if (isMounted) {
-          setServerSettings(settings);
-        }
+        if (settings.privacy && isMounted) setPrivacySettings(settings.privacy);
+        if (isMounted) setServerSettings(settings);
       } catch (err) {
         const status = (err as any)?.response?.status;
-        if (status === 404) {
-          if (isMounted) {
-            setServerSettings({});
-          }
-          return;
-        }
-        if (isMounted) {
-          setError(getErrorMessage(err));
-        }
+        if (status === 404) { if (isMounted) setServerSettings({}); return; }
+        if (isMounted) setError(getErrorMessage(err));
       } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
+        if (isMounted) setIsLoading(false);
       }
     };
 
     loadSettings();
-    return () => {
-      isMounted = false;
-    };
+    return () => { isMounted = false; };
   }, []);
 
   const handleToggle = (category: 'profile' | 'reading' | 'social' | 'data', setting: string) => {
     setPrivacySettings(prev => ({
       ...prev,
-      [category]: {
-        ...prev[category],
-        [setting]: !(prev[category] as any)[setting],
-      },
+      [category]: { ...prev[category], [setting]: !(prev[category] as any)[setting] },
     }));
   };
 
@@ -129,289 +65,115 @@ export function PrivacySettings() {
       setError(null);
       setSaveMessage(null);
       try {
-        const updatedSettings: SettingsBlob = {
-          ...serverSettings,
-          privacy: privacySettings,
-        };
-        await apiClient.put("/api/user/preferences", {
-          settings: updatedSettings,
-        });
+        const updatedSettings: SettingsBlob = { ...serverSettings, privacy: privacySettings };
+        await apiClient.put("/api/user/preferences", { settings: updatedSettings });
         setServerSettings(updatedSettings);
-        setSaveMessage("Privacy settings saved.");
+        setSaveMessage("Saved.");
       } catch (err) {
         setError(getErrorMessage(err));
       } finally {
         setIsSaving(false);
       }
     };
-
     saveSettings();
   };
 
+  const Toggle = ({ enabled, onToggle }: { enabled: boolean; onToggle: () => void }) => (
+    <button
+      onClick={onToggle}
+      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors flex-shrink-0 ${
+        enabled ? "bg-amber-500" : "bg-gray-200 dark:bg-slate-600"
+      }`}
+    >
+      <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${enabled ? "translate-x-6" : "translate-x-1"}`} />
+    </button>
+  );
+
+  const ToggleGroup = ({
+    title,
+    rows,
+    category,
+  }: {
+    title: string;
+    rows: { key: string; label: string; desc: string }[];
+    category: 'profile' | 'reading' | 'social' | 'data';
+  }) => (
+    <div className="py-8">
+      <p className="text-xs uppercase tracking-[0.2em] text-amber-700/80 dark:text-amber-300/80 font-semibold mb-4">
+        {title}
+      </p>
+      <div className="divide-y divide-amber-50 dark:divide-slate-700/50">
+        {rows.map(({ key, label, desc }) => (
+          <div key={key} className="flex items-center justify-between py-3">
+            <div>
+              <p className="text-sm font-medium text-gray-900 dark:text-slate-100">{label}</p>
+              <p className="text-xs text-gray-500 dark:text-slate-400">{desc}</p>
+            </div>
+            <Toggle
+              enabled={(privacySettings[category] as any)[key]}
+              onToggle={() => handleToggle(category, key)}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
   return (
-    <div className="space-y-8">
-      <div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100 font-serif mb-2">
-          Privacy Controls
-        </h2>
-        <p className="text-gray-600 dark:text-slate-400">
-          Control your privacy and what information is visible to others.
-        </p>
-      </div>
+    <div className="divide-y divide-amber-100 dark:divide-slate-700">
+      <ToggleGroup
+        title="Profile"
+        category="profile"
+        rows={[
+          { key: "showEmail", label: "Show email address", desc: "Display your email on your profile" },
+          { key: "showLocation", label: "Show location", desc: "Display your location information" },
+          { key: "showBio", label: "Show bio", desc: "Display your personal bio" },
+          { key: "showReadingGoal", label: "Show reading goal", desc: "Display your annual reading goal" },
+        ]}
+      />
+      <ToggleGroup
+        title="Reading Activity"
+        category="reading"
+        rows={[
+          { key: "showCurrentlyReading", label: "Show currently reading", desc: "Display books you're currently reading" },
+          { key: "showReadingProgress", label: "Show reading progress", desc: "Display your reading progress on books" },
+          { key: "showReviews", label: "Show reviews", desc: "Make your book reviews visible to others" },
+          { key: "showRatings", label: "Show ratings", desc: "Display your book ratings" },
+          { key: "showReadingHistory", label: "Show reading history", desc: "Display your complete reading history" },
+        ]}
+      />
+      <ToggleGroup
+        title="Social"
+        category="social"
+        rows={[
+          { key: "allowMessages", label: "Allow messages", desc: "Let other users send you messages" },
+          { key: "allowFriendRequests", label: "Allow friend requests", desc: "Let others send you friend requests" },
+          { key: "showInSearch", label: "Show in search", desc: "Make your profile discoverable in search" },
+          { key: "showOnlineStatus", label: "Show online status", desc: "Display when you're online" },
+        ]}
+      />
+      <ToggleGroup
+        title="Data"
+        category="data"
+        rows={[
+          { key: "allowAnalytics", label: "Allow analytics", desc: "Help improve the app with anonymous usage data" },
+          { key: "allowPersonalization", label: "Allow personalisation", desc: "Use your data to personalise your experience" },
+          { key: "allowMarketing", label: "Allow marketing", desc: "Receive promotional emails and offers" },
+        ]}
+      />
 
-      {/* Profile Privacy */}
-      <div className="bg-white/50 dark:bg-slate-700/50 rounded-xl border border-amber-200 dark:border-slate-600 p-6">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-blue-500 rounded-lg flex items-center justify-center">
-            <Eye className="h-5 w-5 text-white" />
-          </div>
-          <div>
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-slate-100">
-              Profile Privacy
-            </h3>
-            <p className="text-gray-600 dark:text-slate-400 text-sm">
-              Control what information is visible on your profile
-            </p>
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          {[
-            { key: "showEmail", label: "Show Email Address", desc: "Display your email on your profile" },
-            { key: "showLocation", label: "Show Location", desc: "Display your location information" },
-            { key: "showBio", label: "Show Bio", desc: "Display your personal bio" },
-            { key: "showReadingGoal", label: "Show Reading Goal", desc: "Display your annual reading goal" },
-          ].map(({ key, label, desc }) => (
-            <div key={key} className="flex items-center justify-between p-4 bg-white/50 dark:bg-slate-600/50 rounded-lg">
-              <div>
-                <h4 className="font-medium text-gray-900 dark:text-slate-100">{label}</h4>
-                <p className="text-sm text-gray-600 dark:text-slate-400">{desc}</p>
-              </div>
-              <button
-                onClick={() => handleToggle("profile", key)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  privacySettings.profile[key as keyof typeof privacySettings.profile]
-                    ? "bg-amber-500"
-                    : "bg-gray-300 dark:bg-slate-500"
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    privacySettings.profile[key as keyof typeof privacySettings.profile]
-                      ? "translate-x-6"
-                      : "translate-x-1"
-                  }`}
-                />
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Reading Activity Privacy */}
-      <div className="bg-white/50 dark:bg-slate-700/50 rounded-xl border border-amber-200 dark:border-slate-600 p-6">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-green-500 rounded-lg flex items-center justify-center">
-            <BookOpen className="h-5 w-5 text-white" />
-          </div>
-          <div>
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-slate-100">
-              Reading Activity Privacy
-            </h3>
-            <p className="text-gray-600 dark:text-slate-400 text-sm">
-              Control what reading information others can see
-            </p>
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          {[
-            { key: "showCurrentlyReading", label: "Show Currently Reading", desc: "Display books you're currently reading" },
-            { key: "showReadingProgress", label: "Show Reading Progress", desc: "Display your reading progress on books" },
-            { key: "showReviews", label: "Show Reviews", desc: "Make your book reviews visible to others" },
-            { key: "showRatings", label: "Show Ratings", desc: "Display your book ratings" },
-            { key: "showReadingHistory", label: "Show Reading History", desc: "Display your complete reading history" },
-          ].map(({ key, label, desc }) => (
-            <div key={key} className="flex items-center justify-between p-4 bg-white/50 dark:bg-slate-600/50 rounded-lg">
-              <div>
-                <h4 className="font-medium text-gray-900 dark:text-slate-100">{label}</h4>
-                <p className="text-sm text-gray-600 dark:text-slate-400">{desc}</p>
-              </div>
-              <button
-                onClick={() => handleToggle("reading", key)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  privacySettings.reading[key as keyof typeof privacySettings.reading]
-                    ? "bg-amber-500"
-                    : "bg-gray-300 dark:bg-slate-500"
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    privacySettings.reading[key as keyof typeof privacySettings.reading]
-                      ? "translate-x-6"
-                      : "translate-x-1"
-                  }`}
-                />
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Social Privacy */}
-      <div className="bg-white/50 dark:bg-slate-700/50 rounded-xl border border-amber-200 dark:border-slate-600 p-6">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-purple-500 rounded-lg flex items-center justify-center">
-            <Users className="h-5 w-5 text-white" />
-          </div>
-          <div>
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-slate-100">
-              Social Privacy
-            </h3>
-            <p className="text-gray-600 dark:text-slate-400 text-sm">
-              Control your social interactions and visibility
-            </p>
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          {[
-            { key: "allowMessages", label: "Allow Messages", desc: "Let other users send you messages" },
-            { key: "allowFriendRequests", label: "Allow Friend Requests", desc: "Let others send you friend requests" },
-            { key: "showInSearch", label: "Show in Search", desc: "Make your profile discoverable in search" },
-            { key: "showOnlineStatus", label: "Show Online Status", desc: "Display when you're online" },
-          ].map(({ key, label, desc }) => (
-            <div key={key} className="flex items-center justify-between p-4 bg-white/50 dark:bg-slate-600/50 rounded-lg">
-              <div>
-                <h4 className="font-medium text-gray-900 dark:text-slate-100">{label}</h4>
-                <p className="text-sm text-gray-600 dark:text-slate-400">{desc}</p>
-              </div>
-              <button
-                onClick={() => handleToggle("social", key)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  privacySettings.social[key as keyof typeof privacySettings.social]
-                    ? "bg-amber-500"
-                    : "bg-gray-300 dark:bg-slate-500"
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    privacySettings.social[key as keyof typeof privacySettings.social]
-                      ? "translate-x-6"
-                      : "translate-x-1"
-                  }`}
-                />
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Data & Analytics */}
-      <div className="bg-white/50 dark:bg-slate-700/50 rounded-xl border border-amber-200 dark:border-slate-600 p-6">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-500 rounded-lg flex items-center justify-center">
-            <Shield className="h-5 w-5 text-white" />
-          </div>
-          <div>
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-slate-100">
-              Data & Analytics
-            </h3>
-            <p className="text-gray-600 dark:text-slate-400 text-sm">
-              Control how your data is used for analytics and personalization
-            </p>
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          {[
-            { key: "allowAnalytics", label: "Allow Analytics", desc: "Help improve the app with anonymous usage data" },
-            { key: "allowPersonalization", label: "Allow Personalization", desc: "Use your data to personalize your experience" },
-            { key: "allowMarketing", label: "Allow Marketing", desc: "Receive promotional emails and offers" },
-          ].map(({ key, label, desc }) => (
-            <div key={key} className="flex items-center justify-between p-4 bg-white/50 dark:bg-slate-600/50 rounded-lg">
-              <div>
-                <h4 className="font-medium text-gray-900 dark:text-slate-100">{label}</h4>
-                <p className="text-sm text-gray-600 dark:text-slate-400">{desc}</p>
-              </div>
-              <button
-                onClick={() => handleToggle("data", key)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  privacySettings.data[key as keyof typeof privacySettings.data]
-                    ? "bg-amber-500"
-                    : "bg-gray-300 dark:bg-slate-500"
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    privacySettings.data[key as keyof typeof privacySettings.data]
-                      ? "translate-x-6"
-                      : "translate-x-1"
-                  }`}
-                />
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Privacy Summary */}
-      <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-slate-700 dark:to-slate-600 rounded-xl border border-amber-200 dark:border-slate-600 p-6">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center">
-            <CheckCircle className="h-5 w-5 text-white" />
-          </div>
-          <div>
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-slate-100">
-              Privacy Summary
-            </h3>
-            <p className="text-gray-600 dark:text-slate-400 text-sm">
-              Your current privacy settings overview
-            </p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-4 bg-white/50 dark:bg-slate-600/50 rounded-lg">
-            <h4 className="font-medium text-gray-900 dark:text-slate-100 mb-2">Profile Visibility</h4>
-            <p className="text-sm text-gray-600 dark:text-slate-400">
-              {Object.values(privacySettings.profile).filter(Boolean).length} of 4 settings enabled
-            </p>
-          </div>
-          <div className="p-4 bg-white/50 dark:bg-slate-600/50 rounded-lg">
-            <h4 className="font-medium text-gray-900 dark:text-slate-100 mb-2">Reading Activity</h4>
-            <p className="text-sm text-gray-600 dark:text-slate-400">
-              {Object.values(privacySettings.reading).filter(Boolean).length} of 5 settings enabled
-            </p>
-          </div>
-          <div className="p-4 bg-white/50 dark:bg-slate-600/50 rounded-lg">
-            <h4 className="font-medium text-gray-900 dark:text-slate-100 mb-2">Social Features</h4>
-            <p className="text-sm text-gray-600 dark:text-slate-400">
-              {Object.values(privacySettings.social).filter(Boolean).length} of 4 settings enabled
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Save Button */}
-      <div className="flex justify-end pt-6 border-t border-amber-200 dark:border-slate-600">
+      {/* Save */}
+      <div className="pt-6 flex items-center justify-end gap-4">
+        {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+        {saveMessage && <p className="text-sm text-emerald-600 dark:text-emerald-400">{saveMessage}</p>}
         <button
           onClick={handleSave}
           disabled={isLoading || isSaving}
-          className="px-8 py-3 bg-amber-500 hover:bg-amber-600 disabled:bg-amber-300 text-white rounded-lg transition-colors font-medium"
+          className="px-6 py-2.5 bg-amber-500 hover:bg-amber-600 disabled:bg-amber-300 text-white rounded-lg transition-colors text-sm font-medium"
         >
-          {isSaving ? "Saving..." : "Save Privacy Settings"}
+          {isSaving ? "Saving..." : "Save"}
         </button>
       </div>
-      {(error || saveMessage) && (
-        <div className="flex justify-end">
-          {error ? (
-            <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-          ) : (
-            <p className="text-sm text-emerald-600 dark:text-emerald-400">{saveMessage}</p>
-          )}
-        </div>
-      )}
     </div>
   );
 }

@@ -22,6 +22,11 @@ const iconMap: Record<string, LucideIcon> = {
   LogOut,
 };
 
+/**
+ * Get Icon Component.
+ * @param iconName - icon Name value.
+ * @returns LucideIcon.
+ */
 export function getIconComponent(iconName: string): LucideIcon {
   return iconMap[iconName] || Home; // Default to Home icon if not found
 }

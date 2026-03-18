@@ -13,6 +13,10 @@ export class StateValidationError extends Error {
   }
 }
 
+/**
+ * Validate Library State.
+ * @param state - state value.
+ */
 export function validateLibraryState(state: Partial<LibraryState>): void {
   if (state.viewMode && !["grid", "list"].includes(state.viewMode)) {
     throw new StateValidationError("Invalid view mode", "viewMode");
@@ -33,6 +37,10 @@ export function validateLibraryState(state: Partial<LibraryState>): void {
   }
 }
 
+/**
+ * Validate Dashboard State.
+ * @param state - state value.
+ */
 export function validateDashboardState(state: Partial<DashboardState>): void {
   if (
     state.refreshInterval &&
@@ -67,6 +75,10 @@ export function validateDashboardState(state: Partial<DashboardState>): void {
   }
 }
 
+/**
+ * Validate Chat State.
+ * @param state - state value.
+ */
 export function validateChatState(state: Partial<ChatState>): void {
   if (
     state.chatMode &&
@@ -87,6 +99,10 @@ export function validateChatState(state: Partial<ChatState>): void {
   }
 }
 
+/**
+ * Validate Navigation State.
+ * @param state - state value.
+ */
 export function validateNavigationState(state: Partial<NavigationState>): void {
   if (state.activeTab && typeof state.activeTab !== "string") {
     throw new StateValidationError("Active tab must be a string", "activeTab");
@@ -117,6 +133,11 @@ export function validateNavigationState(state: Partial<NavigationState>): void {
   }
 }
 
+/**
+ * Validate State.
+ * @param state - state value.
+ * @param validator - validator value.
+ */
 export function validateState<T>(
   state: Partial<T>,
   validator: (state: Partial<T>) => void

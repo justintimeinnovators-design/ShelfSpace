@@ -1,3 +1,11 @@
+/**
+ * Chat service wrapper.
+ *
+ * Coordinates:
+ * - session CRUD against user-service chat endpoints,
+ * - chatbot response generation via chatbot endpoint,
+ * - best-effort persistence of user/assistant messages.
+ */
 import api from "./api";
 
 const apiBase = process.env["NEXT_PUBLIC_API_URL"]?.replace(/\/$/, "");
@@ -47,7 +55,7 @@ export interface AddMessageInput {
 
 class ChatService {
   /**
-   * Get all chat sessions for the current user
+   * Fetches all sessions for authenticated user.
    */
   async getSessions(
     token: string,
@@ -65,7 +73,7 @@ class ChatService {
   }
 
   /**
-   * Create a new chat session
+   * Creates a new chat session.
    */
   async createSession(token: string, input?: CreateSessionInput): Promise<ChatSession> {
     const response = await api.post(
@@ -77,7 +85,7 @@ class ChatService {
   }
 
   /**
-   * Get a specific session with its messages
+   * Fetches a session including message history.
    */
   async getSession(token: string, sessionId: string): Promise<ChatSession> {
     const response = await api.get(`${CHAT_API_URL}/chat/sessions/${sessionId}`, {
@@ -89,6 +97,9 @@ class ChatService {
   // /**
   //  * Add a message to a session
   //  */
+  /**
+   * Persists one message record into a chat session.
+   */
   async addMessage(
     token: string,
     sessionId: string,
@@ -103,7 +114,7 @@ class ChatService {
   }
 
   /**
-   * Update session metadata (title, pin status, etc.)
+   * Updates mutable session metadata (title, pin, visibility).
    */
   async updateSession(
     token: string,
@@ -116,7 +127,7 @@ class ChatService {
   }
 
   /**
-   * Delete a session and its messages
+   * Deletes a session and associated message history.
    */
   async deleteSession(token: string, sessionId: string): Promise<void> {
     await api.delete(`${CHAT_API_URL}/chat/sessions/${sessionId}`, {
@@ -125,7 +136,7 @@ class ChatService {
   }
 
   /**
-   * Refresh session TTL (extend by 24 hours)
+   * Extends session expiration window.
    */
   async refreshSession(token: string, sessionId: string): Promise<void> {
     await api.post(
@@ -136,8 +147,12 @@ class ChatService {
   }
 
   /**
-   * Send a message to the chatbot and get response
-   * Messages are not persisted - handled by chatbot service
+   * Sends user message to chatbot and returns user+assistant message pair.
+   *
+   * Flow:
+   * 1) Request answer from chatbot service.
+   * 2) Build normalized local message objects.
+   * 3) Persist both messages to user-service (best effort).
    */
   async sendChatMessage(
     token: string,
@@ -181,6 +196,7 @@ class ChatService {
       },
     };
 
+    // Persist failure should not block UX; caller still receives chatbot answer.
     // 2. Store messages in user-service (best effort)
     try {
       await this.addMessage(token, sessionId, {
@@ -208,7 +224,7 @@ class ChatService {
   }
 
   /**
-   * Generate a title for a session based on first message
+   * Generates a compact session title from first user prompt.
    */
   generateTitle(firstMessage: string): string {
     const maxLength = 50;

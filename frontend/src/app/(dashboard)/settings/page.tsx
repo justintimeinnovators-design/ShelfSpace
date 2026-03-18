@@ -5,14 +5,12 @@ import { ProfileSettings } from "@/components/settings/ProfileSettings";
 import { PreferencesSettings } from "@/components/settings/PreferencesSettings";
 import { PrivacySettings } from "@/components/settings/PrivacySettings";
 import { NotificationsSettings } from "@/components/settings/NotificationsSettings";
-import {
-  User,
-  Bell,
-  Shield,
-  Settings as SettingsIcon,
-  Palette,
-} from "lucide-react";
+import { AccountSettings } from "@/components/settings/AccountSettings";
+import { User, Bell, Shield, Palette, Lock } from "lucide-react";
 
+/**
+ * Settings Page.
+ */
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("profile");
 
@@ -21,62 +19,50 @@ export default function SettingsPage() {
     { id: "preferences", label: "Preferences", icon: Palette },
     { id: "notifications", label: "Notifications", icon: Bell },
     { id: "privacy", label: "Privacy", icon: Shield },
+    { id: "account", label: "Account", icon: Lock },
   ];
 
-  const renderSettingsContent = () => {
+  const renderContent = () => {
     switch (activeTab) {
-      case "profile":
-        return <ProfileSettings />;
-      case "preferences":
-        return <PreferencesSettings />;
-      case "notifications":
-        return <NotificationsSettings />;
-      case "privacy":
-        return <PrivacySettings />;
-      default:
-        return <ProfileSettings />;
+      case "profile": return <ProfileSettings />;
+      case "preferences": return <PreferencesSettings />;
+      case "notifications": return <NotificationsSettings />;
+      case "privacy": return <PrivacySettings />;
+      case "account": return <AccountSettings />;
+      default: return <ProfileSettings />;
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800 relative z-10">
-      <div className="relative container mx-auto px-4 py-8 z-20">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full shadow-lg mb-6">
-            <SettingsIcon className="h-10 w-10 text-white" />
-          </div>
-          <h1 className="text-5xl font-extrabold text-gray-900 dark:text-slate-100 mb-6 font-serif">
-            Settings
-          </h1>
-          <p className="text-xl text-gray-700 dark:text-slate-300 mb-8 max-w-2xl mx-auto">
-            Customize your reading experience and manage your account preferences.
-          </p>
+    <div className="relative min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(251,191,36,0.2),transparent_45%),radial-gradient(circle_at_bottom_right,rgba(249,115,22,0.15),transparent_50%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(148,163,184,0.2),transparent_45%),radial-gradient(circle_at_bottom_right,rgba(71,85,105,0.25),transparent_50%)]">
+      <div className="absolute inset-0 bg-gradient-to-br from-amber-50/80 via-orange-50/80 to-red-50/80 dark:from-slate-950/80 dark:via-slate-900/80 dark:to-slate-800/80" />
+      <div className="relative container mx-auto px-4 py-12">
+        <p className="text-xs uppercase tracking-[0.3em] text-amber-700/80 dark:text-amber-300/80 font-semibold">
+          Account
+        </p>
+        <h1 className="text-4xl md:text-5xl font-serif font-semibold text-gray-900 dark:text-slate-100 mt-3 mb-10">
+          Settings
+        </h1>
+
+        <div className="flex gap-0 overflow-x-auto border-b border-amber-200/70 dark:border-slate-700 mb-8">
+          {tabs.map(({ id, label, icon: Icon }) => (
+            <button
+              key={id}
+              onClick={() => setActiveTab(id)}
+              className={`flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap border-b-2 transition-colors -mb-px ${
+                activeTab === id
+                  ? "border-amber-500 text-amber-700 dark:text-amber-300"
+                  : "border-transparent text-gray-500 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-300"
+              }`}
+            >
+              <Icon className="h-4 w-4" />
+              {label}
+            </button>
+          ))}
         </div>
 
-        {/* Top Navigation Bar */}
-        <div className="bg-white/90 dark:bg-slate-800/95 backdrop-blur-sm rounded-xl shadow-lg border border-amber-200 dark:border-slate-700 mb-8 overflow-hidden">
-          <div className="flex flex-wrap">
-            {tabs.map(({ id, label, icon: Icon }) => (
-              <button
-                key={id}
-                onClick={() => setActiveTab(id)}
-                className={`flex-1 flex items-center justify-center gap-3 px-6 py-4 transition-all duration-200 border-b-2 ${
-                  activeTab === id
-                    ? "bg-amber-50 dark:bg-slate-700 text-amber-700 dark:text-amber-300 border-amber-500"
-                    : "text-gray-600 dark:text-slate-400 hover:bg-amber-50 dark:hover:bg-slate-700 hover:text-amber-600 dark:hover:text-amber-200 border-transparent"
-                }`}
-              >
-                <Icon className="h-5 w-5" />
-                <span className="font-medium">{label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Settings Content */}
-        <div className="bg-white/90 dark:bg-slate-800/95 backdrop-blur-sm rounded-xl shadow-lg border border-amber-200 dark:border-slate-700 p-8">
-          {renderSettingsContent()}
+        <div className="bg-white/90 dark:bg-slate-800/95 backdrop-blur-sm rounded-2xl border border-amber-200/70 dark:border-slate-700 p-6 md:p-8">
+          {renderContent()}
         </div>
       </div>
     </div>

@@ -5,6 +5,14 @@ import { useState, useEffect, useRef } from "react";
 import { Check, X, AlertCircle, Info } from "lucide-react";
 
 // Ripple effect component
+/**
+ * Ripple.
+ * @param {
+  x,
+  y,
+  color = "rgba(255, 255, 255, 0.5)",
+} - { x, y, color = "rgba(255, 255, 255, 0.5)", } value.
+ */
 export const Ripple: React.FC<{ x: number; y: number; color?: string }> = ({
   x,
   y,
@@ -25,6 +33,10 @@ export const Ripple: React.FC<{ x: number; y: number; color?: string }> = ({
 };
 
 // Button with ripple effect
+/**
+ * Ripple Button.
+ * @param { children, className - { children, class Name value.
+ */
 export const RippleButton: React.FC<
   React.ButtonHTMLAttributes<HTMLButtonElement> & {
     variant?: "primary" | "secondary" | "ghost";
@@ -35,6 +47,10 @@ export const RippleButton: React.FC<
   >([]);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
+/**
+ * Handle Click.
+ * @param e - e value.
+ */
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (buttonRef.current) {
       const rect = buttonRef.current.getBoundingClientRect();
@@ -82,6 +98,15 @@ export interface ToastProps {
   onClose?: () => void;
 }
 
+/**
+ * Toast.
+ * @param {
+  message,
+  type = "info",
+  duration = 3000,
+  onClose,
+} - { message, type = "info", duration = 3000, on Close, } value.
+ */
 export const Toast: React.FC<ToastProps> = ({
   message,
   type = "info",
@@ -135,6 +160,10 @@ export const Toast: React.FC<ToastProps> = ({
 };
 
 // Tooltip component
+/**
+ * Tooltip.
+ * @param { children, content, position - { children, content, position value.
+ */
 export const Tooltip: React.FC<{
   children: React.ReactNode;
   content: string;
@@ -181,6 +210,10 @@ export const Tooltip: React.FC<{
 };
 
 // Animated counter
+/**
+ * Animated Counter.
+ * @param { value, duration - { value, duration value.
+ */
 export const AnimatedCounter: React.FC<{
   value: number;
   duration?: number;
@@ -192,6 +225,10 @@ export const AnimatedCounter: React.FC<{
     let startTime: number;
     let animationFrame: number;
 
+/**
+ * Animate.
+ * @param timestamp - timestamp value.
+ */
     const animate = (timestamp: number) => {
       if (!startTime) startTime = timestamp;
       const progress = Math.min((timestamp - startTime) / duration, 1);
@@ -212,6 +249,10 @@ export const AnimatedCounter: React.FC<{
 };
 
 // Progress bar with animation
+/**
+ * Animated Progress Bar.
+ * @param { progress, className - { progress, class Name value.
+ */
 export const AnimatedProgressBar: React.FC<{
   progress: number;
   className?: string;
@@ -242,6 +283,10 @@ export const AnimatedProgressBar: React.FC<{
 };
 
 // Skeleton loader with shimmer
+/**
+ * Shimmer Skeleton.
+ * @param { className - { class Name value.
+ */
 export const ShimmerSkeleton: React.FC<{
   className?: string;
   variant?: "text" | "circular" | "rectangular";
@@ -260,6 +305,10 @@ export const ShimmerSkeleton: React.FC<{
 };
 
 // Floating action button
+/**
+ * Floating Action Button.
+ * @param { icon, label, className - { icon, label, class Name value.
+ */
 export const FloatingActionButton: React.FC<
   React.ButtonHTMLAttributes<HTMLButtonElement> & {
     icon: React.ReactNode;
@@ -290,6 +339,10 @@ export const FloatingActionButton: React.FC<
 };
 
 // Card with hover effect
+/**
+ * Interactive Card.
+ * @param { children, className - { children, class Name value.
+ */
 export const InteractiveCard: React.FC<{
   children: React.ReactNode;
   className?: string;
@@ -306,6 +359,10 @@ export const InteractiveCard: React.FC<{
 };
 
 // Badge with pulse animation
+/**
+ * Pulse Badge.
+ * @param { children, variant - { children, variant value.
+ */
 export const PulseBadge: React.FC<{
   children: React.ReactNode;
   variant?: "success" | "error" | "warning" | "info";
@@ -333,19 +390,23 @@ export const PulseBadge: React.FC<{
 };
 
 // Loading spinner
+/**
+ * Spinner.
+ * @param { size - { size value.
+ */
 export const Spinner: React.FC<{
   size?: "sm" | "md" | "lg";
   className?: string;
 }> = ({ size = "md", className = "" }) => {
   const sizes = {
-    sm: "w-4 h-4 border-2",
-    md: "w-8 h-8 border-3",
-    lg: "w-12 h-12 border-4",
+    sm: "w-4 h-4",
+    md: "w-8 h-8",
+    lg: "w-12 h-12",
   };
 
   return (
     <div
-      className={`inline-block animate-spin rounded-full border-indigo-dye-200 border-t-indigo-dye-600 ${sizes[size]} ${className}`}
+      className={`animate-pulse bg-amber-100 dark:bg-slate-700 rounded-lg ${sizes[size]} ${className}`}
     />
   );
 };

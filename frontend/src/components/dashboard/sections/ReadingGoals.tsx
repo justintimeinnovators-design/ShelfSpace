@@ -20,6 +20,9 @@ interface ReadingGoal {
   category: 'books' | 'pages' | 'time' | 'rating' | 'streak';
 }
 
+/**
+ * Reading Goals.
+ */
 export function ReadingGoals() {
   const { data } = useReadingGoalsData();
   const goals = (data?.goals || []).map((goal) => ({

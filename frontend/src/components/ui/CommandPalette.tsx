@@ -1,3 +1,12 @@
+/**
+ * Keyboard-driven command palette.
+ *
+ * Supports:
+ * - fuzzy-ish text matching over label/description/keywords,
+ * - category grouping,
+ * - keyboard navigation and selection,
+ * - recent command memory for lightweight personalization.
+ */
 "use client";
 
 import React from "react";
@@ -71,6 +80,13 @@ const defaultCommands: Command[] = [
   },
 ];
 
+/**
+ * Overlay component for command-based navigation/actions.
+ *
+ * @param isOpen Whether the palette is visible.
+ * @param onClose Callback fired when palette requests close.
+ * @param commands Optional command set; defaults to built-in navigation commands.
+ */
 export const CommandPalette: React.FC<CommandPaletteProps> = ({
   isOpen,
   onClose,
@@ -81,7 +97,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   const [recentCommands, setRecentCommands] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Filter commands based on query
+  // Query filtering is computed on render to keep interaction latency very low.
   const filteredCommands = query
     ? commands.filter((cmd) => {
         const searchText = query.toLowerCase();
@@ -93,7 +109,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       })
     : commands;
 
-  // Group commands by category
+  // Grouping keeps the command list scannable as command count grows.
   const groupedCommands = filteredCommands.reduce((acc, cmd) => {
     const category = cmd.category || "Other";
     if (!acc[category]) acc[category] = [];
@@ -121,6 +137,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
           break;
         case "Enter":
           e.preventDefault();
+          // Execute currently highlighted item for keyboard-only accessibility.
           if (filteredCommands[selectedIndex]) {
             executeCommand(filteredCommands[selectedIndex]);
           }
@@ -151,6 +168,9 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
     }
   }, [isOpen]);
 
+  /**
+   * Executes a selected command and tracks it in the local recent list.
+   */
   const executeCommand = (command: Command) => {
     // Add to recent commands
     setRecentCommands((prev) => {
@@ -158,6 +178,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       return updated.slice(0, 5); // Keep only 5 recent
     });
 
+    // Action executes first, then overlay closes to avoid swallowing navigation side-effects.
     command.action();
     onClose();
   };
@@ -287,7 +308,12 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   );
 };
 
-// Hook to manage command palette
+/**
+ * Hook providing open/close state and global keyboard shortcut wiring.
+ *
+ * Shortcut:
+ * - `Ctrl+K` (or `Cmd+K` on macOS) opens palette.
+ */
 export const useCommandPalette = () => {
   const [isOpen, setIsOpen] = useState(false);
 

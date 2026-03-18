@@ -4,6 +4,9 @@ import { authOptions } from "@/lib/auth";
 
 const USER_SERVICE_URL = process.env['USER_SERVICE_URL'] || "http://localhost:3001/api";
 
+/**
+ * GET.
+ */
 export async function GET() {
   try {
     const session = await getServerSession(authOptions);
@@ -42,6 +45,10 @@ export async function GET() {
   }
 }
 
+/**
+ * PUT.
+ * @param req - req value.
+ */
 export async function PUT(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);

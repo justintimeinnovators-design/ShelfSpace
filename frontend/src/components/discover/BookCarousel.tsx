@@ -9,6 +9,10 @@ interface BookCarouselProps {
   books: Book[];
 }
 
+/**
+ * Book Carousel.
+ * @param { title, books } - { title, books } value.
+ */
 const BookCarousel: React.FC<BookCarouselProps> = ({ title, books }) => {
   return (
     <section className="mb-8">

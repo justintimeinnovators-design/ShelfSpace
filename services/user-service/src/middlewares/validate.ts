@@ -1,6 +1,10 @@
 import type { Request, Response, NextFunction } from "express";
 import { ZodObject, ZodError } from "zod";
 
+/**
+ * Validate.
+ * @param schema - schema value.
+ */
 export const validate =
   (schema: ZodObject<any>) =>
   (req: Request, res: Response, next: NextFunction) => {

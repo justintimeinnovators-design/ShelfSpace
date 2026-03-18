@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
@@ -5,9 +6,6 @@ import helmet from "helmet";
 import { randomUUID } from "crypto";
 import forumRoutes from "./routes/forum.routes.js";
 import prisma from "./prisma.js";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3005; // Changed port
@@ -93,3 +91,13 @@ app.use("/api/forums", forumRoutes);
 app.listen(PORT, () => {
   console.log(`Forum service running at http://localhost:${PORT}`);
 });
+
+import { disconnectProducer } from "./kafka/producer.js";
+
+const shutdown = async () => {
+  await disconnectProducer();
+  process.exit(0);
+};
+
+process.on("SIGTERM", shutdown);
+process.on("SIGINT", shutdown);

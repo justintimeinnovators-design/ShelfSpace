@@ -3,22 +3,21 @@ import prisma from "../prisma.js";
 import { createReviewSchema, updateReviewSchema } from "../schemas.js";
 import { isAuthenticated } from "../middlewares/auth.js";
 import axios from "axios";
+import { publishAnalyticsEvents } from "../kafka/producer.js";
 const router = express.Router();
-const ANALYTICS_SERVICE_URL = process.env.ANALYTICS_SERVICE_URL?.trim() || "";
 const BOOK_SERVICE_URL = process.env.BOOK_SERVICE_URL?.trim() || "http://localhost:3004";
 async function emitAnalyticsEvent(req, payload) {
-    if (!ANALYTICS_SERVICE_URL)
-        return;
-    const authHeader = req.headers.authorization;
-    if (!authHeader)
-        return;
     try {
-        await axios.post(`${ANALYTICS_SERVICE_URL}/api/analytics/events`, { events: [payload] }, { headers: { Authorization: authHeader } });
+        await publishAnalyticsEvents([{ userId: req.userId, ...payload }]);
     }
     catch (error) {
-        console.warn("Failed to emit analytics event");
+        console.warn("Failed to emit analytics event to Kafka:", error);
     }
 }
+/**
+ * Fetch Book Meta.
+ * @param bookId - book Id value.
+ */
 async function fetchBookMeta(bookId) {
     try {
         const response = await axios.get(`${BOOK_SERVICE_URL}/api/books/${bookId}`, {

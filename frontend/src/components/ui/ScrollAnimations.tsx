@@ -17,6 +17,16 @@ interface ScrollAnimationProps {
   className?: string;
 }
 
+/**
+ * Scroll Animation.
+ * @param {
+  children,
+  animation = "fade",
+  delay = 0,
+  threshold = 0.1,
+  className = "",
+} - { children, animation = "fade", delay = 0, threshold = 0.1, class Name = "", } value.
+ */
 export const ScrollAnimation: React.FC<ScrollAnimationProps> = ({
   children,
   animation = "fade",
@@ -77,6 +87,14 @@ interface StaggerContainerProps {
   className?: string;
 }
 
+/**
+ * Stagger Container.
+ * @param {
+  children,
+  staggerDelay = 100,
+  className = "",
+} - { children, stagger Delay = 100, class Name = "", } value.
+ */
 export const StaggerContainer: React.FC<StaggerContainerProps> = ({
   children,
   staggerDelay = 100,
@@ -128,6 +146,14 @@ interface ParallaxProps {
   className?: string;
 }
 
+/**
+ * Parallax.
+ * @param {
+  children,
+  speed = 0.5,
+  className = "",
+} - { children, speed = 0.5, class Name = "", } value.
+ */
 export const Parallax: React.FC<ParallaxProps> = ({
   children,
   speed = 0.5,
@@ -137,6 +163,9 @@ export const Parallax: React.FC<ParallaxProps> = ({
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+/**
+ * Handle Scroll.
+ */
     const handleScroll = () => {
       if (ref.current) {
         const scrolled = window.pageYOffset;

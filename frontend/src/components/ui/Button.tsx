@@ -1,7 +1,6 @@
 "use client";
 
 import { forwardRef } from "react";
-import { Loader2 } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { ButtonProps } from "@/types/components";
 
@@ -116,7 +115,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       >
         {isLoading ? (
           <>
-            <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+            <div className="h-4 w-4 bg-current opacity-30 rounded animate-pulse" aria-hidden="true" />
             {loadingText || children}
           </>
         ) : (

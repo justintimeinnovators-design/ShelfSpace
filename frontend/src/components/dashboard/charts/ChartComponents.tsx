@@ -49,6 +49,10 @@ interface ChartContainerProps {
   icon?: React.ReactNode;
 }
 
+/**
+ * Chart Container.
+ * @param { title, subtitle, children, className - { title, subtitle, children, class Name value.
+ */
 export function ChartContainer({ title, subtitle, children, className = "", icon }: ChartContainerProps) {
   return (
     <AnimatedCard variant="glass" hover className={`p-6 ${className}`}>
@@ -85,6 +89,10 @@ interface ReadingTrendsChartProps {
   }>;
 }
 
+/**
+ * Reading Trends Chart.
+ * @param { data } - { data } value.
+ */
 export function ReadingTrendsChart({ data }: ReadingTrendsChartProps) {
   return (
     <ChartContainer 
@@ -150,7 +158,15 @@ interface GenreDistributionChartProps {
   }>;
 }
 
+/**
+ * Genre Distribution Chart.
+ * @param { data } - { data } value.
+ */
 export function GenreDistributionChart({ data }: GenreDistributionChartProps) {
+/**
+ * Render Customized Label.
+ * @param { cx, cy, midAngle, innerRadius, outerRadius, percent } - { cx, cy, mid Angle, inner Radius, outer Radius, percent } value.
+ */
   const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
     if (percent < 0.05) return null; // Don't show labels for slices < 5%
     
@@ -222,6 +238,10 @@ interface ReadingGoalsChartProps {
   }>;
 }
 
+/**
+ * Reading Goals Chart.
+ * @param { data } - { data } value.
+ */
 export function ReadingGoalsChart({ data }: ReadingGoalsChartProps) {
   const chartData = data.map(item => ({
     ...item,
@@ -282,6 +302,10 @@ interface ReadingStreakChartProps {
   }>;
 }
 
+/**
+ * Reading Streak Chart.
+ * @param { data } - { data } value.
+ */
 export function ReadingStreakChart({ data }: ReadingStreakChartProps) {
   return (
     <ChartContainer 
@@ -337,6 +361,10 @@ interface MonthlyReadingChartProps {
   }>;
 }
 
+/**
+ * Monthly Reading Chart.
+ * @param { data } - { data } value.
+ */
 export function MonthlyReadingChart({ data }: MonthlyReadingChartProps) {
   return (
     <ChartContainer 
@@ -395,6 +423,10 @@ interface RatingDistributionChartProps {
   }>;
 }
 
+/**
+ * Rating Distribution Chart.
+ * @param { data } - { data } value.
+ */
 export function RatingDistributionChart({ data }: RatingDistributionChartProps) {
   return (
     <ChartContainer 

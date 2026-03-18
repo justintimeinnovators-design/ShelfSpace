@@ -27,6 +27,9 @@ type ViewMode = "grid" | "list";
 type SortBy = "title" | "author" | "rating" | "publishedYear";
 type SortOrder = "asc" | "desc";
 
+/**
+ * Discover Feature.
+ */
 export function DiscoverFeature() {
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearch = useDebounce(searchQuery, 500);

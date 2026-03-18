@@ -17,6 +17,17 @@ interface LibrarySidebarProps {
   onCreateList: (name: string) => Promise<void>;
 }
 
+/**
+ * Library Sidebar.
+ * @param {
+  readingLists,
+  selectedList,
+  setSelectedList,
+  searchQuery,
+  setSearchQuery,
+  onCreateList,
+} - { reading Lists, selected List, set Selected List, search Query, set Search Query, on Create List, } value.
+ */
 const LibrarySidebar: React.FC<LibrarySidebarProps> = ({
   readingLists,
   selectedList,
@@ -31,10 +42,17 @@ const LibrarySidebar: React.FC<LibrarySidebarProps> = ({
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+/**
+ * Handle Add Book.
+ */
   const handleAddBook = () => {
     router.push("/discover");
   };
 
+/**
+ * Handle Add Book Key Down.
+ * @param event - event value.
+ */
   const handleAddBookKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
@@ -42,12 +60,18 @@ const LibrarySidebar: React.FC<LibrarySidebarProps> = ({
     }
   };
 
+/**
+ * Handle Create List.
+ */
   const handleCreateList = () => {
     setError(null);
     setListName("");
     setIsModalOpen(true);
   };
 
+/**
+ * Submit Create List.
+ */
   const submitCreateList = async () => {
     const name = listName.trim();
     if (!name) {

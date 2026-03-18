@@ -3,6 +3,10 @@
 import { ErrorFallbackProps } from "@/components/common/ErrorBoundary";
 import { BookOpen, RefreshCw } from "lucide-react";
 
+/**
+ * Book Detail Error Fallback.
+ * @param { error, retry } - { error, retry } value.
+ */
 export function BookDetailErrorFallback({ error, retry }: ErrorFallbackProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800 flex items-center justify-center">

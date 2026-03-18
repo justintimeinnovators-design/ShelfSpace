@@ -13,12 +13,24 @@ import {
 import { errorLogger } from "@/utils/errorLogger";
 
 // Default error fallback component with enhanced debugging
+/**
+ * Default Error Fallback.
+ * @param {
+  error,
+  retry,
+  errorId,
+  errorInfo,
+} - { error, retry, error Id, error Info, } value.
+ */
 const DefaultErrorFallback: React.FC<ErrorFallbackProps> = ({
   error,
   retry,
   errorId,
   errorInfo,
 }) => {
+/**
+ * Copy Error Details.
+ */
   const copyErrorDetails = () => {
     if (!errorId) return;
 
@@ -170,6 +182,11 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     };
   }
 
+/**
+ * Get Derived State From Error.
+ * @param error - error value.
+ * @returns Partial<ErrorBoundaryState>.
+ */
   static getDerivedStateFromError(error: Error): Partial<ErrorBoundaryState> {
     const errorId = `error-${Date.now()}-${Math.random()
       .toString(36)
@@ -182,6 +199,11 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     };
   }
 
+/**
+ * Component Did Catch.
+ * @param error - error value.
+ * @param errorInfo - error Info value.
+ */
   override componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     this.setState({
       errorInfo,
@@ -239,6 +261,9 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     }
   }
 
+/**
+ * Component Will Unmount.
+ */
   override componentWillUnmount() {
     if (this.retryTimeoutId) {
       window.clearTimeout(this.retryTimeoutId);
@@ -299,6 +324,9 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
     }, 100);
   };
 
+/**
+ * Render.
+ */
   override render() {
     if (this.state.hasError && this.state.error) {
       const FallbackComponent = this.props.fallback || DefaultErrorFallback;

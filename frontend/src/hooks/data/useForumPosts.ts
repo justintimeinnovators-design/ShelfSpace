@@ -1,8 +1,21 @@
+/**
+ * Post-level forum discussion hook.
+ *
+ * Loads thread metadata + post list together and offers mutation handlers
+ * for posting, editing, deleting, and reactions.
+ */
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
 import { ForumService, type ForumPostDTO, type ForumThreadDTO } from "@/lib/forum-service";
 
+/**
+ * Provides thread/post state for a specific discussion thread.
+ *
+ * @param forumId Forum identifier.
+ * @param threadId Thread identifier.
+ * @returns Thread snapshot, posts, loading/error state, and post actions.
+ */
 export function useForumPosts(forumId: string, threadId: string) {
   const [thread, setThread] = useState<ForumThreadDTO | null>(null);
   const [posts, setPosts] = useState<ForumPostDTO[]>([]);
@@ -10,11 +23,13 @@ export function useForumPosts(forumId: string, threadId: string) {
   const [error, setError] = useState<string | null>(null);
 
   const refresh = useCallback(async () => {
+    // Skip fetch until both route params are resolved.
     if (!forumId || !threadId) return;
     setLoading(true);
     setError(null);
     try {
       const [threadData, postsData] = await Promise.all([
+        // Fetch in parallel to minimize perceived thread-load latency.
         ForumService.getThread(forumId, threadId),
         ForumService.listPosts(forumId, threadId, { limit: 100, offset: 0 }),
       ]);
@@ -61,6 +76,7 @@ export function useForumPosts(forumId: string, threadId: string) {
 
   const addReaction = useCallback(
     async (postId: string, type: "LIKE" | "UPVOTE" | "LAUGH" | "SAD" | "ANGRY" = "LIKE") => {
+      // Reaction endpoints are fire-and-forget; parent callers can decide on refetch policy.
       await ForumService.addReaction(forumId, threadId, postId, type);
     },
     [forumId, threadId]

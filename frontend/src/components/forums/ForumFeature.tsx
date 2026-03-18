@@ -12,27 +12,26 @@ import {
   Pin,
   Calendar,
 } from "lucide-react";
-import { ForumChatFeature } from "./ForumChatFeature";
 import { useForum } from "@/hooks/data/useForums";
 import { useForumThreads } from "@/hooks/data/useForumThreads";
 import { useForumMembership } from "@/hooks/data/useForumMembership";
 import { useForumAdmin } from "@/hooks/data/useForumAdmin";
 import { useSession } from "next-auth/react";
 import { type ForumThreadDTO } from "@/lib/forum-service";
+import { toThreadSlug } from "@/lib/slug";
+import { ForumDetailSkeleton } from "@/components/skeletons/SkeletonComponents";
 import apiClient from "@/lib/api";
 
 interface ForumFeatureProps {
   forumId: string;
+  forumSlug: string;
 }
 
-type TabType = "forum" | "chat";
-
-export function ForumFeature({ forumId }: ForumFeatureProps) {
+export function ForumFeature({ forumId, forumSlug }: ForumFeatureProps) {
   const router = useRouter();
   const { data: session } = useSession();
   const userId = session?.user?.id || "";
   const { forum, loading, error, isMember, joinForum, leaveForum, refresh } = useForum(forumId);
-  const [activeTab, setActiveTab] = useState<TabType>("forum");
   const { threads, loading: threadsLoading, error: threadsError, createThread, updateThread, deleteThread } =
     useForumThreads(forumId);
   const [newThreadTitle, setNewThreadTitle] = useState("");
@@ -196,18 +195,7 @@ export function ForumFeature({ forumId }: ForumFeatureProps) {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800 flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full shadow-lg mb-6 animate-pulse">
-            <MessageCircle className="h-10 w-10 text-white" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-slate-100 mb-2">
-            Loading Forum...
-          </h2>
-        </div>
-      </div>
-    );
+    return <ForumDetailSkeleton />;
   }
 
   if (error || !forum) {
@@ -224,7 +212,7 @@ export function ForumFeature({ forumId }: ForumFeatureProps) {
             {error || "The forum you're looking for doesn't exist."}
           </p>
           <button
-            onClick={() => router.back()}
+            onClick={() => router.push("/forums")}
             className="inline-flex items-center px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
@@ -239,7 +227,7 @@ export function ForumFeature({ forumId }: ForumFeatureProps) {
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800 relative z-10">
       <div className="relative container mx-auto px-4 py-8 z-20">
         <button
-          onClick={() => router.back()}
+          onClick={() => router.push("/forums")}
           className="inline-flex items-center text-amber-800 dark:text-amber-200 hover:text-amber-600 dark:hover:text-amber-50 transition-colors mb-6"
         >
           <ArrowLeft className="h-5 w-5 mr-2" />
@@ -331,8 +319,8 @@ export function ForumFeature({ forumId }: ForumFeatureProps) {
                 )}
                 <div className="text-xs text-gray-500 dark:text-slate-400 mt-3">
                   {userIsMember
-                    ? "You can post and participate in live chat."
-                    : "Join to start discussions and access chat."}
+                    ? "You can post and participate in discussions."
+                    : "Join to start and reply to discussions."}
                 </div>
               </div>
 
@@ -389,53 +377,8 @@ export function ForumFeature({ forumId }: ForumFeatureProps) {
           </div>
         </div>
 
-        <div className="bg-white/90 dark:bg-slate-800/95 backdrop-blur-sm rounded-xl shadow-lg border border-amber-200 dark:border-slate-700 p-2 mb-8">
-          <div className="flex gap-2">
-            <button
-              onClick={() => setActiveTab("forum")}
-              className={`flex-1 px-4 py-3 rounded-lg transition-colors font-medium ${
-                activeTab === "forum"
-                  ? "bg-amber-500 text-white"
-                  : "text-gray-700 dark:text-slate-300 hover:bg-amber-50 dark:hover:bg-slate-700"
-              }`}
-            >
-              <MessageCircle className="h-4 w-4 inline mr-2" />
-              Forum
-            </button>
-            <button
-              onClick={() => setActiveTab("chat")}
-              className={`flex-1 px-4 py-3 rounded-lg transition-colors font-medium ${
-                activeTab === "chat"
-                  ? "bg-amber-500 text-white"
-                  : "text-gray-700 dark:text-slate-300 hover:bg-amber-50 dark:hover:bg-slate-700"
-              }`}
-            >
-              <MessageCircle className="h-4 w-4 inline mr-2" />
-              Live Chat
-            </button>
-          </div>
-        </div>
-
-        {activeTab === "chat" && userIsMember && (
-          <div className="mb-8" style={{ height: "calc(100vh - 400px)", minHeight: "600px" }}>
-            <ForumChatFeature forumId={forumId} forumName={forum.name} />
-          </div>
-        )}
-        {activeTab === "chat" && !userIsMember && (
-          <div className="mb-8 text-center py-12 bg-white/90 dark:bg-slate-800/95 backdrop-blur-sm rounded-xl shadow-lg border border-amber-200 dark:border-slate-700">
-            <MessageCircle className="h-12 w-12 text-gray-400 dark:text-slate-500 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 dark:text-slate-100 mb-2">
-              Join to Access Chat
-            </h3>
-            <p className="text-gray-600 dark:text-slate-400">
-              You need to be a member of this forum to access the chat.
-            </p>
-          </div>
-        )}
-
-        {activeTab === "forum" && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            <div className="lg:col-span-8 space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="lg:col-span-8 space-y-6">
               <div className="bg-white/90 dark:bg-slate-800/95 backdrop-blur-sm rounded-xl shadow-lg border border-amber-200 dark:border-slate-700 p-6">
                 <div className="flex flex-col lg:flex-row gap-4 items-start">
                   <div className="flex-1">
@@ -519,7 +462,7 @@ export function ForumFeature({ forumId }: ForumFeatureProps) {
                             <div className="flex-1">
                               <div className="flex items-center gap-2 mb-1">
                                 <button
-                                  onClick={() => router.push(`/forums/${forumId}/threads/${thread.id}`)}
+                                  onClick={() => router.push(`/forums/${forumSlug}/threads/${toThreadSlug(thread)}`)}
                                   className="text-lg font-semibold text-gray-900 dark:text-slate-100 hover:text-amber-600 dark:hover:text-amber-400 cursor-pointer text-left"
                                 >
                                   {thread.title}
@@ -617,7 +560,7 @@ export function ForumFeature({ forumId }: ForumFeatureProps) {
                           <div className="flex items-start justify-between mb-3">
                             <div className="flex-1">
                               <button
-                                onClick={() => router.push(`/forums/${forumId}/threads/${thread.id}`)}
+                                onClick={() => router.push(`/forums/${forumSlug}/threads/${toThreadSlug(thread)}`)}
                                 className="text-lg font-semibold text-gray-900 dark:text-slate-100 hover:text-amber-600 dark:hover:text-amber-400 cursor-pointer text-left mb-1"
                               >
                                 {thread.title}
@@ -758,7 +701,6 @@ export function ForumFeature({ forumId }: ForumFeatureProps) {
               </div>
             </div>
           </div>
-        )}
       </div>
     </div>
   );

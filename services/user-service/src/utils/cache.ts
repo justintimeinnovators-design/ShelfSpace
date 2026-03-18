@@ -4,6 +4,9 @@ const REDIS_URL = process.env.REDIS_URL || "redis://redis:6379";
 
 let redisClient: ReturnType<typeof createClient> | null = null;
 
+/**
+ * Get Redis Client.
+ */
 async function getRedisClient() {
   if (!redisClient) {
     redisClient = createClient({ url: REDIS_URL });

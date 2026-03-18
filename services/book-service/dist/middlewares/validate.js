@@ -4,6 +4,10 @@ import { ZodError } from "zod";
  * This middleware validates the request's params, query, and body against the schema.
  * @param schema The Zod schema to validate against.
  */
+/**
+ * Validate.
+ * @param schema - schema value.
+ */
 const validate = (schema) => (req, res, next) => {
     try {
         schema.parse({

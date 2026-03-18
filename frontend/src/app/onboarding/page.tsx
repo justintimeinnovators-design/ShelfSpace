@@ -12,7 +12,6 @@ import {
   BookOpen, 
   Check, 
   ArrowRight, 
-  Loader2, 
   User, 
   Settings, 
   Heart,
@@ -43,6 +42,9 @@ const steps = [
   },
 ];
 
+/**
+ * Onboarding Page.
+ */
 export default function OnboardingPage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -65,9 +67,17 @@ export default function OnboardingPage() {
   if (status === "loading") {
     return (
       <div className="min-h-screen h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-800">
-        <div className="text-center">
-          <Loader2 className="h-12 w-12 animate-spin text-amber-600 mx-auto mb-4" />
-          <p className="text-gray-600 dark:text-slate-400">Loading...</p>
+        <div className="w-full max-w-lg animate-pulse px-4">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-amber-200 dark:border-slate-700 p-10 space-y-6">
+            <div className="h-6 bg-amber-100 dark:bg-slate-700 rounded w-1/3 mx-auto" />
+            <div className="h-4 bg-amber-50 dark:bg-slate-600 rounded w-1/2 mx-auto" />
+            <div className="space-y-3 mt-4">
+              <div className="h-10 bg-gray-100 dark:bg-slate-700 rounded-xl" />
+              <div className="h-10 bg-gray-100 dark:bg-slate-700 rounded-xl" />
+              <div className="h-10 bg-gray-100 dark:bg-slate-700 rounded-xl" />
+            </div>
+            <div className="h-12 bg-amber-100 dark:bg-slate-700 rounded-xl mt-2" />
+          </div>
         </div>
       </div>
     );
@@ -85,6 +95,9 @@ export default function OnboardingPage() {
     return null;
   }
 
+/**
+ * Handle Next.
+ */
   const handleNext = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
@@ -93,12 +106,18 @@ export default function OnboardingPage() {
     }
   };
 
+/**
+ * Handle Previous.
+ */
   const handlePrevious = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
     }
   };
 
+/**
+ * Handle Complete.
+ */
   const handleComplete = async () => {
     try {
       setIsLoading(true);
@@ -167,10 +186,18 @@ export default function OnboardingPage() {
     }
   };
 
+/**
+ * Update Form Data.
+ * @param field - field value.
+ * @param value - value value.
+ */
   const updateFormData = (field: string, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
+/**
+ * Render Step Content.
+ */
   const renderStepContent = () => {
     switch (currentStep) {
       case 0:
@@ -548,7 +575,7 @@ export default function OnboardingPage() {
                 >
                   {isLoading ? (
                     <>
-                      <Loader2 className="h-5 w-5 animate-spin" />
+                      <div className="h-5 w-5 rounded bg-white/40 animate-pulse" />
                       <span>Setting up...</span>
                     </>
                   ) : (

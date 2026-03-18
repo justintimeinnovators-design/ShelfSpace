@@ -87,3 +87,10 @@ app.use("/api", userRoutes); // User routes (POST /me, GET /me, etc.)
 app.listen(PORT, () => {
     console.log(`User service running at http://localhost:${PORT}`);
 });
+import { disconnectProducer } from "./kafka/producer.js";
+const shutdown = async () => {
+    await disconnectProducer();
+    process.exit(0);
+};
+process.on("SIGTERM", shutdown);
+process.on("SIGINT", shutdown);

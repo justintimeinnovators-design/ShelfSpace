@@ -16,6 +16,24 @@ interface EnhancedInputProps
   showPasswordToggle?: boolean;
 }
 
+/**
+ * Enhanced Input.
+ * @param {
+  label,
+  error,
+  success,
+  hint,
+  icon,
+  clearable = false,
+  onClear,
+  showPasswordToggle = false,
+  type = "text",
+  className = "",
+  value,
+  onChange,
+  ...props
+} - { label, error, success, hint, icon, clearable = false, on Clear, show Password Toggle = false, type = "text", class Name = "", value, on Change, ...props } value.
+ */
 export const EnhancedInput: React.FC<EnhancedInputProps> = ({
   label,
   error,
@@ -40,6 +58,9 @@ export const EnhancedInput: React.FC<EnhancedInputProps> = ({
     setHasValue(!!value);
   }, [value]);
 
+/**
+ * Handle Clear.
+ */
   const handleClear = () => {
     if (inputRef.current) {
       const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
@@ -182,6 +203,20 @@ interface EnhancedTextareaProps
   maxLength?: number;
 }
 
+/**
+ * Enhanced Textarea.
+ * @param {
+  label,
+  error,
+  success,
+  hint,
+  showCount = false,
+  maxLength,
+  className = "",
+  value,
+  ...props
+} - { label, error, success, hint, show Count = false, max Length, class Name = "", value, ...props } value.
+ */
 export const EnhancedTextarea: React.FC<EnhancedTextareaProps> = ({
   label,
   error,

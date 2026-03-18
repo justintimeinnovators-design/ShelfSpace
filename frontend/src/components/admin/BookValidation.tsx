@@ -1,11 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { BookOpen, Loader2, CheckCircle, XCircle, Clock, Search } from "lucide-react";
+import { BookOpen, CheckCircle, XCircle, Clock, Search } from "lucide-react";
 import { useBookValidation } from "@/hooks/data/useAdmin";
 import { ValidationStatus } from "@/lib/admin-service";
 import { bookService } from "@/lib/book-service";
 
+/**
+ * Book Validation.
+ */
 export function BookValidation() {
   const [bookId, setBookId] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -13,6 +16,9 @@ export function BookValidation() {
   const [searching, setSearching] = useState(false);
   const { validation, loading, error, fetchValidation, updateValidation } = useBookValidation(bookId);
 
+/**
+ * Handle Search.
+ */
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
     setSearching(true);
@@ -26,6 +32,11 @@ export function BookValidation() {
     }
   };
 
+/**
+ * Handle Validate.
+ * @param status - status value.
+ * @param notes - notes value.
+ */
   const handleValidate = async (status: ValidationStatus, notes?: string) => {
     if (!bookId) {
       alert("Please select a book first");
@@ -39,6 +50,10 @@ export function BookValidation() {
     }
   };
 
+/**
+ * Get Status Icon.
+ * @param status - status value.
+ */
   const getStatusIcon = (status?: ValidationStatus) => {
     switch (status) {
       case "APPROVED":
@@ -74,7 +89,7 @@ export function BookValidation() {
               disabled={searching}
               className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
             >
-              {searching ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
+              {searching ? <div className="h-4 w-4 bg-white/40 rounded animate-pulse" /> : <Search className="h-4 w-4" />}
               Search
             </button>
           </div>
@@ -157,7 +172,7 @@ export function BookValidation() {
             disabled={loading || !bookId}
             className="flex-1 px-6 py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle className="h-4 w-4" />}
+            {loading ? <div className="h-4 w-4 bg-white/40 rounded animate-pulse" /> : <CheckCircle className="h-4 w-4" />}
             Approve
           </button>
           <button
@@ -165,7 +180,7 @@ export function BookValidation() {
             disabled={loading || !bookId}
             className="flex-1 px-6 py-3 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <XCircle className="h-4 w-4" />}
+            {loading ? <div className="h-4 w-4 bg-white/40 rounded animate-pulse" /> : <XCircle className="h-4 w-4" />}
             Reject
           </button>
           <button
@@ -173,7 +188,7 @@ export function BookValidation() {
             disabled={loading || !bookId}
             className="flex-1 px-6 py-3 bg-yellow-500 hover:bg-yellow-600 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Clock className="h-4 w-4" />}
+            {loading ? <div className="h-4 w-4 bg-white/40 rounded animate-pulse" /> : <Clock className="h-4 w-4" />}
             Set Pending
           </button>
         </div>

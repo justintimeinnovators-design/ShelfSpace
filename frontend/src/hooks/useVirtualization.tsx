@@ -23,6 +23,12 @@ interface VirtualizationResult<T> {
   containerRef: React.RefObject<HTMLDivElement>;
 }
 
+/**
+ * Use Virtualization.
+ * @param items - items value.
+ * @param options - options value.
+ * @returns VirtualizationResult<T>.
+ */
 export function useVirtualization<T>(
   items: T[],
   options: VirtualizationOptions
@@ -123,6 +129,18 @@ interface VirtualListProps<T> {
   horizontal?: boolean;
 }
 
+/**
+ * Virtual List.
+ * @param {
+  items,
+  itemHeight,
+  containerHeight,
+  renderItem,
+  className = "",
+  overscan = 5,
+  horizontal = false
+} - { items, item Height, container Height, render Item, class Name = "", overscan = 5, horizontal = false } value.
+ */
 export function VirtualList<T>({
   items,
   itemHeight,
@@ -191,6 +209,19 @@ interface VirtualGridProps<T> {
   overscan?: number;
 }
 
+/**
+ * Virtual Grid.
+ * @param {
+  items,
+  itemWidth,
+  itemHeight,
+  containerWidth,
+  containerHeight,
+  renderItem,
+  className = "",
+  overscan = 5
+} - { items, item Width, item Height, container Width, container Height, render Item, class Name = "", overscan = 5 } value.
+ */
 export function VirtualGrid<T>({
   items,
   itemWidth,

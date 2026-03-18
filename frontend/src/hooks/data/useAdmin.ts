@@ -16,6 +16,10 @@ interface UseAdminOptions {
   offset?: number;
 }
 
+/**
+ * Use Moderation Logs.
+ * @param options - options value.
+ */
 export function useModerationLogs(options: UseAdminOptions = {}) {
   const { autoFetch = true, limit = 50, offset = 0 } = options;
   const [logs, setLogs] = useState<ModerationLog[]>([]);
@@ -60,6 +64,10 @@ export function useModerationLogs(options: UseAdminOptions = {}) {
   };
 }
 
+/**
+ * Use Book Validation.
+ * @param bookId - book Id value.
+ */
 export function useBookValidation(bookId?: string) {
   const [validation, setValidation] = useState<BookValidation | null>(null);
   const [loading, setLoading] = useState(false);
@@ -110,6 +118,9 @@ export function useBookValidation(bookId?: string) {
   };
 }
 
+/**
+ * Use User Management.
+ */
 export function useUserManagement() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

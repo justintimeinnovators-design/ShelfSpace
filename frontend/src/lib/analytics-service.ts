@@ -1,3 +1,8 @@
+/**
+ * Analytics dashboard API module.
+ *
+ * Exposes typed read-only queries used by dashboard widgets and summary cards.
+ */
 import api from "./api";
 
 export interface DashboardSummary {
@@ -57,21 +62,33 @@ export interface ActivityTimelineResponse {
   }>;
 }
 
+/**
+ * Fetches dashboard summary counters.
+ */
 export async function getDashboardSummary(): Promise<DashboardSummary> {
   const response = await api.get("/api/analytics/dashboard/summary");
   return response.data;
 }
 
+/**
+ * Fetches charts/metrics for reading analytics panels.
+ */
 export async function getReadingAnalytics(): Promise<ReadingAnalyticsResponse> {
   const response = await api.get("/api/analytics/dashboard/reading-analytics");
   return response.data;
 }
 
+/**
+ * Fetches reading goals and completion progress dataset.
+ */
 export async function getReadingGoals(): Promise<ReadingGoalsResponse> {
   const response = await api.get("/api/analytics/dashboard/reading-goals");
   return response.data;
 }
 
+/**
+ * Fetches recent activity timeline events.
+ */
 export async function getActivityTimeline(): Promise<ActivityTimelineResponse> {
   const response = await api.get("/api/analytics/dashboard/activity");
   return response.data;

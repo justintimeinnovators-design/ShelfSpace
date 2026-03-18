@@ -19,6 +19,13 @@ interface ContextualHelpProps {
   position?: "top-right" | "top-left" | "bottom-right" | "bottom-left";
 }
 
+/**
+ * Contextual Help.
+ * @param {
+  items,
+  position = "top-right",
+} - { items, position = "top right", } value.
+ */
 export const ContextualHelp: React.FC<ContextualHelpProps> = ({
   items,
   position = "top-right",
@@ -117,6 +124,10 @@ interface InlineHelpProps {
   title?: string;
 }
 
+/**
+ * Inline Help.
+ * @param { content, title } - { content, title } value.
+ */
 export const InlineHelp: React.FC<InlineHelpProps> = ({ content, title }) => {
   const [isVisible, setIsVisible] = useState(false);
 

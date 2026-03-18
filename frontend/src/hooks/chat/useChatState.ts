@@ -15,6 +15,9 @@ const initialState: Omit<ChatState, "isLoading" | "error"> = {
   sessionId: null,
 };
 
+/**
+ * Use Chat State.
+ */
 export function useChatState() {
   const { data: session } = useSession();
   const [state, setState] =

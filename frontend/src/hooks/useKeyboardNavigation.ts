@@ -20,6 +20,15 @@ export interface UseKeyboardNavigationOptions {
   containerRef?: React.RefObject<HTMLElement>;
 }
 
+/**
+ * Use Keyboard Navigation.
+ * @param {
+  shortcuts = [],
+  enableArrowNavigation = false,
+  enableTabTrapping = false,
+  containerRef,
+} - { shortcuts = [], enable Arrow Navigation = false, enable Tab Trapping = false, container Ref, } value.
+ */
 export function useKeyboardNavigation({
   shortcuts = [],
   enableArrowNavigation = false,

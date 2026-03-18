@@ -109,7 +109,9 @@ export function getAccessibleColor(
   const bgLuminance = getLuminance(backgroundColor);
 
   // Determine if we need to make the color lighter or darker
-  const shouldLighten = baseLuminance < bgLuminance;
+  // If the foreground is brighter than the background, lighten further.
+  // Otherwise darken to increase contrast against a lighter background.
+  const shouldLighten = baseLuminance > bgLuminance;
 
   let adjustedColor = { ...baseColor };
   let currentRatio = getContrastRatio(adjustedColor, backgroundColor);
@@ -152,6 +154,10 @@ export function getAccessibleColor(
  * Convert RGB to hex
  */
 export function rgbToHex(color: ColorRGB): string {
+/**
+ * To Hex.
+ * @param c - c value.
+ */
   const toHex = (c: number) => {
     const hex = Math.round(c).toString(16);
     return hex.length === 1 ? "0" + hex : hex;

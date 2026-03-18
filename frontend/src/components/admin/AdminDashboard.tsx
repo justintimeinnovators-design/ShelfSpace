@@ -10,6 +10,9 @@ import { UserManagement } from "./UserManagement";
 
 type TabType = "logs" | "books" | "users";
 
+/**
+ * Admin Dashboard.
+ */
 export function AdminDashboard() {
   const { data: session } = useSession();
   const router = useRouter();

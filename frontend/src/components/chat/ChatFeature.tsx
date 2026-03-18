@@ -1,3 +1,9 @@
+/**
+ * Single-session chat feature.
+ *
+ * Renders AI chat UI, session history sidebar preview, and message composer.
+ * Uses `useChatState` for conversation state orchestration.
+ */
 "use client";
 
 import { useEffect, useState } from "react";
@@ -14,6 +20,11 @@ export interface ChatFeatureProps {
   className?: string;
 }
 
+/**
+ * Displays chat UI with current in-memory conversation.
+ *
+ * @param className Optional wrapper className.
+ */
 export function ChatFeature({ className }: ChatFeatureProps) {
   const {
     messages,
@@ -52,6 +63,7 @@ export function ChatFeature({ className }: ChatFeatureProps) {
 
         if (!isMounted) return;
 
+        // Convert service sessions into lightweight sidebar card model.
         setChatHistory(
           (Array.isArray(sessions) ? sessions : []).map((s: ChatSession, index) => ({
             id: index,

@@ -11,6 +11,14 @@ interface CombinedProviderProps {
   defaultTheme?: "light" | "dark" | "system";
 }
 
+/**
+ * Combined Provider.
+ * @param {
+  children,
+  initialUser,
+  defaultTheme = "system",
+} - { children, initial User, default Theme = "system", } value.
+ */
 export function CombinedProvider({
   children,
   initialUser,

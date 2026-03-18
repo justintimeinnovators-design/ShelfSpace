@@ -35,6 +35,10 @@ const availableGenres: Omit<Genre, 'selected'>[] = [
   { id: "horror", name: "Horror" },
 ];
 
+/**
+ * Preferences Modal.
+ * @param { isOpen, onClose, onSave } - { is Open, on Close, on Save } value.
+ */
 export function PreferencesModal({ isOpen, onClose, onSave }: PreferencesModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [genres, setGenres] = useState<Genre[]>(
@@ -44,6 +48,10 @@ export function PreferencesModal({ isOpen, onClose, onSave }: PreferencesModalPr
 
   const selectedGenres = genres.filter(g => g.selected);
 
+/**
+ * Handle Genre Toggle.
+ * @param genreId - genre Id value.
+ */
   const handleGenreToggle = (genreId: string) => {
     setGenres(prev => prev.map(genre => 
       genre.id === genreId 
@@ -52,6 +60,13 @@ export function PreferencesModal({ isOpen, onClose, onSave }: PreferencesModalPr
     ));
   };
 
+/**
+ * Handle Book Change.
+ * @param genreId - genre Id value.
+ * @param index - index value.
+ * @param field - field value.
+ * @param value - value value.
+ */
   const handleBookChange = (genreId: string, index: number, field: 'title' | 'author', value: string) => {
     setFavoriteBooks(prev => {
       const genreBooks = prev[genreId] || [];
@@ -67,6 +82,9 @@ export function PreferencesModal({ isOpen, onClose, onSave }: PreferencesModalPr
     });
   };
 
+/**
+ * Handle Save.
+ */
   const handleSave = async () => {
     setIsLoading(true);
     try {

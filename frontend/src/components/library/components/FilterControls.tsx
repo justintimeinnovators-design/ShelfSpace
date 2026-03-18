@@ -11,6 +11,17 @@ interface FilterControlsProps {
   filteredBooksCount: number;
 }
 
+/**
+ * Filter Controls.
+ * @param {
+  filterGenre,
+  onFilterGenreChange,
+  sortBy,
+  onSortByChange,
+  genres,
+  filteredBooksCount,
+} - { filter Genre, on Filter Genre Change, sort By, on Sort By Change, genres, filtered Books Count, } value.
+ */
 export const FilterControls: React.FC<FilterControlsProps> = ({
   filterGenre,
   onFilterGenreChange,

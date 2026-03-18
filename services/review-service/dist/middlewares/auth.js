@@ -1,5 +1,11 @@
 import axios from "axios";
 const USER_SERVICE_URL = process.env.USER_SERVICE_URL || "http://localhost:3001";
+/**
+ * Is Authenticated.
+ * @param req - req value.
+ * @param res - res value.
+ * @param next - next value.
+ */
 export async function isAuthenticated(req, res, next) {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {

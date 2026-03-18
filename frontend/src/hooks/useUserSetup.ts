@@ -4,6 +4,9 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { userService } from "@/lib/user-service";
 
+/**
+ * Use User Setup.
+ */
 export function useUserSetup() {
   const { data: session, status } = useSession();
   const [needsPreferences, setNeedsPreferences] = useState(false);
@@ -11,6 +14,9 @@ export function useUserSetup() {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
+/**
+ * Check User Setup.
+ */
     const checkUserSetup = async () => {
       if (status === "loading") return;
       
@@ -53,6 +59,9 @@ export function useUserSetup() {
     checkUserSetup();
   }, [session, status]);
 
+/**
+ * Mark Preferences Complete.
+ */
   const markPreferencesComplete = () => {
     setNeedsPreferences(false);
   };

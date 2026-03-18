@@ -2,23 +2,13 @@ import type { Request, Response } from "express";
 import Book from "../models/book.js";
 import mongoose from "mongoose";
 import { randomUUID } from "crypto";
-import axios from "axios";
-
-const ANALYTICS_SERVICE_URL =
-  process.env.ANALYTICS_SERVICE_URL?.trim() || "";
+import { publishAnalyticsEvents } from "../kafka/producer.js";
 
 async function emitAnalyticsEvent(req: Request, payload: Record<string, any>) {
-  if (!ANALYTICS_SERVICE_URL) return;
-  const authHeader = req.headers.authorization;
-  if (!authHeader) return;
   try {
-    await axios.post(
-      `${ANALYTICS_SERVICE_URL}/api/analytics/events`,
-      { events: [payload] },
-      { headers: { Authorization: authHeader } }
-    );
+    await publishAnalyticsEvents([{ userId: req.user?.id, ...payload }]);
   } catch {
-    console.warn("Failed to emit analytics event");
+    console.warn("Failed to emit analytics event to Kafka");
   }
 }
 
@@ -32,6 +22,11 @@ function escapeRegex(text: string): string {
 }
 
 //
+/**
+ * Create Book.
+ * @param req - req value.
+ * @param res - res value.
+ */
 export const createBook = async (req: Request, res: Response) => {
   try {
     const payload = { ...req.body };
@@ -58,6 +53,11 @@ export const createBook = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Get All Books.
+ * @param req - req value.
+ * @param res - res value.
+ */
 export const getAllBooks = async (req: Request, res: Response) => {
   try {
     // --- 1. DESTRUCTURE QUERY PARAMETERS ---
@@ -158,6 +158,11 @@ export const getAllBooks = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Get Book By Id.
+ * @param req - req value.
+ * @param res - res value.
+ */
 export const getBookById = async (req: Request, res: Response) => {
   try {
     const { bookId } = req.params;
@@ -187,6 +192,11 @@ export const getBookById = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Update Book.
+ * @param req - req value.
+ * @param res - res value.
+ */
 export const updateBook = async (req: Request, res: Response) => {
   try {
     const book = await Book.findByIdAndUpdate(req.params.id, req.body, {
@@ -214,6 +224,11 @@ export const updateBook = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Delete Book.
+ * @param req - req value.
+ * @param res - res value.
+ */
 export const deleteBook = async (req: Request, res: Response) => {
   try {
     const book = await Book.findByIdAndDelete(req.params.id);
@@ -237,6 +252,11 @@ export const deleteBook = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Search Books.
+ * @param req - req value.
+ * @param res - res value.
+ */
 export const searchBooks = async (req: Request, res: Response) => {
   try {
     const query = req.query.q as string;
@@ -297,6 +317,11 @@ export const searchBooks = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Get Genres.
+ * @param req - req value.
+ * @param res - res value.
+ */
 export const getGenres = async (req: Request, res: Response) => {
   try {
     const genres = await Book.distinct("genres");
@@ -306,6 +331,11 @@ export const getGenres = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Get Authors.
+ * @param req - req value.
+ * @param res - res value.
+ */
 export const getAuthors = async (req: Request, res: Response) => {
   try {
     const authors = await Book.distinct("authors.name");
@@ -315,6 +345,11 @@ export const getAuthors = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Get Languages.
+ * @param req - req value.
+ * @param res - res value.
+ */
 export const getLanguages = async (req: Request, res: Response) => {
   try {
     const languages = await Book.distinct("language_code");

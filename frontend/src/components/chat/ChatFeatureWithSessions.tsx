@@ -1,10 +1,18 @@
+/**
+ * Multi-session chat feature.
+ *
+ * Adds full session lifecycle controls on top of chat UI:
+ * - create/switch/delete sessions
+ * - pin/unpin sessions
+ * - rename session titles
+ */
 "use client";
 
-import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { ErrorBoundary } from "@/components/common/ErrorBoundary";
 import { ChatErrorFallback } from "@/components/common/ErrorFallbacks/ChatErrorFallback";
 import { useChatSessions } from "@/hooks/chat/useChatSessions";
+import { useChatFeatureWithSessionsUI } from "@/hooks/chat/useChatFeatureWithSessionsUI";
 import { 
   Send, 
   Trash2, 
@@ -18,12 +26,16 @@ import {
   Check,
   Clock
 } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
 
 export interface ChatFeatureProps {
   className?: string;
 }
 
+/**
+ * Renders chat interface backed by persistent chat sessions.
+ *
+ * @param className Optional wrapper className.
+ */
 export function ChatFeatureWithSessions({ className }: ChatFeatureProps) {
   const {
     sessions,
@@ -36,54 +48,24 @@ export function ChatFeatureWithSessions({ className }: ChatFeatureProps) {
     actions,
   } = useChatSessions();
 
-  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
-  const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
-  const [editTitle, setEditTitle] = useState("");
-
-  const handleSendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (inputMessage.trim()) {
-      await actions.sendMessage();
-    }
-  };
-
-  const handleNewChat = async () => {
-    await actions.createNewSession("New Chat");
-    setIsHistoryOpen(false);
-  };
-
-  const handleDeleteSession = async (sessionId: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (confirm("Delete this chat? This action cannot be undone.")) {
-      await actions.deleteSession(sessionId);
-    }
-  };
-
-  const handleTogglePin = async (sessionId: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    await actions.togglePin(sessionId);
-  };
-
-  const startEditingTitle = (sessionId: string, currentTitle: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setEditingSessionId(sessionId);
-    setEditTitle(currentTitle);
-  };
-
-  const saveTitle = async (sessionId: string) => {
-    if (editTitle.trim()) {
-      await actions.renameSession(sessionId, editTitle.trim());
-    }
-    setEditingSessionId(null);
-  };
-
-  const formatTimestamp = (timestamp: string) => {
-    try {
-      return formatDistanceToNow(new Date(timestamp), { addSuffix: true });
-    } catch {
-      return "Recently";
-    }
-  };
+  const {
+    isHistoryOpen,
+    setIsHistoryOpen,
+    editingSessionId,
+    setEditingSessionId,
+    editTitle,
+    setEditTitle,
+    handleSendMessage,
+    handleNewChat,
+    handleDeleteSession,
+    handleTogglePin,
+    startEditingTitle,
+    saveTitle,
+    formatTimestamp,
+  } = useChatFeatureWithSessionsUI({
+    inputMessage,
+    actions,
+  });
 
   return (
     <ErrorBoundary fallback={ChatErrorFallback}>

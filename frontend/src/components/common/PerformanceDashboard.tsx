@@ -33,12 +33,19 @@ interface PerformanceDashboardProps {
   onClose: () => void;
 }
 
+/**
+ * Performance Dashboard.
+ * @param { isOpen, onClose } - { is Open, on Close } value.
+ */
 export function PerformanceDashboard({ isOpen, onClose }: PerformanceDashboardProps) {
   const [metrics, setMetrics] = useState<PerformanceMetrics | null>(null);
   const [isCollecting, setIsCollecting] = useState(false);
   const [alerts, setAlerts] = useState<string[]>([]);
 
   // Collect performance metrics
+/**
+ * Collect Metrics.
+ */
   const collectMetrics = async () => {
     setIsCollecting(true);
     const newAlerts: string[] = [];
@@ -158,6 +165,11 @@ export function PerformanceDashboard({ isOpen, onClose }: PerformanceDashboardPr
   }, [isOpen]);
 
   // Get performance score color
+/**
+ * Get Score Color.
+ * @param value - value value.
+ * @param thresholds - thresholds value.
+ */
   const getScoreColor = (value: number, thresholds: { good: number; needsImprovement: number }) => {
     if (value <= thresholds.good) return 'text-green-600';
     if (value <= thresholds.needsImprovement) return 'text-yellow-600';
@@ -165,6 +177,11 @@ export function PerformanceDashboard({ isOpen, onClose }: PerformanceDashboardPr
   };
 
   // Get performance score icon
+/**
+ * Get Score Icon.
+ * @param value - value value.
+ * @param thresholds - thresholds value.
+ */
   const getScoreIcon = (value: number, thresholds: { good: number; needsImprovement: number }) => {
     if (value <= thresholds.good) return <CheckCircle className="w-4 h-4 text-green-600" />;
     if (value <= thresholds.needsImprovement) return <AlertTriangle className="w-4 h-4 text-yellow-600" />;

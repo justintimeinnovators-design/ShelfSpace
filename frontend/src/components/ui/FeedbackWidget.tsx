@@ -21,6 +21,12 @@ interface FeedbackWidgetProps {
   position?: "bottom-right" | "bottom-left";
 }
 
+/**
+ * Feedback Widget.
+ * @param {
+  position = "bottom-right",
+} - { position = "bottom right", } value.
+ */
 export const FeedbackWidget: React.FC<FeedbackWidgetProps> = ({
   position = "bottom-right",
 }) => {
@@ -36,6 +42,9 @@ export const FeedbackWidget: React.FC<FeedbackWidgetProps> = ({
     "bottom-left": "bottom-6 left-6",
   };
 
+/**
+ * Handle Submit.
+ */
   const handleSubmit = async () => {
     if (!feedback.trim()) {
       toast.warning("Please enter your feedback");
@@ -213,12 +222,23 @@ interface QuickFeedbackProps {
   className?: string;
 }
 
+/**
+ * Quick Feedback.
+ * @param {
+  onFeedback,
+  className = "",
+} - { on Feedback, class Name = "", } value.
+ */
 export const QuickFeedback: React.FC<QuickFeedbackProps> = ({
   onFeedback,
   className = "",
 }) => {
   const [selected, setSelected] = useState<boolean | null>(null);
 
+/**
+ * Handle Feedback.
+ * @param positive - positive value.
+ */
   const handleFeedback = (positive: boolean) => {
     setSelected(positive);
     onFeedback(positive);

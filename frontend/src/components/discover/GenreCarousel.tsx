@@ -15,9 +15,17 @@ interface GenreCarouselProps {
   sections: GenreSection[];
 }
 
+/**
+ * Genre Carousel.
+ * @param { sections } - { sections } value.
+ */
 const GenreCarousel: React.FC<GenreCarouselProps> = ({ sections }) => {
   const scrollContainerRefs = useRef<(HTMLDivElement | null)[]>([]);
 
+/**
+ * Scroll Left.
+ * @param index - index value.
+ */
   const scrollLeft = (index: number) => {
     if (scrollContainerRefs.current[index]) {
       scrollContainerRefs.current[index]?.scrollBy({
@@ -27,6 +35,10 @@ const GenreCarousel: React.FC<GenreCarouselProps> = ({ sections }) => {
     }
   };
 
+/**
+ * Scroll Right.
+ * @param index - index value.
+ */
   const scrollRight = (index: number) => {
     if (scrollContainerRefs.current[index]) {
       scrollContainerRefs.current[index]?.scrollBy({
